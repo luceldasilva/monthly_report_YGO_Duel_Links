@@ -1,0 +1,6 @@
+# Plantilla para trabajar con variables de entorno con Pentaho
+
+PGUSER = # --- 
+PGPASSWORD = # ---
+PGHOST = # ---
+PGDATABASE = # ---
