@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS players (
+	player_id SERIAL PRIMARY KEY,
+	nick VARCHAR(255),
+	created_at TIMESTAMP DEFAULT NOW()
+);
