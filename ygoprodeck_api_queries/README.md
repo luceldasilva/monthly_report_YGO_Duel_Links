@@ -3,7 +3,7 @@
 Consulta de la api, buscar en inglés
 
 > [!NOTE]
-> Su finalidad es usar las imágenes de los mounstros insignias
+> Su finalidad es usar las imágenes de los monstruos insignias
 > de los arquetipos para su visualización
 
 
