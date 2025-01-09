@@ -1,0 +1,17 @@
+# Queries para la database y la api
+
+```{python}
+from queries_db import show_tables, query
+
+show_tables()
+```
+
+
+```{python}
+!python ../ygoprodeck_api_queries/ygo_cli.py arquetipo "Madolche"
+```
+
+
+```{python}
+!python ../ygoprodeck_api_queries/ygo_cli.py carta "Madolchepalooza"
+```
