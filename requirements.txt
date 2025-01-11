@@ -1,7 +1,7 @@
 click
 requests
 cloudinary
-fastapi
+fastapi[standard]
 pymongo
 pytz
 python-multipart
