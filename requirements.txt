@@ -1,5 +1,10 @@
 click
 requests
+cloudinary
+fastapi
+pymongo
+pytz
+python-multipart
 jupyter
 ipykernel
 python-decouple
