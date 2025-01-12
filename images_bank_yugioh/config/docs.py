@@ -6,5 +6,9 @@ tags_metadata = [
     {
         "name": "circular_images",
         "description": "Alzar el avatar para almacenar en Cloudinary"
+    },
+    {
+        "name": "characters",
+        "description": "Database de los personajes jugables con su avatar"
     }
 ]

@@ -1,0 +1,13 @@
+-- Avatar del arquetipo
+{
+  "deck_id": 0,
+  "name": "string",
+  "url_image": "string"
+}
+
+-- Avatar del personaje
+{
+  "character_id": 0,
+  "character_name": "string",
+  "url_image": "string"
+}
