@@ -15,3 +15,32 @@ show_tables()
 ```{python}
 !python ../ygoprodeck_api_queries/ygo_cli.py carta "Elemental Hero Stratos"
 ```
+
+```{python}
+decks_query = """
+SELECT deck_id, deck FROM decks
+"""
+
+dim_decks = query(decks_query)
+dim_decks
+```
+
+```{python}
+skills_query = """
+SELECT skill_id, skill
+FROM skills
+WHERE skill_type_id IS NULL
+"""
+
+dim_skills = query(skills_query)
+dim_skills
+```
+
+```{python}
+characters_query = """
+SELECT * FROM characters
+"""
+
+dim_characters = query(characters_query)
+dim_characters
+```
