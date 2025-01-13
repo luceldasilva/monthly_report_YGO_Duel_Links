@@ -4,6 +4,10 @@ import pandas as pd
 import pyprojroot
 
 
+"""
+TODO: corregir el df no anda y no lee, a lo sumo cambiar el tipo de archivo :v
+"""
+
 root_path = pyprojroot.here()
 data_path = root_path / 'etl' / 'pentaho' / 'output'
 
