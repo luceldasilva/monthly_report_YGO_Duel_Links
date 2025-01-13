@@ -74,6 +74,7 @@ cover/
 *.pot
 *.json
 *.csv
+*.xls
 docs/_build/
 .pybuilder/
 target/
