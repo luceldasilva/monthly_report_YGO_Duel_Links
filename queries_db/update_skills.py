@@ -5,7 +5,7 @@ import pyprojroot
 
 
 """
-TODO: probar si anda, por ahora lee el df era error del pentaho
+TODO: testear si anda, solucionado el archivo ya lee
 """
 
 root_path = pyprojroot.here()
@@ -16,7 +16,10 @@ metadata = md()
 skills = Table('skills', metadata, autoload_with=connection)
 
 
-df = pd.read_csv(data_path.joinpath('actualizar_los_dos.csv'))
+df = pd.read_excel(
+    data_path.joinpath('actualizar_los_dos.xls'),
+    sheet_name='actualizar_los_dos'
+)
 
 for index, row in df.iterrows():
     stmt = (
