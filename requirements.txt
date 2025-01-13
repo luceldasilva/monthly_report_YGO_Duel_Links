@@ -11,6 +11,7 @@ python-decouple
 psycopg2
 SQLAlchemy
 colorama
+openpyxl
 numpy
 pandas
 matplotlib
