@@ -5,7 +5,7 @@ import pyprojroot
 
 
 """
-TODO: corregir el df no anda y no lee, a lo sumo cambiar el tipo de archivo :v
+TODO: probar si anda, por ahora lee el df era error del pentaho
 """
 
 root_path = pyprojroot.here()
