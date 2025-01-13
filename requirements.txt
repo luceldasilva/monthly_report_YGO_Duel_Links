@@ -12,6 +12,7 @@ psycopg2
 SQLAlchemy
 colorama
 openpyxl
+xlrd
 numpy
 pandas
 matplotlib
