@@ -44,3 +44,29 @@ SELECT * FROM characters
 dim_characters = query(characters_query)
 dim_characters
 ```
+
+```{python}
+from queries_db.update_skills \
+    import actualizar_skills, insertar_personajes
+
+
+insertar_personajes()
+```
+
+```{python}
+series_query = """
+SELECT * FROM series
+"""
+
+dim_series_query = query(series_query)
+dim_series_query
+```
+
+```{python}
+skill_types_query = """
+SELECT * FROM skill_types
+"""
+
+dim_skill_types = query(skill_types_query)
+dim_skill_types
+```
