@@ -32,7 +32,7 @@ async def searching_by_playable_character(name_character: str):
 @characters.post("/", response_model=ImageCharacter, status_code=status.HTTP_201_CREATED) 
 async def save_playable_character(playable_character: ImageCharacter):
     
-    if type(search_character("character_name", playable_character.name)) == ImageCharacter:
+    if type(search_character("character_name", playable_character.character_name)) == ImageCharacter:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Ey, el personaje ya tiene imagen"
@@ -60,5 +60,5 @@ async def drop_playable_character(character: str):
     
     if not found: 
         raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail="El arquetipo no existe"
+            status_code=status.HTTP_404_NOT_FOUND, detail="El arquetipo no existe"
         )
