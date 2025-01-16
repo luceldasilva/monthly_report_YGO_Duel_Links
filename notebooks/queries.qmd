@@ -54,6 +54,10 @@ insertar_personajes()
 ```
 
 ```{python}
+actualizar_skills()
+```
+
+```{python}
 series_query = """
 SELECT * FROM series
 """
