@@ -14,7 +14,8 @@ def actualizar_skills():
         data_path.joinpath('actualizar_los_dos.xls'),
         sheet_name='actualizar_los_dos'
     )
-    with open('actualizar_tipo_y_personaje.sql', 'w') as file:
+    sql_file = f'{today}_actualizar_tipo_y_personaje.sql'
+    with open(sql_path.joinpath(sql_file), 'w') as file:
         for index, row in df_actualizar.iterrows():
             set_clause = f"skill_type_id = '{row['skill_type_id']}', character_id = '{row['character_id']}'"
             stmt = f"UPDATE skills SET {set_clause} WHERE skill_id = {row['skill_id']};\n"
