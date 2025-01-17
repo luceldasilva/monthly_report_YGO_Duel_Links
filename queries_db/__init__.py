@@ -5,9 +5,9 @@ import pandas as pd
 
 
 logging.basicConfig(
-    format = '%(asctime)-5s %(levelname)-8s %(message)s', 
-    level=logging.INFO,  
-    encoding="utf-8"
+	format = '%(asctime)-5s %(levelname)-8s %(message)s', 
+	level=logging.INFO,	 
+	encoding="utf-8"
 )
 
 
@@ -15,15 +15,16 @@ pg_engine = ce(config('ENGINE_PSQL'))
 
 
 def show_tables():
-	conn = pg_engine.connect()
-	metadata = md()
-	metadata.reflect(bind=conn)
-	table_names = metadata.sorted_tables
-	for sheet in table_names:
-		logging.info(sheet.name)
-	conn.close()
-	pg_engine.dispose()
-	logging.info("La conexión ha finalizado.")
+    conn = pg_engine.connect()
+    metadata = md()
+    metadata.reflect(bind=conn)
+    table_names = metadata.sorted_tables
+    logging.info("Estan son las tablas")
+    for sheet in table_names:
+        print(sheet.name)
+    conn.close()
+    pg_engine.dispose()
+    logging.info("La conexión ha finalizado.")
 
 
 def query(query):

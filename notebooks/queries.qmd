@@ -2,6 +2,9 @@
 
 ```{python}
 from queries_db import show_tables, query
+from queries_db.update_skills \
+    import actualizar_skills, insertar_personajes
+
 
 show_tables()
 ```
@@ -46,10 +49,6 @@ dim_characters
 ```
 
 ```{python}
-from queries_db.update_skills \
-    import actualizar_skills, insertar_personajes
-
-
 insertar_personajes()
 ```
 
