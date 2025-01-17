@@ -1,12 +1,16 @@
 ```{python}
-import pyprojroot
 from queries_db import show_tables, query as qu
+import pyprojroot
+import requests as req
+from io import BytesIO
 import numpy as np
 import pandas as pd
 import squarify
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 from matplotlib.font_manager import fontManager, FontProperties
+from matplotlib.patches import FancyBboxPatch
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import seaborn as sns
 import calplot
 ```
@@ -75,6 +79,8 @@ character_images = pd.read_json(
     'http://127.0.0.1:8000/characters/',
     orient='records'
 )
+
+character_images = character_images[['character_name', 'url_image']]
 character_images
 ```
 
@@ -88,14 +94,100 @@ WITH skills_count AS (
     WHERE s.character_id != -1 
 )
 SELECT
-    c.name_character AS personaje, COUNT(*) AS total
+    c.name_character AS character_name, COUNT(*) AS total
 FROM skills_count sk
 INNER JOIN characters c ON sk.character_id = c.character_id
-GROUP BY personaje
+GROUP BY character_name
 ORDER BY total DESC;
 """
 
 characters_sum = qu(characters_count_query)
+characters_sum = characters_sum.iloc[:5]
 characters_sum
 ```
 
+
+```{python}
+characters_sum = characters_sum.merge(
+    character_images, on='character_name', how='inner'
+)
+characters_sum.rename(columns={'character_name': 'personaje'}, inplace=True)
+characters_sum
+```
+
+
+```{python}
+avatar_character = characters_sum['url_image']
+del characters_sum['url_image']
+```
+
+```{python}
+# TODO: hacer más chicas las fotos para que no estén pixeleadas
+plt.figure(figsize=(6, 4))
+
+
+colores_verdes = plt.cm.Greens_r(np.linspace(0.2, 0.6, len(characters_sum)))
+
+ax = sns.barplot(
+    x=characters_sum.total, 
+    y=characters_sum.personaje, orient='h',
+    joinstyle='bevel'
+)
+
+new_patches = []
+for patch, color, personaje, total, avatar in zip(
+    ax.patches, colores_verdes, characters_sum['personaje'],
+    characters_sum['total'], avatar_character
+):
+    
+    bb = patch.get_bbox()
+    p_bbox = FancyBboxPatch(
+        (bb.xmin, bb.ymin), abs(bb.width), abs(bb.height),
+        boxstyle='round,pad=-0.05,rounding_size=0.73',
+        ec='none', fc=color, mutation_aspect=0.73
+    )
+    patch.remove()
+    new_patches.append(p_bbox)
+    
+    response = req.get(avatar)
+    image = plt.imread(BytesIO(response.content))
+    imagebox = OffsetImage(image, zoom=0.17)
+    ab = AnnotationBbox(
+        imagebox, xy=(3.5, patch.get_y() + patch.get_height()/2),
+        xybox=(0,0), xycoords='data', boxcoords="offset points",
+        pad=0, arrowprops=dict(arrowstyle='-', color='none'),
+        bboxprops=dict(facecolor='none', edgecolor='none')
+    )
+    ax.add_artist(ab)
+
+    ax.annotate(
+        f'{total}',
+        xy=(patch.get_width(), patch.get_y() + patch.get_height()/2),
+        xytext=(-5,0), textcoords='offset points',
+        arrowprops=dict(arrowstyle='-', color='none'),
+        color='white', fontweight='bold', fontsize=12, ha='right', va='center',
+        xycoords='data',
+        bbox=dict(facecolor='none', edgecolor='none', pad=0),
+        annotation_clip=False
+    )
+
+for patch in new_patches:
+    ax.add_patch(patch)
+
+ax.set_xlabel('')
+ax.set_ylabel('')
+ax.set_xticks([])
+ax.yaxis.grid(False)
+ax.xaxis.grid(False)
+ax.spines['bottom'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+
+plt.title(
+    'Personajes más usados en Enero 2025',
+    fontsize=14, fontweight='bold', x=0.35
+)
+
+plt.show()
+```
