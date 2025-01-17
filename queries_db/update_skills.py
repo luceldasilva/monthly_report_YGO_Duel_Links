@@ -24,7 +24,7 @@ def actualizar_skills():
             stmt = f"UPDATE skills SET {set_clause} WHERE skill_id = {int(row['skill_id'])};\n"
             file.write(stmt)
     
-    subprocess.run([notepad, str(sql_file)])
+    subprocess.Popen([notepad, str(sql_file)])
 
 
 def insertar_personajes():
@@ -42,4 +42,4 @@ def insertar_personajes():
             stmt = f"INSERT INTO characters ({columnas_sql}) VALUES {name_character, serie_id};\n"
             file.write(stmt)
     
-    subprocess.run([notepad, str(sql_file)])
+    subprocess.Popen([notepad, str(sql_file)])
