@@ -1,0 +1,69 @@
+```{python}
+import pyprojroot
+from queries_db import show_tables, query as qu
+import numpy as np
+import pandas as pd
+import squarify
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
+from matplotlib.font_manager import fontManager, FontProperties
+import seaborn as sns
+import calplot
+```
+
+```{python}
+root_path = pyprojroot.here()
+helvetica_path = root_path / 'fonts' / 'Helvetica.ttf'
+
+fontManager.addfont(helvetica_path)
+```
+
+```{python}
+series_query = """
+SELECT * FROM series
+"""
+
+dim_series_query = qu(series_query)
+dim_series_query
+```
+
+```{python}
+kog_2025_jan_query = """
+SELECT 
+    p.nick, d.deck, s.skill, jan.ndmax,
+    jan.zerotg, jan.zephra, jan.bryan,
+    jan.xenoblur, jan.yamiglen, jan.latino_vania
+FROM kog_2025_jan jan
+INNER JOIN decks d ON jan.deck_id = d.deck_id
+INNER JOIN players p ON jan.player_id = p.player_id
+INNER JOIN skills s ON jan.skill_id = s.skill_id;
+"""
+
+kog_2025_jan = qu(kog_2025_jan_query)
+kog_2025_jan
+```
+
+
+```{python}
+"""
+TODO: Ver para ser del todo el año
+"""
+
+kog_date_jan_query = """
+SELECT ndmax, COUNT(ndmax) AS jugadores
+FROM kog_2025_jan
+GROUP BY ndmax
+ORDER BY ndmax;
+"""
+
+kog_date_jan = qu(kog_date_jan_query)
+kog_date_jan.index = pd.to_datetime('2025-01-01') + pd.to_timedelta(kog_date_jan.index, unit='D')
+
+calplot.calplot(
+    kog_date_jan['jugadores'],
+    cmap = 'Spectral_r', yearascending = False,
+    suptitle='Jugadores por Día en Enero 2025',
+)
+
+plt.show()
+```
