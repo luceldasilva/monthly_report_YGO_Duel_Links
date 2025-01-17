@@ -1,6 +1,6 @@
 import logging
 from decouple import config
-from psycopg2 import OperationalError
+from sqlalchemy.exc import OperationalError
 from sqlalchemy import create_engine as ce, MetaData as md
 import pandas as pd
 
