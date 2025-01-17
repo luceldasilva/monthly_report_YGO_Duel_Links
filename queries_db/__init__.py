@@ -1,13 +1,14 @@
 import logging
 from decouple import config
+from psycopg2 import OperationalError
 from sqlalchemy import create_engine as ce, MetaData as md
 import pandas as pd
 
 
 logging.basicConfig(
-	format = '%(asctime)-5s %(levelname)-8s %(message)s', 
-	level=logging.INFO,	 
-	encoding="utf-8"
+    format = '%(asctime)-5s %(levelname)-8s %(message)s', 
+    level=logging.INFO,	 
+    encoding="utf-8"
 )
 
 
@@ -28,16 +29,17 @@ def show_tables():
 
 
 def query(query):
-	'''
-		hacer variable = query(y la consulta sql)
-	'''
-	try:
-		return pd.read_sql_query(sql=query, con=pg_engine)
-	except Exception as ex:
-		logging.error(f'Error durante la conexión: {ex}')
-	finally:
-		logging.info(f'Aquí está la consulta \n{query}')
+    '''
+        hacer variable = query(y la consulta sql)
+    '''
+    try:
+        logging.info(f'Aquí está la consulta \n{query}')
+        return pd.read_sql_query(sql=query, con=pg_engine)
+    except OperationalError:
+        logging.error('La conexión se cerró vuelva a conectarlo')
+    except Exception as ex:
+        logging.error(f'Error durante la conexión: {ex}')
 
 
 if __name__ == '__main__':
-	logging.info("Estoy arrancando...")
+    logging.info("Estoy arrancando...")
