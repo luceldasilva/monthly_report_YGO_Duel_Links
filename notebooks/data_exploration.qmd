@@ -67,3 +67,35 @@ calplot.calplot(
 
 plt.show()
 ```
+
+
+```{python}
+# Cuando corra la api en local
+character_images = pd.read_json(
+    'http://127.0.0.1:8000/characters/',
+    orient='records'
+)
+character_images
+```
+
+
+```{python}
+characters_count_query = """
+WITH skills_count AS (
+    SELECT s.skill, s.character_id
+    FROM kog_2025_jan jan
+    INNER JOIN skills s ON jan.skill_id = s.skill_id
+    WHERE s.character_id != -1 
+)
+SELECT
+    c.name_character AS personaje, COUNT(*) AS total
+FROM skills_count sk
+INNER JOIN characters c ON sk.character_id = c.character_id
+GROUP BY personaje
+ORDER BY total DESC;
+"""
+
+characters_sum = qu(characters_count_query)
+characters_sum
+```
+
