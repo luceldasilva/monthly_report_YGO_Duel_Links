@@ -123,7 +123,7 @@ del characters_sum['url_image']
 
 ```{python}
 # TODO: hacer más chicas las fotos para que no estén pixeleadas
-plt.figure(figsize=(6, 4))
+plt.figure(figsize=(12, 8))
 
 
 colores_verdes = plt.cm.Greens_r(np.linspace(0.2, 0.6, len(characters_sum)))
@@ -151,7 +151,7 @@ for patch, color, personaje, total, avatar in zip(
     
     response = req.get(avatar)
     image = plt.imread(BytesIO(response.content))
-    imagebox = OffsetImage(image, zoom=0.17)
+    imagebox = OffsetImage(image, zoom=0.35)
     ab = AnnotationBbox(
         imagebox, xy=(3.5, patch.get_y() + patch.get_height()/2),
         xybox=(0,0), xycoords='data', boxcoords="offset points",
@@ -185,7 +185,7 @@ ax.spines['right'].set_visible(False)
 ax.spines['top'].set_visible(False)
 
 plt.title(
-    'Personajes más usados en Enero 2025',
+    'Personajes con habilidad legendaria más usados en Enero 2025',
     fontsize=14, fontweight='bold', x=0.35
 )
 
