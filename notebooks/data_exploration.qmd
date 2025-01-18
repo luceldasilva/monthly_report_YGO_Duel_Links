@@ -49,6 +49,34 @@ kog_2025_jan
 
 
 ```{python}
+comunidades = [
+    'zerotg', 'zephra', 'bryan', 'xenoblur', 'yamiglen', 'latino_vania' 
+]
+
+melted_comunidad = kog_2025_jan.melt(
+    id_vars='nick',
+    value_vars=comunidades, 
+    var_name='Comunidad', value_name='Jugadores'
+)
+
+
+pivot_comunidad = pd.pivot_table(
+    melted_comunidad,
+    values='Jugadores',
+    index='Comunidad',
+    aggfunc=lambda x: (x == True).sum()
+).sort_values(by='Jugadores', ascending=False)
+
+pivot_comunidad
+```
+
+```{python}
+# Verificación si está bien la cantidad
+kog_2025_jan['bryan'].sum()
+```
+
+
+```{python}
 """
 TODO: Ver para ser del todo el año
 """
