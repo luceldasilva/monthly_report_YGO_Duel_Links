@@ -11,12 +11,12 @@ show_tables()
 
 
 ```{python}
-!python ../ygoprodeck_api_queries/ygo_cli.py arquetipo "Madolche"
+!python ../ygoprodeck_api_queries/ygo_cli.py arquetipo "Live☆Twin"
 ```
 
 
 ```{python}
-!python ../ygoprodeck_api_queries/ygo_cli.py carta "Elemental Hero Stratos"
+!python ../ygoprodeck_api_queries/ygo_cli.py carta "Lunalight Tiger"
 ```
 
 ```{python}
