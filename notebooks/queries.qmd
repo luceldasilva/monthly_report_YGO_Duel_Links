@@ -73,3 +73,11 @@ SELECT * FROM skill_types
 dim_skill_types = query(skill_types_query)
 dim_skill_types
 ```
+
+
+```{python}
+from queries_db.upload_avatar_decks import json_decks
+
+
+json_decks()
+```

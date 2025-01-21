@@ -1,14 +1,6 @@
+from queries_db.constants import data_path, sql_path, today, notepad
 import pandas as pd
-import pyprojroot
-import datetime
 import subprocess
-
-
-root_path = pyprojroot.here()
-data_path = root_path / 'etl' / 'pentaho' / 'output'
-sql_path = root_path / 'sql_scripts'
-today = datetime.datetime.now().strftime('%d_%m_%Y')
-notepad = r'C:\Program Files\Notepad++\notepad++.exe'
 
 
 def actualizar_skills():
