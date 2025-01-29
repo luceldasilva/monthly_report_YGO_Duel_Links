@@ -226,7 +226,7 @@ SELECT
     d.deck AS name, COUNT(*) AS total
 FROM kog_2025_jan jan
 INNER JOIN decks d ON jan.deck_id = d.deck_id
-WHERE jan.zephra
+-- WHERE jan.zephra
 GROUP BY name
 ORDER BY total DESC;
 """
@@ -248,6 +248,10 @@ decks_images
 ```
 
 ```{python}
+decks_sum.iloc[:10]
+```
+
+```{python}
 decks_sum = decks_sum.iloc[:5]
 decks_sum = decks_sum.merge(
     decks_images, on='name', how='inner'
@@ -264,7 +268,7 @@ del decks_sum['url_image']
 
 
 ```{python}
-# TODO: hacer más chicas las fotos para que no estén pixeleadas
+# TODO: hacer un color el primero y el resto otro
 plt.figure(figsize=(6, 4))
 
 
@@ -295,7 +299,7 @@ for patch, color, deck, total, avatar in zip(
     image = plt.imread(BytesIO(response.content))
     imagebox = OffsetImage(image, zoom=0.8)
     ab = AnnotationBbox(
-        imagebox, xy=(1.35, patch.get_y() + patch.get_height()/2),
+        imagebox, xy=(4.35, patch.get_y() + patch.get_height()/2),
         xybox=(0,0), xycoords='data', boxcoords="offset points",
         pad=0, arrowprops=dict(arrowstyle='-', color='none'),
         bboxprops=dict(facecolor='none', edgecolor='none')
@@ -332,4 +336,12 @@ plt.title(
 )
 
 plt.show()
+```
+
+```{python}
+"""
+TODO: nube de palabras de mazos que no son el top 5
+"""
+# TODO: hacer más hd las miniaturas del top 5 como el 
+stratos
 ```

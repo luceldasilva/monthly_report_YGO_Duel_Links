@@ -1,0 +1,9 @@
+UPDATE skills SET skill_type_id = 2, character_id = -1 WHERE skill_id = 59;
+UPDATE skills SET skill_type_id = 1, character_id = 25 WHERE skill_id = 60;
+UPDATE skills SET skill_type_id = 1, character_id = 13 WHERE skill_id = 61;
+UPDATE skills SET skill_type_id = 1, character_id = 25 WHERE skill_id = 62;
+UPDATE skills SET skill_type_id = 1, character_id = 22 WHERE skill_id = 63;
+UPDATE skills SET skill_type_id = 1, character_id = 24 WHERE skill_id = 64;
+UPDATE skills SET skill_type_id = 1, character_id = 22 WHERE skill_id = 65;
+UPDATE skills SET skill_type_id = 1, character_id = 11 WHERE skill_id = 66;
+UPDATE skills SET skill_type_id = 1, character_id = 23 WHERE skill_id = 67;

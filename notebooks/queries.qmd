@@ -6,17 +6,17 @@ from queries_db.update_skills \
     import actualizar_skills, insertar_personajes
 
 
-show_tables()
+#show_tables()
 ```
 
 
 ```{python}
-!python ../ygoprodeck_api_queries/ygo_cli.py arquetipo "Live☆Twin"
+!python ../ygoprodeck_api_queries/ygo_cli.py arquetipo "Shaddoll"
 ```
 
 
 ```{python}
-!python ../ygoprodeck_api_queries/ygo_cli.py carta "Lunalight Tiger"
+!python ../ygoprodeck_api_queries/ygo_cli.py carta "El Shaddoll Construct"
 ```
 
 ```{python}
