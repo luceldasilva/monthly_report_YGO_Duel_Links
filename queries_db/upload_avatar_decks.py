@@ -15,7 +15,7 @@ def json_decks():
     with open(json_file, 'w') as file:
         for _, row in df_decks.iterrows():
             row_dict = row.to_dict()
-            json_str = json.dumps(row_dict, indent=4, ensure_ascii=False)
+            json_str = json.dumps(row_dict, indent=2, ensure_ascii=False)
             file.write(json_str + "\n")
     
     subprocess.Popen([notepad, str(json_file)])
