@@ -1,6 +1,7 @@
 from queries_db.constants import data_path, today, notepad
 import pandas as pd
 import subprocess
+import json
 
 
 def json_decks():
@@ -13,8 +14,8 @@ def json_decks():
     
     with open(json_file, 'w') as file:
         for _, row in df_decks.iterrows():
-            json_str = row.to_json(indent=4, force_ascii=False)
-            formatted_json = json_str.replace(':', ': ')
-            file.write(formatted_json + "\n")
+            row_dict = row.to_dict()
+            json_str = json.dumps(row_dict, indent=4, ensure_ascii=False)
+            file.write(json_str + "\n")
     
     subprocess.Popen([notepad, str(json_file)])
