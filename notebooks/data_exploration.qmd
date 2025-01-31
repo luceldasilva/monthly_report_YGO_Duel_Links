@@ -272,7 +272,9 @@ del decks_sum['url_image']
 plt.figure(figsize=(6, 4))
 
 
-colores_verdes = plt.cm.Greens_r(np.linspace(0.2, 0.6, len(decks_sum)))
+#colores_verdes = plt.cm.Greens_r(np.linspace(0.2, 0.6, len(decks_sum)))
+
+colors_top_five = ['#4c2882', '#808080', '#808080', '#808080', '#808080']
 
 ax = sns.barplot(
     x=decks_sum.total, 
@@ -282,7 +284,7 @@ ax = sns.barplot(
 
 new_patches = []
 for patch, color, deck, total, avatar in zip(
-    ax.patches, colores_verdes, decks_sum['deck'],
+    ax.patches, colors_top_five, decks_sum['deck'],
     decks_sum['total'], avatar_deck
 ):
     
@@ -342,6 +344,33 @@ plt.show()
 """
 TODO: nube de palabras de mazos que no son el top 5
 """
-# TODO: hacer más hd las miniaturas del top 5 como el 
-stratos
+
+from wordcloud import WordCloud
+
+
+decks = kog_2025_jan.copy()
+
+top_five_decks = decks_sum.deck.tolist()
+
+decks = decks.drop(decks[decks['deck'].isin(top_five_decks)].index)
+
+
+decks = decks.replace("-", ' ', regex=True)
+decks = decks.replace("/", ' ', regex=True)
+decks = decks.replace(" ", '', regex=True)
+
+
+text_decks = ' '.join(decks.fillna('')['deck'].tolist())
+
+wc = WordCloud(
+    width = 2560,
+    height = 1440,
+    background_color = "mintcream",
+    colormap = "Dark2"
+).generate(text_decks)
+
+
+plt.axis("off")
+plt.imshow(wc, interpolation = "bilinear")
+plt.show()
 ```
