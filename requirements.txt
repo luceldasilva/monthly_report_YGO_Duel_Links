@@ -20,4 +20,5 @@ seaborn
 plotly
 squarify
 calplot
+wordcloud
 pyprojroot
