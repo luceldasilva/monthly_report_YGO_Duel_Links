@@ -126,6 +126,7 @@ cython_debug/
 # Pentaho files
 *.ktr
 *.kjb
+!dim_date_ndmax_calendar.ktr
 
 # Miscellaneous
 /.luarc.json
