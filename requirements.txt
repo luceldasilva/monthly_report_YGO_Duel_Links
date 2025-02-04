@@ -21,4 +21,5 @@ plotly
 squarify
 calplot
 wordcloud
+matplotlib-venn
 pyprojroot
