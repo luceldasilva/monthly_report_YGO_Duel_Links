@@ -11,6 +11,7 @@ from matplotlib.ticker import FuncFormatter
 from matplotlib.font_manager import fontManager, FontProperties
 from matplotlib.patches import FancyBboxPatch
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+from wordcloud import WordCloud
 import seaborn as sns
 import calplot
 ```
@@ -18,6 +19,7 @@ import calplot
 ```{python}
 root_path = pyprojroot.here()
 helvetica_path = root_path / 'fonts' / 'Helvetica.ttf'
+
 
 fontManager.addfont(helvetica_path)
 ```
@@ -235,6 +237,40 @@ decks_sum = qu(decks_count_query)
 decks_sum
 ```
 
+```{python}
+top_ten_decks = decks_sum.iloc[:10]
+
+otros = decks_sum.iloc[10:].sum()
+otros['name'] = 'Otros'
+top_ten_decks = pd.concat([top_ten_decks, otros.to_frame().T], ignore_index=True)
+
+top_ten_decks
+```
+
+```{python}
+import squarify
+
+
+#percentages = [(value) for value in top_10_decks["total"]]
+
+labels = [f"{deck}\n{total:.0f}" for deck, total in zip(top_ten_decks["name"], top_ten_decks['total'])]
+
+
+fig, ax = plt.subplots(figsize=(6, 4))
+
+squarify.plot(
+    sizes=top_ten_decks.total,
+    pad=2,
+    label=labels, alpha=.8,
+    color=sns.color_palette("Spectral", len(top_ten_decks))
+)
+
+ax.set_title('Mazos reportados a KOG Enero 2025')
+ax.axis('off')
+plt.tight_layout()
+plt.show()
+```
+
 
 ```{python}
 # Cuando corra la api en local
@@ -245,10 +281,6 @@ decks_images = pd.read_json(
 
 decks_images = decks_images[['name', 'url_image']]
 decks_images
-```
-
-```{python}
-decks_sum.iloc[:10]
 ```
 
 ```{python}
@@ -276,6 +308,8 @@ plt.figure(figsize=(6, 4))
 
 colors_top_five = ['#4c2882', '#808080', '#808080', '#808080', '#808080']
 
+#colors_top_five = ['#4c2882', '#808080', '#808080', '#808080']
+
 ax = sns.barplot(
     x=decks_sum.total, 
     y=decks_sum.deck, orient='h',
@@ -301,7 +335,7 @@ for patch, color, deck, total, avatar in zip(
     image = plt.imread(BytesIO(response.content))
     imagebox = OffsetImage(image, zoom=0.8)
     ab = AnnotationBbox(
-        imagebox, xy=(4.35, patch.get_y() + patch.get_height()/2),
+        imagebox, xy=(4.65, patch.get_y() + patch.get_height()/2),
         xybox=(0,0), xycoords='data', boxcoords="offset points",
         pad=0, arrowprops=dict(arrowstyle='-', color='none'),
         bboxprops=dict(facecolor='none', edgecolor='none')
@@ -341,13 +375,6 @@ plt.show()
 ```
 
 ```{python}
-"""
-TODO: nube de palabras de mazos que no son el top 5
-"""
-
-from wordcloud import WordCloud
-
-
 decks = kog_2025_jan.copy()
 
 top_five_decks = decks_sum.deck.tolist()
