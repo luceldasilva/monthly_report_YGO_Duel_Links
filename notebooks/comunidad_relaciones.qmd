@@ -83,7 +83,7 @@ plt.figure(figsize=(6, 4))
 
 #colores_verdes = plt.cm.Greens_r(np.linspace(0.2, 0.6, len(decks_sum)))
 
-colors_top_five = ['#4c2882', '#808080', '#808080', '#808080', '#808080', '#808080']
+colors_top_five = ['#0000ff', '#808080', '#808080', '#808080', '#808080', '#808080']
 
 #colors_top_five = ['#4c2882', '#808080', '#808080', '#808080']
 
