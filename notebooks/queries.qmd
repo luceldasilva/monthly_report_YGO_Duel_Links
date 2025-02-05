@@ -11,12 +11,12 @@ from queries_db.update_skills \
 
 
 ```{python}
-!python ../ygoprodeck_api_queries/ygo_cli.py arquetipo "Shaddoll"
+!python ../ygoprodeck_api_queries/ygo_cli.py arquetipo "Salamangreat"
 ```
 
 
 ```{python}
-!python ../ygoprodeck_api_queries/ygo_cli.py carta "El Shaddoll Construct"
+!python ../ygoprodeck_api_queries/ygo_cli.py carta "Magical Hats"
 ```
 
 ```{python}

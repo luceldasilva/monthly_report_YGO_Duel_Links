@@ -1,0 +1,372 @@
+```{python}
+from queries_db import show_tables, query as qu
+import pyprojroot
+import requests as req
+from io import BytesIO
+import numpy as np
+import pandas as pd
+import squarify
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
+from matplotlib.font_manager import fontManager, FontProperties
+from matplotlib.patches import FancyBboxPatch
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+from wordcloud import WordCloud
+from matplotlib_venn import venn3
+import seaborn as sns
+import calplot
+
+
+root_path = pyprojroot.here()
+helvetica_path = root_path / 'fonts' / 'Helvetica.ttf'
+
+
+fontManager.addfont(helvetica_path)
+```
+
+```{python}
+kog_2025_jan_query = """
+SELECT 
+    p.nick, d.deck, s.skill, jan.ndmax,
+    jan.zerotg, jan.zephra, jan.bryan,
+    jan.xenoblur, jan.yamiglen, jan.latino_vania
+FROM kog_2025_jan jan
+INNER JOIN decks d ON jan.deck_id = d.deck_id
+INNER JOIN players p ON jan.player_id = p.player_id
+INNER JOIN skills s ON jan.skill_id = s.skill_id;
+"""
+
+kog_2025_jan = qu(kog_2025_jan_query)
+kog_2025_jan
+```
+
+```{python}
+kog_2025_jan.nick.drop_duplicates().count()
+```
+
+```{python}
+comunidades = [
+    'zerotg', 'zephra', 'bryan', 'xenoblur', 'yamiglen', 'latino_vania' 
+]
+
+melted_comunidad = kog_2025_jan.melt(
+    id_vars='nick',
+    value_vars=comunidades, 
+    var_name='Comunidad', value_name='Jugadores'
+)
+
+pivot_comunidad = pd.pivot_table(
+    melted_comunidad,
+    values='Jugadores',
+    index='Comunidad',
+    aggfunc=lambda x: (x == True).sum()
+).sort_values(by='Jugadores', ascending=False)
+
+pivot_comunidad = pivot_comunidad.rename(
+    index={
+        "zerotg": "ZeroTG",
+        "zephra": "ZephraCarl",
+        "bryan": "Bryan Norén",
+        "xenoblur": "Xenoblur",
+        "yamiglen": "Yami Glen",
+        "latino_vania": "Yam_VT"
+    }
+)
+
+pivot_comunidad
+```
+
+```{python}
+# TODO: hacer un color el primero y el resto otro
+plt.figure(figsize=(6, 4))
+
+
+#colores_verdes = plt.cm.Greens_r(np.linspace(0.2, 0.6, len(decks_sum)))
+
+colors_top_five = ['#4c2882', '#808080', '#808080', '#808080', '#808080', '#808080']
+
+#colors_top_five = ['#4c2882', '#808080', '#808080', '#808080']
+
+ax = sns.barplot(
+    x=pivot_comunidad.Jugadores, 
+    y=pivot_comunidad.index, orient='h',
+    joinstyle='bevel'
+)
+
+new_patches = []
+for patch, color, canal_yt, total in zip(
+    ax.patches, colors_top_five, pivot_comunidad.index,
+    pivot_comunidad.Jugadores
+):
+    
+    bb = patch.get_bbox()
+    p_bbox = FancyBboxPatch(
+        (bb.xmin, bb.ymin), abs(bb.width), abs(bb.height),
+        boxstyle='round,pad=-0.05,rounding_size=0.73',
+        ec='none', fc=color, mutation_aspect=0.73
+    )
+    patch.remove()
+    new_patches.append(p_bbox)
+
+    ax.annotate(
+        f'{total}',
+        xy=(patch.get_width(), patch.get_y() + patch.get_height()/2),
+        xytext=(-5,0), textcoords='offset points',
+        arrowprops=dict(arrowstyle='-', color='none'),
+        color='white', fontweight='bold', fontsize=12, ha='right', va='center',
+        xycoords='data',
+        bbox=dict(facecolor='none', edgecolor='none', pad=0),
+        annotation_clip=False
+    )
+
+for patch in new_patches:
+    ax.add_patch(patch)
+
+ax.set_xlabel('')
+ax.set_ylabel('')
+ax.set_xticks([])
+ax.yaxis.grid(False)
+ax.xaxis.grid(False)
+ax.spines['bottom'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+
+plt.title(
+    'Registro de usuarios por comunidad',
+    fontsize=14, fontweight='bold', x=0.35
+)
+
+plt.show()
+```
+
+
+```{python}
+def comunidad(server: str, df: pd.DataFrame=kog_2025_jan):
+    '''
+        Para filtrar sus usuarios únicos de cada comunidad
+    '''
+    df = df[['nick', 'zerotg', 'zephra', 'bryan', 'xenoblur', 'yamiglen', 'latino_vania']]
+    return df.query(f'{server} == True')['nick'].drop_duplicates()
+```
+
+```{python}
+'''
+    Gráficos de Venn y de pastel para relaciones
+    entre comunidades más grandes
+'''
+
+
+zerotg = comunidad('zerotg')
+zephra = comunidad('zephra')
+bryan = comunidad('bryan')
+xenoblur = comunidad('xenoblur')
+yamiglen = comunidad('yamiglen')
+latino_vania = comunidad('latino_vania')
+
+
+set_top_one = set(zephra)
+set_top_two = set(bryan)
+set_top_three = set(latino_vania)
+
+
+# Calcular los tamaños de los conjuntos
+size_100 = len(set_top_one - (set_top_two | set_top_three))
+size_010 = len(set_top_two - (set_top_one | set_top_three))
+size_001 = len(set_top_three - (set_top_one | set_top_two))
+size_110 = len((set_top_one & set_top_two) - set_top_three)
+size_101 = len((set_top_one & set_top_three) - set_top_two)
+size_011 = len((set_top_two & set_top_three) - set_top_one)
+size_111 = len(set_top_one & set_top_two & set_top_three)
+
+# Calcular los porcentajes
+total = sum(
+    [size_100, size_010, size_001, size_110, size_101, size_011, size_111]
+)
+
+percent_100 = (size_100 / total) * 100
+percent_010 = (size_010 / total) * 100
+percent_001 = (size_001 / total) * 100
+percent_110 = (size_110 / total) * 100
+percent_101 = (size_101 / total) * 100
+percent_011 = (size_011 / total) * 100
+percent_111 = (size_111 / total) * 100
+
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+
+venn = venn3(
+    [set_top_one, set_top_two, set_top_three],
+    set_labels=('ZephraCarl', 'Bryan Norén', 'Yam_VT'),
+    ax=ax1
+)
+
+venn.get_label_by_id('100').set_text(
+    f"{size_100}\n{percent_100:.2f}%")
+venn.get_label_by_id('010').set_text(
+    f"{size_010}\n{percent_010:.2f}%")
+venn.get_label_by_id('001').set_text(
+    f"{size_001}\n{percent_001:.2f}%")
+venn.get_label_by_id('110').set_text(
+    f"{size_110}\n{percent_110:.2f}%")
+venn.get_label_by_id('101').set_text(
+    f"{size_101}\n{percent_101:.2f}%")
+venn.get_label_by_id('011').set_text(
+    f"{size_011}\n{percent_011:.2f}%")
+venn.get_label_by_id('111').set_text(
+    f"{size_111}\n{percent_111:.2f}%")
+
+
+colors = sns.color_palette('Set3', 7)
+for patch, color in zip(venn.patches, colors):
+    patch.set_facecolor(color)
+
+
+unique_server = size_100 + size_010 + size_001
+two_communities = size_110 + size_101 + size_011
+
+count_duelists = [unique_server, two_communities, size_111]
+labels = "Una\nsola", "En dos", "Están\nen\nlas 3"
+pastel_colors = ['#92c6ff', '#ffb7ce', '#b7e3cc']
+
+
+wedges, texts, autotexts = ax2.pie(
+    count_duelists, labels=labels, autopct="%1.2f%%",
+    colors=pastel_colors,
+    wedgeprops={'edgecolor': 'white', 'linewidth': 1, 'linestyle': 'solid'},
+    pctdistance=0.75,
+    textprops={'fontsize': 14}
+)
+
+centre_circle = plt.Circle((0, 0), 0.4, fc='white')
+ax2.add_artist(centre_circle)
+
+ax2.text(0, 0, f'{total}\nduelistas', ha='center', va='center', fontsize=15)
+
+plt.suptitle(
+    'Duelistas en común entre comunidades',
+    fontsize=20,
+    fontweight="bold"
+)
+ax1.set_title('Gráfico de Venn')
+ax2.set_title('De las 3, en cuántas comunidades están')
+plt.show()
+```
+
+
+```{python}
+"""
+Comparación de usuarios que están en las comunidades
+"""
+
+nicks_sum: int = int(kog_2025_jan.nick.drop_duplicates().count())
+
+count_com = [total, int(nicks_sum - total)]
+labels_com = "Están en\nlas más \nconcurridas", "No están\nen las más\nconcurridas"
+pastel_colors = ['#D291BC', '#BDFCFE']
+
+
+fig, ax = plt.subplots(figsize=(10, 8))
+
+wedges, texts, autotexts = ax.pie(
+    count_com, labels=labels_com, autopct="%1.0f%%",
+    colors=pastel_colors,
+    wedgeprops={'edgecolor': 'white', 'linewidth': 1, 'linestyle': 'solid'},
+    pctdistance=0.75,
+    textprops={'fontsize': 22}
+)
+
+centre_circle = plt.Circle((0, 0), 0.4, fc='white')
+ax.add_artist(centre_circle)
+
+ax.text(0, 0, f'{nicks_sum}\nduelistas', ha='center', va='center', fontsize=24)
+
+ax.set_title(
+    "Relación de presencia en comunidades",
+    fontsize=28,
+    fontweight="bold"
+)
+plt.show()
+```
+
+```{python}
+print('hola')
+```
+
+```{python}
+fig, ax = plt.subplots(figsize=(10, 8))
+
+venn = venn3(
+    [set_top_one, set_top_two, set_top_three],
+    set_labels=('ZephraCarl', 'Bryan Norén', 'Yam_VT')
+)
+
+venn.get_label_by_id('100').set_text(
+    f"{size_100}\n{percent_100:.2f}%")
+venn.get_label_by_id('010').set_text(
+    f"{size_010}\n{percent_010:.2f}%")
+venn.get_label_by_id('001').set_text(
+    f"{size_001}\n{percent_001:.2f}%")
+venn.get_label_by_id('110').set_text(
+    f"{size_110}\n{percent_110:.2f}%")
+venn.get_label_by_id('101').set_text(
+    f"{size_101}\n{percent_101:.2f}%")
+venn.get_label_by_id('011').set_text(
+    f"{size_011}\n{percent_011:.2f}%")
+venn.get_label_by_id('111').set_text(
+    f"{size_111}\n{percent_111:.2f}%")
+
+
+colors = sns.color_palette('Set3', 7)
+for patch, color in zip(venn.patches, colors):
+    patch.set_facecolor(color)
+
+
+for label in venn.set_labels:
+    label.set_fontsize(20)
+
+for label in venn.subset_labels:
+    if label:
+        label.set_fontsize(16)
+
+ax.set_title(
+    'Gráfico de Venn',
+    fontsize=28,
+    fontweight="bold"
+)
+plt.show()
+```
+
+
+```{python}
+fig, ax = plt.subplots(figsize=(10, 8))
+
+
+unique_server = size_100 + size_010 + size_001
+two_communities = size_110 + size_101 + size_011
+
+count_duelists = [unique_server, two_communities, size_111]
+labels = "Una\nsola", "En dos", "Están\nen\nlas 3"
+pastel_colors = ['#92c6ff', '#ffb7ce', '#b7e3cc']
+
+
+wedges, texts, autotexts = ax.pie(
+    count_duelists, labels=labels, autopct="%1.0f%%",
+    colors=pastel_colors,
+    wedgeprops={'edgecolor': 'white', 'linewidth': 1, 'linestyle': 'solid'},
+    pctdistance=0.75,
+    textprops={'fontsize': 20}
+)
+
+centre_circle = plt.Circle((0, 0), 0.4, fc='white')
+ax.add_artist(centre_circle)
+
+ax.text(0, 0, f'{total}\nduelistas', ha='center', va='center', fontsize=24)
+
+ax.set_title(
+    'De las 3, en cuántas\ncomunidades están',
+    fontsize=28,
+    fontweight="bold"
+)
+plt.show()
+```
