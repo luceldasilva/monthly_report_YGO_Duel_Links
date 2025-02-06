@@ -2,11 +2,8 @@
 
 ```{python}
 from queries_db import show_tables, query
-from queries_db.update_skills \
-    import actualizar_skills, insertar_personajes
-
-
-#show_tables()
+from queries_db.update_skills import actualizar_skills, insertar_personajes
+from queries_db.upload_avatar_decks import json_decks
 ```
 
 
@@ -76,8 +73,5 @@ dim_skill_types
 
 
 ```{python}
-from queries_db.upload_avatar_decks import json_decks
-
-
 json_decks()
 ```
