@@ -1,0 +1,49 @@
+```{python}
+from queries_db import show_tables, query as qu
+import pyprojroot
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.font_manager import fontManager, FontProperties
+import calplot
+
+
+root_path = pyprojroot.here()
+helvetica_path = root_path / 'fonts' / 'Helvetica.ttf'
+
+fontManager.addfont(helvetica_path)
+```
+
+```{python}
+"""
+TODO: Ver para ser del todo el año
+"""
+
+kog_date_query = """
+WITH calendar_fact AS (
+    SELECT date_id FROM kog_2025_jan
+    UNION ALL
+    SELECT date_id FROM kog_2025_feb
+)
+SELECT c.ndmax, COUNT(ndmax) AS jugadores
+FROM calendar_fact f 
+INNER JOIN calendar_2025 c ON f.date_id = c.date_id
+GROUP BY ndmax
+ORDER BY ndmax;
+"""
+
+kog_date = qu(kog_date_query)
+kog_date.index = pd.to_datetime('2025-01-01') + pd.to_timedelta(kog_date.index, unit='D')
+
+calplot.calplot(
+    kog_date['jugadores'],
+    cmap = 'Spectral_r', yearascending = False,
+    suptitle=f'Jugadores por Día en 2025',
+)
+
+plt.show()
+```
+
+```{python}
+print('hola')
+```

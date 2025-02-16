@@ -1,0 +1,311 @@
+```{python}
+"""Este para usar como parámetros"""
+
+comunity_dict: dict = {
+    "zerotg": "ZeroTG",
+    "zephra": "ZephraCarl",
+    "bryan": "Bryan Norén",
+    "xenoblur": "Xenoblur",
+    "yamiglen": "Yami Glen",
+    "latino_vania": "Yam_VT"
+}
+
+fact_table: str = 'kc_cup_2025_feb'
+alias_fact_table: str = 'feb'
+comunity: str = 'zephra'
+kc_cup_bool: bool = True
+tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
+```
+
+```{python}
+from queries_db import show_tables, query as qu
+import pyprojroot
+import requests as req
+from io import BytesIO
+import numpy as np
+import pandas as pd
+import squarify
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
+from matplotlib.font_manager import fontManager, FontProperties
+from matplotlib.patches import FancyBboxPatch
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
+from matplotlib_venn import venn3
+from wordcloud import WordCloud
+import seaborn as sns
+import calplot
+import locale
+```
+
+```{python}
+root_path = pyprojroot.here()
+helvetica_path = root_path / 'fonts' / 'Helvetica.ttf'
+
+
+fontManager.addfont(helvetica_path)
+```
+
+```{python}
+decks_count_query = f"""
+SELECT
+    d.deck AS name, COUNT(*) AS total
+FROM {fact_table} {alias_fact_table}
+INNER JOIN decks d ON {alias_fact_table}.deck_id = d.deck_id
+WHERE {alias_fact_table}.{comunity}
+GROUP BY name
+ORDER BY total DESC;
+"""
+
+decks_sum = qu(decks_count_query)
+decks_sum
+```
+
+```{python}
+top_ten_decks = decks_sum.iloc[:10]
+
+otros = decks_sum.iloc[10:].sum()
+otros['name'] = 'Otros'
+top_ten_decks = pd.concat([top_ten_decks, otros.to_frame().T], ignore_index=True)
+
+top_ten_decks
+```
+
+```{python}
+import squarify
+
+labels = [f"{deck}\n{total:.0f}" for deck, total in zip(top_ten_decks["name"], top_ten_decks['total'])]
+
+
+fig, ax = plt.subplots(figsize=(6, 4))
+
+squarify.plot(
+    sizes=top_ten_decks.total,
+    pad=2,
+    label=labels, alpha=.8,
+    color=sns.color_palette("Spectral", len(top_ten_decks))
+)
+
+ax.set_title(f'Mazos reportados a KOG {month_fact_table} {year_fact_table}')
+ax.axis('off')
+plt.tight_layout()
+plt.show()
+```
+
+
+```{python}
+# Cuando corra la api en local
+decks_images = pd.read_json(
+    'http://127.0.0.1:8000/decks/',
+    orient='records'
+)
+
+decks_images = decks_images[['name', 'url_image']]
+decks_images
+```
+
+```{python}
+decks_sum = decks_sum.iloc[:5]
+decks_sum = decks_sum.merge(
+    decks_images, on='name', how='inner'
+)
+decks_sum.rename(columns={'name': 'deck'}, inplace=True)
+decks_sum
+```
+
+
+```{python}
+avatar_deck = decks_sum['url_image']
+del decks_sum['url_image']
+```
+
+```{python}
+plt.figure(figsize=(6, 4))
+
+colors_top_five = ['#4c2882', '#808080', '#808080', '#808080', '#808080']
+
+ax = sns.barplot(
+    x=decks_sum.total, 
+    y=decks_sum.deck, orient='h',
+    joinstyle='bevel'
+)
+
+new_patches = []
+for patch, color, deck, total, in zip(
+    ax.patches, colors_top_five, decks_sum['deck'],
+    decks_sum['total']
+):
+    
+    bb = patch.get_bbox()
+    p_bbox = FancyBboxPatch(
+        (bb.xmin, bb.ymin), abs(bb.width), abs(bb.height),
+        boxstyle='round,pad=-0.05,rounding_size=0.73',
+        ec='none', fc=color, mutation_aspect=0.73
+    )
+    patch.remove()
+    new_patches.append(p_bbox)
+
+    ax.annotate(
+        f'{total}',
+        xy=(patch.get_width(), patch.get_y() + patch.get_height()/2),
+        xytext=(-5,0), textcoords='offset points',
+        arrowprops=dict(arrowstyle='-', color='none'),
+        color='white', fontweight='bold', fontsize=12, ha='right', va='center',
+        xycoords='data',
+        bbox=dict(facecolor='none', edgecolor='none', pad=0),
+        annotation_clip=False
+    )
+
+for patch in new_patches:
+    ax.add_patch(patch)
+
+ax.set_xlabel('')
+ax.set_ylabel('')
+ax.set_xticks([])
+ax.yaxis.grid(False)
+ax.xaxis.grid(False)
+ax.spines['bottom'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+
+plt.title(
+    f'Mazos más usados en {tournament_text} {month_fact_table} {year_fact_table}',
+    fontsize=14, fontweight='bold', x=0.35
+)
+
+ax.text(
+    0.98, 0.02, f'{len(kog_df)}\nRegistros',
+    ha='right', va='bottom', transform=ax.transAxes,
+    fontsize=12, fontweight='bold'
+)
+
+ax.text(
+    0.75, 0.02, f'{kog_df.deck.nunique()}\nMazos distintos',
+    ha='right', va='bottom', transform=ax.transAxes,
+    fontsize=12, fontweight='bold'
+)
+
+plt.show()
+```
+
+```{python}
+plt.figure(figsize=(6, 4))
+
+colors_top_five = ['#4c2882', '#808080', '#808080', '#808080', '#808080']
+
+ax = sns.barplot(
+    x=decks_sum.total, 
+    y=decks_sum.deck, orient='h',
+    joinstyle='bevel'
+)
+
+new_patches = []
+for patch, color, deck, total, avatar in zip(
+    ax.patches, colors_top_five, decks_sum['deck'],
+    decks_sum['total'], avatar_deck
+):
+    
+    bb = patch.get_bbox()
+    p_bbox = FancyBboxPatch(
+        (bb.xmin, bb.ymin), abs(bb.width), abs(bb.height),
+        boxstyle='round,pad=-0.05,rounding_size=0.73',
+        ec='none', fc=color, mutation_aspect=0.73
+    )
+    patch.remove()
+    new_patches.append(p_bbox)
+    
+    response = req.get(avatar)
+    image = plt.imread(BytesIO(response.content))
+    imagebox = OffsetImage(image, zoom=0.8)
+    ab = AnnotationBbox(
+        imagebox, xy=(1.35, patch.get_y() + patch.get_height()/2),
+        xybox=(0,0), xycoords='data', boxcoords="offset points",
+        pad=0, arrowprops=dict(arrowstyle='-', color='none'),
+        bboxprops=dict(facecolor='none', edgecolor='none')
+    )
+    ax.add_artist(ab)
+
+    ax.annotate(
+        f'{total}',
+        xy=(patch.get_width(), patch.get_y() + patch.get_height()/2),
+        xytext=(-5,0), textcoords='offset points',
+        arrowprops=dict(arrowstyle='-', color='none'),
+        color='white', fontweight='bold', fontsize=12, ha='right', va='center',
+        xycoords='data',
+        bbox=dict(facecolor='none', edgecolor='none', pad=0),
+        annotation_clip=False
+    )
+
+for patch in new_patches:
+    ax.add_patch(patch)
+
+ax.set_xlabel('')
+ax.set_ylabel('')
+ax.set_xticks([])
+ax.yaxis.grid(False)
+ax.xaxis.grid(False)
+ax.spines['bottom'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+
+plt.title(
+    f'Mazos más usados en {tournament_text} {month_fact_table} {year_fact_table}',
+    fontsize=14, fontweight='bold', x=0.35
+)
+
+ax.text(
+    0.98, 0.02, f'{len(kog_df)}\nRegistros',
+    ha='right', va='bottom', transform=ax.transAxes,
+    fontsize=12, fontweight='bold'
+)
+
+ax.text(
+    0.75, 0.02, f'{kog_df.deck.nunique()}\nMazos distintos',
+    ha='right', va='bottom', transform=ax.transAxes,
+    fontsize=12, fontweight='bold'
+)
+
+plt.show()
+```
+
+```{python}
+kog_query = f"""
+SELECT d.deck
+FROM {fact_table} {alias_fact_table}
+INNER JOIN decks d ON {alias_fact_table}.deck_id = d.deck_id
+WHERE {alias_fact_table}.{comunity};
+"""
+
+kog_df = qu(kog_query)
+
+decks = kog_df.copy()
+
+top_five_decks = decks_sum.deck.tolist()
+
+decks = decks.drop(decks[decks['deck'].isin(top_five_decks)].index)
+
+
+decks = decks.replace("-", ' ', regex=True)
+decks = decks.replace("/", ' ', regex=True)
+decks = decks.replace(" ", '', regex=True)
+
+
+text_decks = ' '.join(decks.fillna('')['deck'].tolist())
+
+wc = WordCloud(
+    width = 2560,
+    height = 1440,
+    background_color = "mintcream",
+    colormap = "Dark2"
+).generate(text_decks)
+
+
+plt.axis("off")
+plt.imshow(wc, interpolation = "bilinear")
+plt.show()
+```
+
+```{python}
+print('Hola')
+```

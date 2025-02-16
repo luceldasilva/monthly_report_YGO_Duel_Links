@@ -25,15 +25,27 @@ fontManager.addfont(helvetica_path)
 ```
 
 ```{python}
+comunity_dict: dict = {
+    "zerotg": "ZeroTG",
+    "zephra": "ZephraCarl",
+    "bryan": "Bryan Norén",
+    "xenoblur": "Xenoblur",
+    "yamiglen": "Yami Glen",
+    "latino_vania": "Yam_VT"
+}
+```
+
+```{python}
 kog_2025_jan_query = """
 SELECT 
-    p.nick, d.deck, s.skill, jan.ndmax,
+    p.nick, d.deck, s.skill, c.ndmax,
     jan.zerotg, jan.zephra, jan.bryan,
     jan.xenoblur, jan.yamiglen, jan.latino_vania
 FROM kog_2025_jan jan
 INNER JOIN decks d ON jan.deck_id = d.deck_id
 INNER JOIN players p ON jan.player_id = p.player_id
-INNER JOIN skills s ON jan.skill_id = s.skill_id;
+INNER JOIN skills s ON jan.skill_id = s.skill_id
+INNER JOIN calendar_2025 c ON jan.date_id = c.date_id;
 """
 
 kog_2025_jan = qu(kog_2025_jan_query)
@@ -62,34 +74,24 @@ pivot_comunidad = pd.pivot_table(
     aggfunc=lambda x: (x == True).sum()
 ).sort_values(by='Jugadores', ascending=False)
 
-pivot_comunidad = pivot_comunidad.rename(
-    index={
-        "zerotg": "ZeroTG",
-        "zephra": "ZephraCarl",
-        "bryan": "Bryan Norén",
-        "xenoblur": "Xenoblur",
-        "yamiglen": "Yami Glen",
-        "latino_vania": "Yam_VT"
-    }
+pivot_comunidad_rename = pivot_comunidad.rename(
+    index=comunity_dict
 )
 
-pivot_comunidad
+pivot_comunidad_rename
 ```
 
 ```{python}
-# TODO: hacer un color el primero y el resto otro
+
 plt.figure(figsize=(6, 4))
 
-
-#colores_verdes = plt.cm.Greens_r(np.linspace(0.2, 0.6, len(decks_sum)))
-
-colors_top_five = ['#0000ff', '#808080', '#808080', '#808080', '#808080', '#808080']
-
-#colors_top_five = ['#4c2882', '#808080', '#808080', '#808080']
+colors_top_five = [
+    '#0000ff', '#808080', '#808080', '#808080', '#808080', '#808080'
+]
 
 ax = sns.barplot(
-    x=pivot_comunidad.Jugadores, 
-    y=pivot_comunidad.index, orient='h',
+    x=pivot_comunidad_rename.Jugadores, 
+    y=pivot_comunidad_rename.index, orient='h',
     joinstyle='bevel'
 )
 
@@ -156,18 +158,15 @@ def comunidad(server: str, df: pd.DataFrame=kog_2025_jan):
     entre comunidades más grandes
 '''
 
+comunidad_list_top_three = pivot_comunidad.index[:3]
 
-zerotg = comunidad('zerotg')
-zephra = comunidad('zephra')
-bryan = comunidad('bryan')
-xenoblur = comunidad('xenoblur')
-yamiglen = comunidad('yamiglen')
-latino_vania = comunidad('latino_vania')
+comunity_top_one = comunidad(comunidad_list_top_three[0])
+comunity_top_two = comunidad(comunidad_list_top_three[1])
+comunity_top_three = comunidad(comunidad_list_top_three[2])
 
-
-set_top_one = set(zephra)
-set_top_two = set(bryan)
-set_top_three = set(latino_vania)
+set_top_one = set(comunity_top_one)
+set_top_two = set(comunity_top_two)
+set_top_three = set(comunity_top_three)
 
 
 # Calcular los tamaños de los conjuntos
@@ -197,7 +196,11 @@ fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
 
 venn = venn3(
     [set_top_one, set_top_two, set_top_three],
-    set_labels=('ZephraCarl', 'Bryan Norén', 'Yam_VT'),
+    set_labels=(
+        comunity_dict[comunidad_list_top_three[0]],
+        comunity_dict[comunidad_list_top_three[1]],
+        comunity_dict[comunidad_list_top_three[2]]
+    ),
     ax=ax1
 )
 
@@ -290,15 +293,15 @@ plt.show()
 ```
 
 ```{python}
-print('hola')
-```
-
-```{python}
 fig, ax = plt.subplots(figsize=(10, 8))
 
 venn = venn3(
     [set_top_one, set_top_two, set_top_three],
-    set_labels=('ZephraCarl', 'Bryan Norén', 'Yam_VT')
+    set_labels=(
+        comunity_dict[comunidad_list_top_three[0]],
+        comunity_dict[comunidad_list_top_three[1]],
+        comunity_dict[comunidad_list_top_three[2]]
+    )
 )
 
 venn.get_label_by_id('100').set_text(
@@ -369,4 +372,8 @@ ax.set_title(
     fontweight="bold"
 )
 plt.show()
+```
+
+```{python}
+print('hola')
 ```

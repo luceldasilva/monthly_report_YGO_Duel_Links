@@ -14,6 +14,7 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from wordcloud import WordCloud
 import seaborn as sns
 import calplot
+import locale
 ```
 
 ```{python}
@@ -25,30 +26,36 @@ fontManager.addfont(helvetica_path)
 ```
 
 ```{python}
-series_query = """
-SELECT * FROM series
-"""
-
-dim_series_query = qu(series_query)
-dim_series_query
-```
-
-```{python}
 kog_2025_jan_query = """
 SELECT 
-    p.nick, d.deck, s.skill, jan.ndmax,
+    p.nick, d.deck, s.skill, c.ndmax,
     jan.zerotg, jan.zephra, jan.bryan,
     jan.xenoblur, jan.yamiglen, jan.latino_vania
 FROM kog_2025_jan jan
 INNER JOIN decks d ON jan.deck_id = d.deck_id
 INNER JOIN players p ON jan.player_id = p.player_id
-INNER JOIN skills s ON jan.skill_id = s.skill_id;
+INNER JOIN skills s ON jan.skill_id = s.skill_id
+INNER JOIN calendar_2025 c ON jan.date_id = c.date_id;
 """
 
 kog_2025_jan = qu(kog_2025_jan_query)
 kog_2025_jan
 ```
 
+```{python}
+"""
+Para las fechas y poner el mes y año correspondiente
+"""
+
+
+locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
+#'es_ES.utf8'  En Linux/Mac
+
+date_fact_table = kog_2025_jan.ndmax[0]
+
+month_fact_table = date_fact_table.strftime('%B').capitalize()
+year_fact_table = date_fact_table.strftime('%Y')
+```
 
 ```{python}
 comunidades = [
@@ -72,11 +79,6 @@ pivot_comunidad = pd.pivot_table(
 pivot_comunidad
 ```
 
-```{python}
-# Verificación si está bien la cantidad
-kog_2025_jan['bryan'].sum()
-```
-
 
 ```{python}
 """
@@ -84,8 +86,9 @@ TODO: Ver para ser del todo el año
 """
 
 kog_date_jan_query = """
-SELECT ndmax, COUNT(ndmax) AS jugadores
-FROM kog_2025_jan
+SELECT c.ndmax, COUNT(ndmax) AS jugadores
+FROM kog_2025_jan jan
+INNER JOIN calendar_2025 c ON jan.date_id = c.date_id
 GROUP BY ndmax
 ORDER BY ndmax;
 """
@@ -96,7 +99,7 @@ kog_date_jan.index = pd.to_datetime('2025-01-01') + pd.to_timedelta(kog_date_jan
 calplot.calplot(
     kog_date_jan['jugadores'],
     cmap = 'Spectral_r', yearascending = False,
-    suptitle='Jugadores por Día en Enero 2025',
+    suptitle=f'Jugadores por Día en {month_fact_table} {year_fact_table}',
 )
 
 plt.show()
@@ -215,7 +218,7 @@ ax.spines['right'].set_visible(False)
 ax.spines['top'].set_visible(False)
 
 plt.title(
-    'Personajes con habilidad legendaria más usados en Enero 2025',
+    f'Personajes con habilidad legendaria más usados en {month_fact_table} {year_fact_table}',
     fontsize=14, fontweight='bold', x=0.35
 )
 
@@ -250,9 +253,6 @@ top_ten_decks
 ```{python}
 import squarify
 
-
-#percentages = [(value) for value in top_10_decks["total"]]
-
 labels = [f"{deck}\n{total:.0f}" for deck, total in zip(top_ten_decks["name"], top_ten_decks['total'])]
 
 
@@ -265,7 +265,7 @@ squarify.plot(
     color=sns.color_palette("Spectral", len(top_ten_decks))
 )
 
-ax.set_title('Mazos reportados a KOG Enero 2025')
+ax.set_title(f'Mazos reportados a KOG {month_fact_table} {year_fact_table}')
 ax.axis('off')
 plt.tight_layout()
 plt.show()
@@ -300,15 +300,9 @@ del decks_sum['url_image']
 
 
 ```{python}
-# TODO: hacer un color el primero y el resto otro
 plt.figure(figsize=(6, 4))
 
-
-#colores_verdes = plt.cm.Greens_r(np.linspace(0.2, 0.6, len(decks_sum)))
-
 colors_top_five = ['#4c2882', '#808080', '#808080', '#808080', '#808080']
-
-#colors_top_five = ['#4c2882', '#808080', '#808080', '#808080']
 
 ax = sns.barplot(
     x=decks_sum.total, 
@@ -367,7 +361,7 @@ ax.spines['right'].set_visible(False)
 ax.spines['top'].set_visible(False)
 
 plt.title(
-    'Mazos más usados en Enero 2025',
+    f'Mazos más usados en {month_fact_table} {year_fact_table}',
     fontsize=14, fontweight='bold', x=0.35
 )
 
@@ -400,4 +394,8 @@ wc = WordCloud(
 plt.axis("off")
 plt.imshow(wc, interpolation = "bilinear")
 plt.show()
+```
+
+```{python}
+print('Hola')
 ```
