@@ -20,9 +20,23 @@ circular_images = APIRouter(
 
 @circular_images.post("/", status_code=status.HTTP_201_CREATED) 
 async def upload_image_archetype(file: UploadFile = File(...)):
+    """
+    Alzar el avatar a Cloudinary
+
+    Parameters
+    ----------
+    file: UploadFile
+        avatar del deck, by default File(...)
+
+    Returns
+    -------
+    result['secure_url']
+        devuelve la url para copiar directo y armarlo
+        para su posterior subida a la base de datos con su deck
+    """
     try:
         result = upload(file.file)
         
-        return {'url': result['secure_url']}
+        return result['secure_url']
     except Exception as e:
         return {'error': str(e)}

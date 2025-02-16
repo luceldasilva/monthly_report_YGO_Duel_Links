@@ -21,17 +21,57 @@ def search_character(field: str, key):
 
 @characters.get("/", response_model=list[ImageCharacter])
 async def all_characters():
+    """
+    Muestra todos los personajes
+
+    Returns
+    -------
+    dict:
+        Los personajes con su id y avatares
+    """
     return characters_schema(character_collections.find())
 
 
 @characters.get("/{character}", response_model=ImageCharacter)
 async def searching_by_playable_character(name_character: str):
+    """
+    Búsqueda del personaje en concreto
+
+    Parameters
+    ----------
+    name_character : str
+        nombre del personaje
+
+    Returns
+    -------
+    dict:
+        Su documento completo con su id y url del avatar
+    """
     return search_character("character_name", name_character)
 
 
 @characters.post("/", response_model=ImageCharacter, status_code=status.HTTP_201_CREATED) 
 async def save_playable_character(playable_character: ImageCharacter):
-    
+    """
+    Añadir nuevo personaje
+
+    Parameters
+    ----------
+    playable_character : ImageCharacter
+        Se agrega con su id, nombre y el url del avatar
+
+    Returns
+    -------
+    dict: 
+        Muestra su documentación completa
+
+    Raises
+    ------
+    HTTPException
+        Por si ese nombre ya está en la base de datos
+    HTTPException
+        Por si la url del avatar ya está en está en la base de datos
+    """
     if type(search_character("character_name", playable_character.character_name)) == ImageCharacter:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -55,7 +95,19 @@ async def save_playable_character(playable_character: ImageCharacter):
 
 @characters.delete("/{character}", status_code=status.HTTP_204_NO_CONTENT)
 async def drop_playable_character(character: str):
-    
+    """
+    Borrar personaje
+
+    Parameters
+    ----------
+    character : str
+        Nombre del personaje
+
+    Raises
+    ------
+    HTTPException
+        Por si ese nombre no existe
+    """
     found = character_collections.find_one_and_delete({"name": character})
     
     if not found: 
