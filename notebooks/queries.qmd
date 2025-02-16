@@ -8,12 +8,12 @@ from queries_db.upload_avatar_decks import json_decks
 
 
 ```{python}
-!python ../ygoprodeck_api_queries/ygo_cli.py arquetipo "Salamangreat"
+!python ../ygoprodeck_api_queries/ygo_cli.py arquetipo "Nekroz"
 ```
 
 
 ```{python}
-!python ../ygoprodeck_api_queries/ygo_cli.py carta "Magical Hats"
+!python ../ygoprodeck_api_queries/ygo_cli.py carta "Gravekeeper's Supernaturalist"
 ```
 
 ```{python}
@@ -50,7 +50,7 @@ insertar_personajes()
 ```
 
 ```{python}
-actualizar_skills()
+actualizar_skills(True)
 ```
 
 ```{python}
