@@ -109,7 +109,7 @@ squarify.plot(
     color=sns.color_palette("Spectral", len(top_ten_decks))
 )
 
-ax.set_title(f'Mazos reportados a KOG {month_fact_table} {year_fact_table}')
+ax.set_title(f'Mazos reportados a {tournament_text} {month_fact_table} {year_fact_table}')
 ax.axis('off')
 plt.tight_layout()
 plt.show()
