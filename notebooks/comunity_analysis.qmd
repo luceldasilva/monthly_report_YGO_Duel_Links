@@ -56,6 +56,7 @@ WHERE {alias_fact_table}.{comunity};
 kog_df = qu(kog_query)
 kog_df
 ```
+
 ```{python}
 """
 Para las fechas y poner el mes y año correspondiente
@@ -63,10 +64,18 @@ Para las fechas y poner el mes y año correspondiente
 locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
 #'es_ES.utf8'  En Linux/Mac
 
-date_fact_table = datetime.now()
+date_fact_query = f"""
+SELECT c.ndmax
+FROM {fact_table} {alias_fact_table}
+INNER JOIN calendar_2025 c ON {alias_fact_table}.date_id = c.date_id
+LIMIT 1
+"""
 
-month_fact_table = date_fact_table.strftime('%B').capitalize()
-year_fact_table = date_fact_table.strftime('%Y')
+date_fact_table = qu(date_fact_query)
+
+date_fact = date_fact_table.ndmax[0]
+month_fact_table = date_fact.strftime('%B').capitalize()
+year_fact_table = date_fact.strftime('%Y')
 ```
 
 ```{python}
@@ -318,6 +327,43 @@ wc = WordCloud(
 
 plt.axis("off")
 plt.imshow(wc, interpolation = "bilinear")
+plt.show()
+```
+
+```{python}
+date_query = f"""
+SELECT c.day_of_monthy, COUNT(day_of_monthy) AS jugadores
+FROM {fact_table} {alias_fact_table}
+INNER JOIN calendar_2025 c ON {alias_fact_table}.date_id = c.date_id
+WHERE {alias_fact_table}.{comunity}
+GROUP BY day_of_monthy
+ORDER BY day_of_monthy;
+"""
+
+date_df = qu(date_query)
+date_df
+```
+
+```{python}
+plt.figure(figsize=(10, 5))
+
+sns.lineplot(
+    data=date_df,
+    x='day_of_monthy', y='jugadores',
+    marker='o'
+)
+
+sns.despine(top=True, right=True) 
+
+plt.xticks(date_df.day_of_monthy)
+plt.xlabel(f"Días de {month_fact_table} {year_fact_table}")
+plt.ylabel("Jugadores")
+plt.title(
+    f"Llegadas a {tournament_text} por día",
+    fontsize=16,
+    fontweight='bold'
+)
+
 plt.show()
 ```
 
