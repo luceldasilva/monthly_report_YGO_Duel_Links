@@ -34,6 +34,7 @@ from matplotlib_venn import venn3
 from wordcloud import WordCloud
 import seaborn as sns
 import calplot
+from datetime import datetime
 import locale
 ```
 
@@ -43,6 +44,29 @@ helvetica_path = root_path / 'fonts' / 'Helvetica.ttf'
 
 
 fontManager.addfont(helvetica_path)
+```
+```{python}
+kog_query = f"""
+SELECT d.deck
+FROM {fact_table} {alias_fact_table}
+INNER JOIN decks d ON {alias_fact_table}.deck_id = d.deck_id
+WHERE {alias_fact_table}.{comunity};
+"""
+
+kog_df = qu(kog_query)
+kog_df
+```
+```{python}
+"""
+Para las fechas y poner el mes y año correspondiente
+"""
+locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
+#'es_ES.utf8'  En Linux/Mac
+
+date_fact_table = datetime.now()
+
+month_fact_table = date_fact_table.strftime('%B').capitalize()
+year_fact_table = date_fact_table.strftime('%Y')
 ```
 
 ```{python}
@@ -270,15 +294,6 @@ plt.show()
 ```
 
 ```{python}
-kog_query = f"""
-SELECT d.deck
-FROM {fact_table} {alias_fact_table}
-INNER JOIN decks d ON {alias_fact_table}.deck_id = d.deck_id
-WHERE {alias_fact_table}.{comunity};
-"""
-
-kog_df = qu(kog_query)
-
 decks = kog_df.copy()
 
 top_five_decks = decks_sum.deck.tolist()
