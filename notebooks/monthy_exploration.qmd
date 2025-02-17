@@ -334,6 +334,41 @@ ax.set_title(
 plt.show()
 ```
 
+```{python}
+date_query = f"""
+SELECT c.day_of_monthy, COUNT(day_of_monthy) AS jugadores
+FROM {fact_table} {alias_fact_table}
+INNER JOIN calendar_2025 c ON {alias_fact_table}.date_id = c.date_id
+GROUP BY day_of_monthy
+ORDER BY day_of_monthy;
+"""
+
+date_df = qu(date_query)
+date_df
+```
+
+```{python}
+plt.figure(figsize=(10, 5))
+
+sns.lineplot(
+    data=date_df,
+    x='day_of_monthy', y='jugadores',
+    marker='o'
+)
+
+sns.despine(top=True, right=True) 
+
+plt.xticks(date_df.day_of_monthy)
+plt.xlabel(f"Días de {month_fact_table} {year_fact_table}")
+plt.ylabel("Jugadores")
+plt.title(
+    f"Llegadas a {tournament_text} por día",
+    fontsize=16,
+    fontweight='bold'
+)
+
+plt.show()
+```
 
 ```{python}
 # Cuando corra la api en local
