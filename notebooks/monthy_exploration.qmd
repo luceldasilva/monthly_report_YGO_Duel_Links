@@ -3,9 +3,9 @@
 """Este para usar como parámetros"""
 
 
-fact_table: str = 'kc_cup_2025_feb'
+fact_table: str = 'kog_2025_feb'
 alias_fact_table: str = 'feb'
-kc_cup_bool: bool = True
+kc_cup_bool: bool = False
 tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
 ```
 
@@ -336,11 +336,15 @@ plt.show()
 
 ```{python}
 date_query = f"""
-SELECT c.day_of_monthy, COUNT(day_of_monthy) AS jugadores
-FROM {fact_table} {alias_fact_table}
-INNER JOIN calendar_2025 c ON {alias_fact_table}.date_id = c.date_id
-GROUP BY day_of_monthy
-ORDER BY day_of_monthy;
+SELECT 
+    c.day_of_monthy, 
+    COALESCE(COUNT({alias_fact_table}.date_id), 0) AS jugadores
+FROM calendar_2025 c
+LEFT JOIN {fact_table} {alias_fact_table} 
+    ON {alias_fact_table}.date_id = c.date_id
+WHERE c.monthy = {date_fact_table.month}
+GROUP BY c.day_of_monthy
+ORDER BY c.day_of_monthy;
 """
 
 date_df = qu(date_query)
