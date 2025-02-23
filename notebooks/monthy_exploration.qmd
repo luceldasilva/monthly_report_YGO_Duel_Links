@@ -50,7 +50,7 @@ visualization.comunity_bars(pivot_comunidad)
 ```
 
 ```{python}
-visualization.venn_comunities.venn_graphs(kog_df, pivot_comunidad)
+venn_graphs(kog_df, pivot_comunidad)
 ```
 
 ```{python}
