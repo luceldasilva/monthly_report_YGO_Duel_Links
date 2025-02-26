@@ -20,3 +20,8 @@ comunity_dict: dict = {
 comunidades: list = [
     'zerotg', 'zephra', 'bryan', 'xenoblur', 'yamiglen', 'latino_vania' 
 ]
+
+tables_db: list = [
+    'kog_2025_jan',
+    'kog_2025_feb'
+]

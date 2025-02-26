@@ -1,21 +1,20 @@
 ```{python}
-"""Este para usar como parámetros"""
-
-fact_table: str = 'kog_2025_feb'
-alias_fact_table: str = 'feb'
-comunity: str = 'zephra'
-kc_cup_bool: bool = False
-tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
-```
-
-```{python}
+from queries_db.constants import tables_db, comunidades
 from queries_db import query as qu
 import visualization
+from visualization.comparison_two_months import indicator
 import pyprojroot
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import locale
+
+
+fact_table: str = tables_db[-1]
+alias_fact_table: str = fact_table[-3:]
+comunity: str = comunidades[1]
+kc_cup_bool: bool = False
+tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
 ```
 
 ```{python}
@@ -107,6 +106,10 @@ visualization.top_five_decks(
 
 ```{python}
 visualization.wordcloud(kog_df, decks_sum)
+```
+
+```{python}
+indicator(kog_df, month_fact_table, year_fact_table)
 ```
 
 ```{python}
