@@ -109,7 +109,7 @@ visualization.wordcloud(kog_df, decks_sum)
 ```
 
 ```{python}
-indicator(kog_df, month_fact_table, year_fact_table)
+indicator(kog_df, decks_sum)
 ```
 
 ```{python}

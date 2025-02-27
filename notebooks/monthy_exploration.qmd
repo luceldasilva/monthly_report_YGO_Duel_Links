@@ -74,7 +74,7 @@ visualization.squarify_decks(
 
 ```{python}
 visualization.top_five_decks(
-    False,
+    True,
     decks_sum, tournament_text, month_fact_table, year_fact_table, kog_df
 )
 ```
@@ -84,7 +84,7 @@ visualization.wordcloud(kog_df, decks_sum)
 ```
 
 ```{python}
-indicator(kog_df, month_fact_table, year_fact_table)
+indicator(kog_df, decks_sum)
 ```
 
 ```{python}
