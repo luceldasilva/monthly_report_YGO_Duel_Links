@@ -1,4 +1,5 @@
 import pandas as pd
+from visualization import save_plot
 from queries_db.constants import comunity_dict
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn3
@@ -80,6 +81,9 @@ def venn_graphs(kog_df: pd.DataFrame, pivot_comunidad: pd.DataFrame):
         fontsize=28,
         fontweight="bold"
     )
+    
+    save_plot()
+    
     plt.show()
 
 
@@ -127,6 +131,9 @@ def venn_graphs(kog_df: pd.DataFrame, pivot_comunidad: pd.DataFrame):
         fontsize=28,
         fontweight="bold"
     )
+    
+    save_plot()
+    
     plt.show()
 
     fig, ax = plt.subplots(figsize=(10, 8))
@@ -158,4 +165,7 @@ def venn_graphs(kog_df: pd.DataFrame, pivot_comunidad: pd.DataFrame):
         fontsize=28,
         fontweight="bold"
     )
+    
+    save_plot()
+    
     plt.show()
