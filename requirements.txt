@@ -17,6 +17,7 @@ numpy
 pandas
 matplotlib
 seaborn
+kaleido
 plotly
 squarify
 calplot

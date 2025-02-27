@@ -1,4 +1,5 @@
-from queries_db.constants import comunity_dict, comunidades
+from datetime import datetime
+from queries_db.constants import comunity_dict, data_path
 import queries_db.transform_df_queries as dft
 import requests as req
 from io import BytesIO
@@ -9,6 +10,18 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from wordcloud import WordCloud
 import seaborn as sns
 import squarify
+
+
+def save_plot():
+    """
+        Para guardar en fotos los gráficos
+    """
+    
+    today_now = f"{datetime.now().strftime('%d_%m_%Y_%H_%M_%S_%f')[:-3]}.png"
+    
+    name_plt = data_path / today_now
+    
+    plt.savefig(name_plt, bbox_inches='tight')
 
 
 def comunity_bars(pivot_comunidad: pd.DataFrame):
@@ -74,6 +87,8 @@ def comunity_bars(pivot_comunidad: pd.DataFrame):
         fontsize=14, fontweight='bold', x=0.35
     )
 
+    save_plot()
+    
     plt.show()
 
 
@@ -103,6 +118,8 @@ def date_lineplot(
         fontweight='bold'
     )
 
+    save_plot()
+    
     plt.show()
 
 
@@ -184,6 +201,8 @@ def top_five_decks(
         fontsize=14, fontweight='bold', x=0.35
     )
 
+    save_plot()
+    
     plt.show()
 
 
@@ -211,6 +230,9 @@ def wordcloud(kog_df: pd.DataFrame, decks_sum: pd.DataFrame):
 
     plt.axis("off")
     plt.imshow(wc, interpolation = "bilinear")
+    
+    save_plot()
+    
     plt.show()
 
 
@@ -241,4 +263,7 @@ def squarify_decks(
     ax.set_title(f'Mazos reportados a {tournament_text} {month_fact_table} {year_fact_table}')
     ax.axis('off')
     plt.tight_layout()
+    
+    save_plot()
+    
     plt.show()

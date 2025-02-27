@@ -1,6 +1,6 @@
 import pandas as pd
 from plotly.subplots import make_subplots
-from queries_db.constants import tables_db
+from queries_db.constants import tables_db, data_path, today
 from queries_db import dataframe_queries as dfq
 
 
@@ -38,4 +38,6 @@ def indicator(
         row=1, col=2
     )
 
+    fig.write_image(f"{data_path}/{today}_fig_indicator.png")
+    
     fig.show()

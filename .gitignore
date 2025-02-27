@@ -122,6 +122,7 @@ cython_debug/
 *.pdf
 *.docx
 *.pptx
+*.png
 
 # Pentaho files
 *.ktr
