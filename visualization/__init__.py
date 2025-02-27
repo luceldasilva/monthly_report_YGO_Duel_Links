@@ -111,8 +111,7 @@ def top_five_decks(
     decks_sum: pd.DataFrame,
     tournament_text: str,
     month_fact_table: str,
-    year_fact_table: str,
-    kog_df: pd.DataFrame
+    year_fact_table: str
 ):
     
     decks_sum = dft.decks_with_avatar(decks_sum)
@@ -183,18 +182,6 @@ def top_five_decks(
     plt.title(
         f'Mazos más usados en {tournament_text} {month_fact_table} {year_fact_table}',
         fontsize=14, fontweight='bold', x=0.35
-    )
-
-    ax.text(
-        0.98, 0.02, f'{len(kog_df)}\nRegistros',
-        ha='right', va='bottom', transform=ax.transAxes,
-        fontsize=12, fontweight='bold'
-    )
-
-    ax.text(
-        0.75, 0.02, f'{kog_df.deck.nunique()}\nMazos distintos',
-        ha='right', va='bottom', transform=ax.transAxes,
-        fontsize=12, fontweight='bold'
     )
 
     plt.show()
