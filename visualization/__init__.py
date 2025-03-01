@@ -10,6 +10,7 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from wordcloud import WordCloud
 import seaborn as sns
 import squarify
+import plotly.express as px
 
 
 def save_plot():
@@ -99,28 +100,24 @@ def date_lineplot(
     year_fact_table: str,
     tournament_text: str
 ):
-    plt.figure(figsize=(10, 5))
-
-    sns.lineplot(
-        data=date_df,
-        x='day_of_monthy', y='jugadores',
-        marker='o'
+    fig = px.line(
+        date_df,
+        x="day_of_monthy", y="jugadores",
+        title= f"LLegadas a {tournament_text} por día",
+        text="jugadores",
+        template='simple_white',
+        labels={
+            "day_of_monthy": f"Días de {month_fact_table} {year_fact_table}",
+            "jugadores": "Registros"
+        }
     )
 
-    sns.despine(top=True, right=True) 
-
-    plt.xticks(date_df.day_of_monthy)
-    plt.xlabel(f"Días de {month_fact_table} {year_fact_table}")
-    plt.ylabel("Jugadores")
-    plt.title(
-        f"Llegadas a {tournament_text} por día",
-        fontsize=16,
-        fontweight='bold'
+    fig.update_layout(width=1000, height=600) 
+    fig.update_traces(textposition="top center")
+    fig.write_image(
+        f"{data_path}/llegadas_a_{tournament_text}_{month_fact_table}_{year_fact_table}.png"
     )
-
-    save_plot()
-    
-    plt.show()
+    fig.show()
 
 
 def top_five_decks(
