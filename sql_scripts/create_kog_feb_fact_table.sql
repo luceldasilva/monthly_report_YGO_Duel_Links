@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS kog_2025_feb (
     player_id INT NOT NULL,
     deck_id INT NOT NULL,
     skill_id INT NOT NULL,
-	date_id INT NOT NULL,
+    date_id INT NOT NULL,
     zerotg BOOLEAN NOT NULL,
     zephra BOOLEAN NOT NULL,
     bryan BOOLEAN NOT NULL,
