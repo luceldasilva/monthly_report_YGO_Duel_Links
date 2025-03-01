@@ -8,3 +8,10 @@
 
 Desplegada la base de datos en [![Static Badge](https://img.shields.io/badge/build-neon.tech-brightgreen?logo=postgresql&label=serverless&labelColor=%23AFEEEE&color=%237ff9c7)
 ](https://neon.tech)
+
+
+> [!NOTE]
+> Para ejecutar este repositorio, clónelo, cree un ambiente virtual e instálelo con este comando
+> ```
+> pip install -e . --use-pep517
+> ```
