@@ -62,3 +62,6 @@ save_plot()
 plt.show()
 ```
 
+```{python}
+print('hola')
+```
