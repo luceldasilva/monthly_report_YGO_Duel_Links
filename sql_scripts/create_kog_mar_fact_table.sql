@@ -27,3 +27,5 @@ CREATE TABLE IF NOT EXISTS kog_2025_mar (
 );
 
 GRANT SELECT, INSERT, UPDATE, TRUNCATE, REFERENCES, TRIGGER ON kog_2025_mar TO usuario_que_usas;
+
+ALTER TABLE kog_2025_mar OWNER TO usuario_que_usas;

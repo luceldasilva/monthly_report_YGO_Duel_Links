@@ -85,6 +85,21 @@ date_df
 ```
 
 ```{python}
+previous_month_fact_table: str = tables_db[-2]
+alias_previous_month_fact_table: str = previous_month_fact_table[-3:]
+
+kog_previous_query = f"""
+SELECT d.deck
+FROM {previous_month_fact_table} {alias_previous_month_fact_table}
+INNER JOIN decks d ON {alias_previous_month_fact_table}.deck_id = d.deck_id
+WHERE {alias_previous_month_fact_table}.{comunity};
+"""
+
+kog_previous_df = qu(kog_query)
+kog_previous_df
+```
+
+```{python}
 visualization.date_lineplot(
     date_df, month_fact_table, year_fact_table, tournament_text
 )
@@ -108,7 +123,7 @@ visualization.wordcloud(kog_df, decks_sum)
 ```
 
 ```{python}
-indicator(kog_df, decks_sum)
+indicator(kog_df, decks_sum, kog_previous_df)
 ```
 
 ```{python}

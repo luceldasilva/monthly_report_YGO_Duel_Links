@@ -38,6 +38,14 @@ year_fact_table = date_fact_table.strftime('%Y')
 ```
 
 ```{python}
+kog_previous_df = dfq.df_query(
+    fact_table=tables_db[-2],
+    alias_fact_table=tables_db[-2][-3:]
+)
+kog_previous_df
+```
+
+```{python}
 pivot_comunidad = pivot_comunity(kog_df)
 pivot_comunidad
 ```
@@ -83,7 +91,7 @@ visualization.wordcloud(kog_df, decks_sum)
 ```
 
 ```{python}
-indicator(kog_df, decks_sum)
+indicator(kog_df, decks_sum, kog_previous_df)
 ```
 
 ```{python}

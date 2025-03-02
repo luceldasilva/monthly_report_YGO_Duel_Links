@@ -1,16 +1,13 @@
 import pandas as pd
 from plotly.subplots import make_subplots
-from queries_db.constants import tables_db, data_path, today
-from queries_db import dataframe_queries as dfq
+from queries_db.constants import data_path, today
 
 
 def indicator(
-    kog_df: pd.DataFrame, decks_sum: pd.DataFrame
+    kog_df: pd.DataFrame,
+    decks_sum: pd.DataFrame,
+    kog_previous_df: pd.DataFrame
 ):
-    kog_previous_df = dfq.df_query(
-        tables_db[-2], tables_db[-2][-3:]
-    )
-    
     count_kog_previous_df = len(kog_previous_df)
 
     fig = make_subplots(
