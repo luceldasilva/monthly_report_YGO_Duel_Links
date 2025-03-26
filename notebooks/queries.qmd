@@ -38,7 +38,10 @@ dim_skills
 
 ```{python}
 characters_query = """
-SELECT * FROM characters
+SELECT *
+FROM characters
+ORDER BY character_id DESC
+LIMIT 1
 """
 
 dim_characters = query(characters_query)
@@ -50,7 +53,7 @@ insertar_personajes()
 ```
 
 ```{python}
-actualizar_skills(True)
+actualizar_skills()
 ```
 
 ```{python}
