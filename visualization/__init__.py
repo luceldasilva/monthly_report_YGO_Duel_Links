@@ -102,7 +102,7 @@ def date_lineplot(
 ):
     fig = px.line(
         date_df,
-        x="day_of_monthy", y="jugadores",
+        y="day_of_monthy", x="jugadores",
         title= f"LLegadas a {tournament_text} por día",
         text="jugadores",
         template='simple_white',
@@ -112,7 +112,8 @@ def date_lineplot(
         }
     )
 
-    fig.update_layout(width=1000, height=600) 
+    fig.update_layout(width=500, height=900)
+    fig.update_yaxes(autorange="reversed")
     fig.update_traces(textposition="top center")
     fig.write_image(
         f"{data_path}/{today}_llegadas_a_{tournament_text}_{month_fact_table}_{year_fact_table}.png"
