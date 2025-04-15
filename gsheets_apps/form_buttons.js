@@ -84,6 +84,11 @@ function Buscar() {
 
 
 function Actualizar() {
+  if (valor === "") {
+    SpreadsheetApp.getUi().alert('Este es usuario nuevo, no puedo actualizar');
+    return;
+  }
+  
   for (var i = 0; i < valores.length; i++) {
     var fila = valores[i];
     if(fila[NUM_COLUMNA_BUSQUEDA] == valor) {
