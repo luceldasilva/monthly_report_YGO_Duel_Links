@@ -1,5 +1,5 @@
 from datetime import datetime
-from queries_db.constants import comunity_dict, data_path, today
+from queries_db.constants import comunity_dict, data_path
 import queries_db.transform_df_queries as dft
 import requests as req
 from io import BytesIO
@@ -116,7 +116,7 @@ def date_lineplot(
     fig.update_yaxes(autorange="reversed")
     fig.update_traces(textposition="top center")
     fig.write_image(
-        f"{data_path}/{today}_llegadas_a_{tournament_text}_{month_fact_table}_{year_fact_table}.png"
+        f"{data_path}/{datetime.now().strftime('%d_%m_%Y_%H_%M_%S_%f')[:-3]}_llegadas_a_{tournament_text}_{month_fact_table}_{year_fact_table}.png"
     )
     fig.show()
 
