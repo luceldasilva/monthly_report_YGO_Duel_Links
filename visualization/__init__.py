@@ -136,7 +136,8 @@ def top_five_decks(
     
     plt.figure(figsize=(6, 4))
 
-    colors_top_five = ['#4c2882', '#808080', '#808080', '#808080', '#808080']
+    # Por si hay empate en el puesto 5 se ponen los igualados
+    colors_top_five = ['#4c2882'] + ['#808080'] * (len(avatar_deck) - 1)
 
     ax = sns.barplot(
         x=decks_sum.total, 
