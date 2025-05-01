@@ -26,7 +26,7 @@ date_fact_table = kog_df.ndmax[0]
 month_fact_table = date_fact_table.strftime('%B').capitalize()
 year_fact_table = date_fact_table.strftime('%Y')
 
-kc_fact_table: str = 'kc_cup_2025_feb'
+kc_fact_table: str = 'kc_cup_2025_april'
 kc_alias_fact_table: str = kc_fact_table[-3:]
 kc_cup_bool: bool = True
 kc_df = dfq.df_query(kc_fact_table, kc_alias_fact_table)
@@ -47,6 +47,10 @@ plt.figure(figsize=(5,5))
 venn2(
     subsets=(
         solo_kc, solo_kog, interseccion
+    ),
+    set_colors=(
+        "cyan",
+        "gold"
     ),
     set_labels=(
         'LLegaron a DLv. MAX',
