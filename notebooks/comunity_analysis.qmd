@@ -12,7 +12,7 @@ import locale
 
 fact_table: str = tables_db[-1]
 alias_fact_table: str = fact_table[-3:]
-comunity: str = comunidades[1]
+comunity: str = comunidades[-1]
 kc_cup_bool: bool = False
 tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
 ```
@@ -95,7 +95,7 @@ INNER JOIN decks d ON {alias_previous_month_fact_table}.deck_id = d.deck_id
 WHERE {alias_previous_month_fact_table}.{comunity};
 """
 
-kog_previous_df = qu(kog_query)
+kog_previous_df = qu(kog_previous_query)
 kog_previous_df
 ```
 
