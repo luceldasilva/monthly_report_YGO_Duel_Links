@@ -25,5 +25,6 @@ tables_db: list = [
     'kog_2025_jan',
     'kog_2025_feb',
     'kog_2025_mar',
-    'kog_2025_abr'
+    'kog_2025_abr',
+    'kog_2025_may'
 ]
