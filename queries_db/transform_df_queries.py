@@ -27,7 +27,6 @@ def decks_with_avatar(decks_sum: pd.DataFrame):
     )
 
     decks_images = decks_images[['name', 'url_image']]
-    decks_images
 
     decks_with_avatar_df = decks_sum.iloc[:5]
     decks_with_avatar_df = decks_with_avatar_df.merge(
