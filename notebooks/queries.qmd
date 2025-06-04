@@ -5,6 +5,12 @@ from queries_db import show_tables, query
 from queries_db.update_skills import actualizar_skills, insertar_personajes
 from queries_db.upload_avatar_decks import json_decks
 from queries_db.export_characters import ver_personajes
+from queries_db.create_table import fact_table_init
+```
+
+
+```{python}
+fact_table_init(False, 'usuario_que_usas')
 ```
 
 
