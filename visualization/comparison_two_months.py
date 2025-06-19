@@ -8,6 +8,8 @@ def indicator(
     decks_sum: pd.DataFrame,
     kog_previous_df: pd.DataFrame
 ):
+    kog_count = len(kog_df)
+    
     count_kog_previous_df = len(kog_previous_df)
 
     fig = make_subplots(
@@ -25,7 +27,7 @@ def indicator(
     
     fig.add_indicator(
         mode="number+delta",
-        value=len(kog_df),
+        value=kog_count,
         title="Registros",
         delta={
             'reference': count_kog_previous_df,
@@ -33,6 +35,16 @@ def indicator(
             'valueformat': ".1%"
         },
         row=1, col=2
+    )
+    
+    color_relative: str = 'red' if kog_count < count_kog_previous_df else 'green'
+    
+    fig.add_annotation(
+        text=f"<span style='font-size:12px; color:{color_relative}'>vs. mes anterior</span>",
+        x=0.9, y=0.26,
+        xref="paper", yref="paper",
+        showarrow=False,
+        align="center"
     )
 
     fig.write_image(f"{data_path}/{today}_fig_indicator.png")
