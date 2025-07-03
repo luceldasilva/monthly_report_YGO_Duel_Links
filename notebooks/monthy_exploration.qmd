@@ -13,7 +13,7 @@ import seaborn as sns
 import locale
 
 
-fact_table: str = tables_db[-2]
+fact_table: str = tables_db[-1]
 alias_fact_table: str = fact_table[-3:]
 kc_cup_bool: bool = False
 tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
@@ -40,8 +40,8 @@ year_fact_table = date_fact_table.strftime('%Y')
 
 ```{python}
 kog_previous_df = dfq.df_query(
-    fact_table=tables_db[-3],
-    alias_fact_table=tables_db[-3][-3:]
+    fact_table=tables_db[-2],
+    alias_fact_table=tables_db[-2][-3:]
 )
 kog_previous_df
 ```
