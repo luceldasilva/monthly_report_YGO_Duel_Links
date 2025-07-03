@@ -5,6 +5,7 @@ from queries_db.transform_df_queries import pivot_comunity
 import visualization
 from visualization.venn_comunities import venn_graphs
 from visualization.comparison_two_months import indicator
+from visualization.pie_diagram import percentage_deck_popularity
 import pyprojroot
 import numpy as np
 import pandas as pd
@@ -12,7 +13,7 @@ import seaborn as sns
 import locale
 
 
-fact_table: str = tables_db[-1]
+fact_table: str = tables_db[-2]
 alias_fact_table: str = fact_table[-3:]
 kc_cup_bool: bool = False
 tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
@@ -39,8 +40,8 @@ year_fact_table = date_fact_table.strftime('%Y')
 
 ```{python}
 kog_previous_df = dfq.df_query(
-    fact_table=tables_db[-2],
-    alias_fact_table=tables_db[-2][-3:]
+    fact_table=tables_db[-3],
+    alias_fact_table=tables_db[-3][-3:]
 )
 kog_previous_df
 ```
@@ -72,6 +73,10 @@ visualization.date_lineplot(
 ```{python}
 decks_sum = dfq.decks_df(fact_table, alias_fact_table)
 decks_sum
+```
+
+```{python}
+percentage_deck_popularity(decks_sum=decks_sum, limit=5)
 ```
 
 ```{python}
