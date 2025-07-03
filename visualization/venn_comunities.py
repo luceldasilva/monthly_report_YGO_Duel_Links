@@ -4,6 +4,7 @@ from queries_db.constants import comunity_dict
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn3
 import seaborn as sns
+from visualization.pie_diagram import comparation_pie_diagram
 
 
 def venn_graphs(kog_df: pd.DataFrame, pivot_comunidad: pd.DataFrame):
@@ -59,32 +60,17 @@ def venn_graphs(kog_df: pd.DataFrame, pivot_comunidad: pd.DataFrame):
     count_com = [total, int(nicks_sum - total)]
     labels_com = "Están en\nlas más \nconcurridas", "No están\nen las más\nconcurridas"
     pastel_colors = ['#D291BC', '#BDFCFE']
-
-
-    fig, ax = plt.subplots(figsize=(10, 8))
-
-    wedges, texts, autotexts = ax.pie(
-        count_com, labels=labels_com, autopct="%1.0f%%",
-        colors=pastel_colors,
-        wedgeprops={'edgecolor': 'white', 'linewidth': 1, 'linestyle': 'solid'},
-        pctdistance=0.75,
-        textprops={'fontsize': 22}
-    )
-
-    centre_circle = plt.Circle((0, 0), 0.4, fc='white')
-    ax.add_artist(centre_circle)
-
-    ax.text(0, 0, f'{nicks_sum}\nduelistas', ha='center', va='center', fontsize=24)
-
-    ax.set_title(
-        "Relación de presencia en comunidades",
-        fontsize=28,
-        fontweight="bold"
-    )
+    title_pie = "Relación de presencia en comunidades"
+    fontsize, text_center = 22, 'duelistas'
     
-    save_plot()
-    
-    plt.show()
+    comparation_pie_diagram(
+        count_groupby=count_com,
+        labels=labels_com,
+        pastel_colors=pastel_colors,
+        title_pie=title_pie,
+        fontsize=fontsize,
+        text_center=text_center
+    )
 
 
     fig, ax = plt.subplots(figsize=(10, 8))
@@ -136,8 +122,6 @@ def venn_graphs(kog_df: pd.DataFrame, pivot_comunidad: pd.DataFrame):
     
     plt.show()
 
-    fig, ax = plt.subplots(figsize=(10, 8))
-
 
     unique_server = size_100 + size_010 + size_001
     two_communities = size_110 + size_101 + size_011
@@ -145,27 +129,15 @@ def venn_graphs(kog_df: pd.DataFrame, pivot_comunidad: pd.DataFrame):
     count_duelists = [unique_server, two_communities, size_111]
     labels = "Una\nsola", "En dos", "Están\nen\nlas 3"
     pastel_colors = ['#92c6ff', '#ffb7ce', '#b7e3cc']
+    title_pie = 'De las 3, en cuántas\ncomunidades están'
+    fontsize, text_center = 20, 'duelistas'
 
 
-    wedges, texts, autotexts = ax.pie(
-        count_duelists, labels=labels, autopct="%1.0f%%",
-        colors=pastel_colors,
-        wedgeprops={'edgecolor': 'white', 'linewidth': 1, 'linestyle': 'solid'},
-        pctdistance=0.75,
-        textprops={'fontsize': 20}
+    comparation_pie_diagram(
+        count_groupby=count_duelists,
+        labels=labels,
+        pastel_colors=pastel_colors,
+        title_pie=title_pie,
+        fontsize=fontsize,
+        text_center=text_center
     )
-
-    centre_circle = plt.Circle((0, 0), 0.4, fc='white')
-    ax.add_artist(centre_circle)
-
-    ax.text(0, 0, f'{total}\nduelistas', ha='center', va='center', fontsize=24)
-
-    ax.set_title(
-        'De las 3, en cuántas\ncomunidades están',
-        fontsize=28,
-        fontweight="bold"
-    )
-    
-    save_plot()
-    
-    plt.show()
