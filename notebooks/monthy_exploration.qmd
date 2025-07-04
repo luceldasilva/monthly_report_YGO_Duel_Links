@@ -94,7 +94,7 @@ visualization.top_five_decks(
 ```
 
 ```{python}
-visualization.wordcloud(kog_df, decks_sum)
+visualization.wordcloud(kog_df, decks_sum, limit_top)
 ```
 
 ```{python}
