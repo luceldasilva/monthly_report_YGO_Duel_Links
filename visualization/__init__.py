@@ -124,12 +124,13 @@ def date_lineplot(
 def top_five_decks(
     avatar_bool: bool,
     decks_sum: pd.DataFrame,
+    limit: int,
     tournament_text: str,
     month_fact_table: str,
     year_fact_table: str
 ):
     
-    decks_sum = dft.decks_with_avatar(decks_sum)
+    decks_sum = dft.decks_with_avatar(decks_sum, limit)
     
     avatar_deck = decks_sum['url_image']
     del decks_sum['url_image']
@@ -205,9 +206,9 @@ def top_five_decks(
     plt.show()
 
 
-def wordcloud(kog_df: pd.DataFrame, decks_sum: pd.DataFrame):
+def wordcloud(kog_df: pd.DataFrame, decks_sum: pd.DataFrame, limit: int):
 
-    top_five_decks = decks_sum.name.iloc[:5].tolist()
+    top_five_decks = decks_sum.name.iloc[:limit].tolist()
 
     decks = kog_df.drop(kog_df[kog_df['deck'].isin(top_five_decks)].index)
 

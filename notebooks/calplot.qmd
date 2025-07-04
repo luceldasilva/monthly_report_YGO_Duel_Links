@@ -27,7 +27,7 @@ WITH calendar_fact AS (
     UNION ALL
     SELECT date_id FROM kog_2025_mar
     UNION ALL
-    SELECT date_id FROM kog_2025_apr
+    SELECT date_id FROM kog_2025_abr
     UNION ALL
     SELECT date_id FROM kog_2025_may
     UNION ALL

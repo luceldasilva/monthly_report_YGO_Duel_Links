@@ -19,7 +19,7 @@ def pivot_comunity(kog_df: pd.DataFrame):
     return pivot_comunidad
 
 
-def decks_with_avatar(decks_sum: pd.DataFrame):
+def decks_with_avatar(decks_sum: pd.DataFrame, limit: int):
     
     decks_images = pd.read_json(
         'http://127.0.0.1:8000/decks/',
@@ -28,7 +28,7 @@ def decks_with_avatar(decks_sum: pd.DataFrame):
 
     decks_images = decks_images[['name', 'url_image']]
 
-    decks_with_avatar_df = decks_sum.iloc[:5]
+    decks_with_avatar_df = decks_sum.iloc[:limit]
     decks_with_avatar_df = decks_with_avatar_df.merge(
         decks_images, on='name', how='inner'
     )

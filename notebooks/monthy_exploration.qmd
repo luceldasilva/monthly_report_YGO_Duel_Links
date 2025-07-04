@@ -20,6 +20,11 @@ tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
 ```
 
 ```{python}
+decks_sum = dfq.decks_df(fact_table, alias_fact_table)
+decks_sum
+```
+
+```{python}
 kog_df = dfq.df_query(fact_table, alias_fact_table)
 ```
 
@@ -71,12 +76,8 @@ visualization.date_lineplot(
 ```
 
 ```{python}
-decks_sum = dfq.decks_df(fact_table, alias_fact_table)
-decks_sum
-```
-
-```{python}
-percentage_deck_popularity(decks_sum=decks_sum, limit=5)
+limit_top: int = 5
+percentage_deck_popularity(decks_sum=decks_sum, limit=limit_top)
 ```
 
 ```{python}
@@ -87,7 +88,8 @@ visualization.squarify_decks(
 
 ```{python}
 visualization.top_five_decks(
-    False, decks_sum, tournament_text, month_fact_table, year_fact_table
+    False, decks_sum, limit_top,
+    tournament_text, month_fact_table, year_fact_table
 )
 ```
 
