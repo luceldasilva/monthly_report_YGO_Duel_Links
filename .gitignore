@@ -131,3 +131,4 @@ cython_debug/
 
 # Miscellaneous
 /.luarc.json
+pyrefly.toml

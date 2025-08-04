@@ -41,7 +41,7 @@ def indicator(
     
     fig.add_annotation(
         text=f"<span style='font-size:12px; color:{color_relative}'>vs. mes anterior</span>",
-        x=0.9, y=0.26,
+        x=0.9, y=0.24,
         xref="paper", yref="paper",
         showarrow=False,
         align="center"
