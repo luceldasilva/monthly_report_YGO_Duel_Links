@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
-from db.models.circular_card_images import ImageCharacter
+from db.models.circular_card_images import ImageCharacter, CharacterUpdate
 from db.schemas.character import playable_characters_schema, characters_schema
 from config.cfg import character_collections
+from pymongo.collection import ReturnDocument
 
 
 characters = APIRouter(
@@ -46,7 +47,17 @@ async def searching_by_playable_character(name_character: str):
     -------
     dict:
         Su documento completo con su id y url del avatar
+    
+    Raises
+    ------
+    HTTPException
+        Por si ese personaje con ese nombre no está en la base de datos
     """
+    
+    if not type(search_character("character_name", name_character)) == ImageCharacter:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Ese personaje no existe"
+        )
     return search_character("character_name", name_character)
 
 
@@ -108,9 +119,43 @@ async def drop_playable_character(character: str):
     HTTPException
         Por si ese nombre no existe
     """
-    found = character_collections.find_one_and_delete({"name": character})
+    found = character_collections.find_one_and_delete({"character_name": character})
     
     if not found: 
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="El arquetipo no existe"
+            status_code=status.HTTP_404_NOT_FOUND, detail="El personaje no existe"
         )
+
+
+@characters.patch("/", response_model=ImageCharacter)
+async def update_archetype(playable: CharacterUpdate):
+    """
+    Parameters
+    ----------
+    archetype : CharacterUpdate
+        Actualizar el avatar del personaje, obligado el nombre y la url nueva
+
+    Raises
+    ------
+    HTTPException
+        Por si el nombre no existe en el documento
+    """
+    
+    if not type(search_character("character_name", playable.character_name)) == ImageCharacter:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Ese personaje no existe"
+        )
+    
+    character_dict = dict(playable)
+    del character_dict["id"]
+    
+    try:        
+        character_collections.find_one_and_update(
+            {"character_name": playable.character_name},
+            {"$set": playable.model_dump(exclude_none=True)},
+            return_document=ReturnDocument.AFTER
+        )
+    except:
+        return {"error": "No se ha actualizado el arquetipo"}
+    
+    return search_character("character_name", playable.character_name)

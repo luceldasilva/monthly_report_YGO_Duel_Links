@@ -57,7 +57,16 @@ async def searching_by_archetype(name_deck: str):
     Returns
     -------
     Te muestra su documento completo, con su id y avatar
+    
+    Raises
+    ------
+    HTTPException
+        Ese nombre de arquetipo no existe
     """
+    if not type(search_deck("name", name_deck)) == ImageCard:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Ese deck no existe"
+        )
     return search_deck("name", name_deck)
 
 
@@ -113,6 +122,11 @@ async def drop_archetype(deck: str):
     ----------
     deck : str
         el nombre del arquetipo
+    
+    Returns
+    -------
+    dict:
+        El documento ya formado con su información actualizada
 
     Raises
     ------
@@ -129,24 +143,18 @@ async def drop_archetype(deck: str):
 
 @decks.patch("/", response_model=ImageCard)
 async def update_archetype(archetype: CardUpdate):
-    """TODO: cambiar el método de patch
-
+    """
     Parameters
     ----------
     archetype : CardUpdate
-        _description_
-
-    Returns
-    -------
-    _type_
-        _description_
+        Actualizar el avatar del deck, obligado el nombre y la url nueva
 
     Raises
     ------
     HTTPException
-        _description_
+        Por si el nombre no existe en el documento
     """
-    if not type(search_user("name", archetype.name)) == ImageCard: # type: ignore
+    if not type(search_deck("name", archetype.name)) == ImageCard:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Ese deck no existe"
         )
@@ -157,10 +165,10 @@ async def update_archetype(archetype: CardUpdate):
     try:        
         deck_collections.find_one_and_update(
             {"name": archetype.name},
-            {"$set": archetype.dict(exclude_none=True)},
+            {"$set": archetype.model_dump(exclude_none=True)},
             return_document=ReturnDocument.AFTER
         )
     except:
         return {"error": "No se ha actualizado el arquetipo"}
     
-    return CardUpdate(archetype.name)
+    return search_deck("name", archetype.name)
