@@ -1,0 +1,11 @@
+-- Avatar del arquetipo
+{
+  "name": "string",
+  "url_image": "string"
+}
+
+-- Avatar del personaje
+{
+  "character_name": "string",
+  "url_image": "string"
+}
