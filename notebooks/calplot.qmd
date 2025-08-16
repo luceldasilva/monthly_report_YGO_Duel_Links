@@ -32,6 +32,10 @@ WITH calendar_fact AS (
     SELECT date_id FROM kog_2025_may
     UNION ALL
     SELECT date_id FROM kog_2025_jun
+    UNION ALL
+    SELECT date_id FROM kog_2025_jul
+    UNION ALL
+    SELECT date_id FROM kog_2025_aug
 )
 SELECT c.ndmax, COUNT(ndmax) AS jugadores
 FROM calendar_fact f 
