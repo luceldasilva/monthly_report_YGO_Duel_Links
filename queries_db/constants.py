@@ -31,3 +31,8 @@ tables_db: list = [
     'kog_2025_jul',
     'kog_2025_aug'
 ]
+
+kc_tables_db: list = [
+    'kc_cup_2025_feb',
+    'kc_cup_2025_april'
+]
