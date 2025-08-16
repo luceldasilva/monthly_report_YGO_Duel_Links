@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import date
 from queries_db import query as qu
 
 
@@ -25,7 +25,7 @@ def df_query(
 def date_df(
     fact_table: str,
     alias_fact_table: str,
-    date_fact_table: datetime.date
+    date_fact_table: date
 ) -> pd.DataFrame:
     date_query = f"""
     SELECT 

@@ -28,7 +28,7 @@ def show_tables():
     logging.info("La conexión ha finalizado.")
 
 
-def query(query):
+def query(query) -> pd.DataFrame:
     '''
         hacer variable = query(y la consulta sql)
     '''
@@ -39,6 +39,7 @@ def query(query):
         logging.error('La conexión se cerró vuelva a conectarlo')
     except Exception as ex:
         logging.error(f'Error durante la conexión: {ex}')
+    return pd.DataFrame()
 
 
 if __name__ == '__main__':
