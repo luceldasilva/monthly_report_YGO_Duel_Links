@@ -6,9 +6,10 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-8.0+-00684A?style=for-the-badge&logo=mongodb&logoColor=white&labelColor=101010)](https://www.mongodb.com)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-00BFFF?style=for-the-badge&logo=postgresql&logoColor=white&labelColor=101010)](https://www.mongodb.com)
 
-Desplegada la base de datos en [![Static Badge](https://img.shields.io/badge/build-neon.tech-brightgreen?logo=postgresql&label=serverless&labelColor=%23AFEEEE&color=%237ff9c7)
-](https://neon.tech)
+[![Deploy en Vercel](https://img.shields.io/badge/Vercel-Running-brightgreen?style=for-the-badge&logo=vercel)](https://monthly-report-yugioh-dl.vercel.app)
 
+Desplegada la base de datos en
+[![Static Badge](https://img.shields.io/badge/build-neon.tech-brightgreen?logo=postgresql&label=serverless&labelColor=%23AFEEEE&color=%237ff9c7)](https://neon.tech)
 
 > [!NOTE]
 > Para ejecutar este repositorio, clónelo, cree un ambiente virtual e instálelo con este comando
