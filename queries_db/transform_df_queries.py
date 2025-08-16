@@ -22,7 +22,7 @@ def pivot_comunity(kog_df: pd.DataFrame):
 def decks_with_avatar(decks_sum: pd.DataFrame, limit: int):
     
     decks_images = pd.read_json(
-        'http://127.0.0.1:8000/decks/',
+        'https://monthly-report-yugioh-dl.vercel.app/decks/',
         orient='records'
     )
 
@@ -33,5 +33,6 @@ def decks_with_avatar(decks_sum: pd.DataFrame, limit: int):
         decks_images, on='name', how='inner'
     )
     decks_with_avatar_df.rename(columns={'name': 'deck'}, inplace=True)
+    
     return decks_with_avatar_df
 
