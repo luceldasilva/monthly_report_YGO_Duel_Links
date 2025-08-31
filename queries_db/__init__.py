@@ -1,3 +1,4 @@
+import sys
 import logging
 from decouple import config
 from sqlalchemy.exc import OperationalError
@@ -7,7 +8,8 @@ import pandas as pd
 
 logging.basicConfig(
     format = '%(asctime)-5s %(levelname)-8s %(message)s', 
-    level=logging.INFO,	 
+    level=logging.INFO,
+    stream=sys.stdout,
     encoding="utf-8"
 )
 
