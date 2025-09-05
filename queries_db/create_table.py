@@ -2,10 +2,14 @@ from queries_db.constants import sql_path, notepad
 from datetime import datetime
 import subprocess
 import textwrap
+import locale
 import os
 
 
 def fact_table_init(kc_cup_tournament: bool, rol_user: str):
+    
+    locale.setlocale(locale.LC_TIME, 'English_United States.1252')
+    # locale.setlocale(locale.LC_TIME, 'en_US.utf8') en Linux/macOS
     
     kc_cup: str = 'kc_cup' if kc_cup_tournament else 'kog'
     
