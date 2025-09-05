@@ -29,7 +29,8 @@ tables_db: list = [
     'kog_2025_may',
     'kog_2025_jun',
     'kog_2025_jul',
-    'kog_2025_aug'
+    'kog_2025_aug',
+    'kog_2025_sep'
 ]
 
 kc_tables_db: list = [
