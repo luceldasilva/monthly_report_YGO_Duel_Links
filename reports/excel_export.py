@@ -1,13 +1,22 @@
-if __name__ == "__main__":
-    import os
-    from queries_db.constants import data_path
-    from reports import (
-        kog_df, ExcelConstants, tournament_text, month_fact_table,
-        year_fact_table, df_name
-    )
-    import win32com.client as win32
+import os
+import click
+import win32com.client as win32
+from queries_db.constants import data_path
+from queries_db import dataframe_queries as dfq
+from reports.utils import fact_table_text, build_fact_df, ExcelConstants
 
 
+@click.command()
+@click.option("--kc-cup", is_flag=True, help="Para usar en Copas KC")
+def excel_export(kc_cup):
+    fact_table, tournament_text, alias_fact_table = build_fact_df(kc_cup)
+    
+    fact_df = dfq.df_query(fact_table, alias_fact_table)
+    
+    month_fact_table, year_fact_table = fact_table_text(fact_df)
+    
+    df_name: str = f"{tournament_text} {month_fact_table} {year_fact_table}"
+    
     file_path = data_path.joinpath(
         f"{tournament_text}_{month_fact_table}_{year_fact_table}.xlsx"
     )
@@ -15,7 +24,7 @@ if __name__ == "__main__":
     if os.path.exists(file_path):
         os.remove(file_path)
 
-    kog_df.to_excel(file_path, sheet_name='Resumen', index=False)
+    fact_df.to_excel(file_path, sheet_name='Resumen', index=False)
 
     excel = win32.Dispatch('Excel.Application')
     excel.Visible = False
@@ -32,7 +41,7 @@ if __name__ == "__main__":
         ExcelConstants.xlToLeft
     ).Column
     
-    kog_excel = f"'Resumen'!R1C1:R{last_row}C{last_col}"
+    df_excel = f"'Resumen'!R1C1:R{last_row}C{last_col}"
 
     pivot_sheet_name = "Top_Decks"
     ws_pivot = wb.Sheets.Add()
@@ -40,7 +49,7 @@ if __name__ == "__main__":
 
     decks_cache = wb.PivotCaches().Create(
         SourceType=ExcelConstants.xlDatabase,
-        SourceData=kog_excel
+        SourceData=df_excel
     )
 
     decks_pivot = decks_cache.CreatePivotTable(
@@ -134,3 +143,7 @@ if __name__ == "__main__":
     wb.Save()
     wb.Close()
     excel.Quit()
+
+
+if __name__ == "__main__":
+    excel_export()
