@@ -115,6 +115,7 @@ cython_debug/
 
 # Quarto files
 /.quarto/
+/_outputs/
 /_site/
 *_cache/
 /_*.local
@@ -123,6 +124,7 @@ cython_debug/
 *.docx
 *.pptx
 *.png
+*.yml
 
 # Pentaho files
 *.ktr
