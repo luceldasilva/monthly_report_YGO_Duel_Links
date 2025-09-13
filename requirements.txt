@@ -30,3 +30,4 @@ gw-dsl-parser
 quickjs
 segment-analytics-python
 ipywidgets
+papermill

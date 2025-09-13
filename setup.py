@@ -17,7 +17,7 @@ def readme() -> str:
 
 setup(
     name='monthly_report_KOG_Duel_Links',
-    version='0.5.3',
+    version='0.5.4',
     python_requires='>=3',
     packages=find_packages(),
     long_description=readme()
