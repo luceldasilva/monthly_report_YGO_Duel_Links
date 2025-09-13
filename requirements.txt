@@ -23,6 +23,7 @@ kaleido
 plotly
 squarify
 calplot
+plotly-calplot
 wordcloud
 matplotlib-venn
 anywidget

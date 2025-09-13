@@ -1,5 +1,6 @@
 ```{python}
 from queries_db import show_tables, query as qu
+from queries_db.constants import tables_db
 import pyprojroot
 import numpy as np
 import pandas as pd
@@ -19,23 +20,11 @@ fontManager.addfont(helvetica_path)
 TODO: Ver para ser del todo el año
 """
 
-kog_date_query = """
+union_query = "\nUNION ALL\n".join([f"SELECT date_id FROM {monthy}" for monthy in tables_db])
+
+kog_date_query = f"""
 WITH calendar_fact AS (
-    SELECT date_id FROM kog_2025_jan
-    UNION ALL
-    SELECT date_id FROM kog_2025_feb
-    UNION ALL
-    SELECT date_id FROM kog_2025_mar
-    UNION ALL
-    SELECT date_id FROM kog_2025_abr
-    UNION ALL
-    SELECT date_id FROM kog_2025_may
-    UNION ALL
-    SELECT date_id FROM kog_2025_jun
-    UNION ALL
-    SELECT date_id FROM kog_2025_jul
-    UNION ALL
-    SELECT date_id FROM kog_2025_aug
+    {union_query}
 )
 SELECT c.ndmax, COUNT(ndmax) AS jugadores
 FROM calendar_fact f 
@@ -55,6 +44,20 @@ calplot.calplot(
 
 plt.show()
 ```
+
+```{python}
+from plotly_calplot import calplot
+
+
+fig = calplot(
+    kog_date,
+    x="ndmax",
+    y="jugadores"
+)
+
+fig.show()
+```
+
 
 ```{python}
 print('hola')
