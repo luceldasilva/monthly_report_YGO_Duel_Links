@@ -4,13 +4,13 @@ from queries_db.constants import data_path, today
 
 
 def indicator(
-    kog_df: pd.DataFrame,
+    fact_table_df: pd.DataFrame,
     decks_sum: pd.DataFrame,
-    kog_previous_df: pd.DataFrame
+    fact_table_previous_df: pd.DataFrame
 ):
-    kog_count = len(kog_df)
+    kog_count = len(fact_table_df)
     
-    count_kog_previous_df = len(kog_previous_df)
+    count_kog_previous_df = len(fact_table_previous_df)
 
     fig = make_subplots(
         rows=1, cols=2,

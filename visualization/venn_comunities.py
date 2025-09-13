@@ -7,8 +7,8 @@ import seaborn as sns
 from visualization.pie_diagram import comparation_pie_diagram
 
 
-def venn_graphs(kog_df: pd.DataFrame, pivot_comunidad: pd.DataFrame):
-    def comunidad(server: str, df: pd.DataFrame=kog_df):
+def venn_graphs(fact_table_df: pd.DataFrame, pivot_comunidad: pd.DataFrame):
+    def comunidad(server: str, df: pd.DataFrame=fact_table_df):
         '''
             Para filtrar sus usuarios únicos de cada comunidad
         '''
@@ -43,7 +43,7 @@ def venn_graphs(kog_df: pd.DataFrame, pivot_comunidad: pd.DataFrame):
         [size_100, size_010, size_001, size_110, size_101, size_011, size_111]
     )
 
-    nicks_sum: int = int(kog_df.nick.drop_duplicates().count())
+    nicks_sum: int = int(fact_table_df.nick.drop_duplicates().count())
 
     percent_100 = (size_100 / nicks_sum) * 100
     percent_010 = (size_010 / nicks_sum) * 100

@@ -206,11 +206,13 @@ def top_five_decks(
     plt.show()
 
 
-def wordcloud(kog_df: pd.DataFrame, decks_sum: pd.DataFrame, limit: int):
+def wordcloud(fact_table_df: pd.DataFrame, decks_sum: pd.DataFrame, limit: int):
 
     top_five_decks = decks_sum.name.iloc[:limit].tolist()
 
-    decks = kog_df.drop(kog_df[kog_df['deck'].isin(top_five_decks)].index)
+    decks = fact_table_df.drop(
+        fact_table_df[fact_table_df['deck'].isin(top_five_decks)].index
+    )
 
 
     decks = decks.replace("-", ' ', regex=True)

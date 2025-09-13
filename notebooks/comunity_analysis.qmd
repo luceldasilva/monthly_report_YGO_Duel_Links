@@ -1,53 +1,55 @@
 ```{python}
-from queries_db.constants import tables_db, comunidades
+from queries_db.constants import tables_db, kc_tables_db, comunidades
 from queries_db import query as qu
 import visualization
 from visualization.comparison_two_months import indicator
+from visualization.pie_diagram import percentage_deck_popularity
 import pyprojroot
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import locale
+```
 
+```{python}
+#| tags: [parameters]
 
-fact_table: str = tables_db[-1]
-alias_fact_table: str = fact_table[-3:]
-comunity: str = comunidades[-1]
 kc_cup_bool: bool = False
+comunity: str = 'zephra'
+idx_fact_table: int = 1
+```
+
+```{python}
+fact_table: str = kc_tables_db[-idx_fact_table] if kc_cup_bool else tables_db[-idx_fact_table]
+alias_fact_table: str = fact_table[-3:]
 tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
 ```
 
 ```{python}
-kog_query = f"""
-SELECT d.deck
+fact_query = f"""
+SELECT p.nick, d.deck, s.skill, c.ndmax
 FROM {fact_table} {alias_fact_table}
 INNER JOIN decks d ON {alias_fact_table}.deck_id = d.deck_id
+INNER JOIN players p ON {alias_fact_table}.player_id = p.player_id
+INNER JOIN skills s ON {alias_fact_table}.skill_id = s.skill_id
+INNER JOIN calendar_2025 c ON {alias_fact_table}.date_id = c.date_id
 WHERE {alias_fact_table}.{comunity};
 """
 
-kog_df = qu(kog_query)
-kog_df
+fact_df = qu(fact_query)
+fact_df
 ```
 
 ```{python}
 """
 Para las fechas y poner el mes y año correspondiente
 """
+date_fact = fact_df.ndmax[0]
+
 locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
 #'es_ES.utf8'  En Linux/Mac
-
-date_fact_query = f"""
-SELECT c.ndmax
-FROM {fact_table} {alias_fact_table}
-INNER JOIN calendar_2025 c ON {alias_fact_table}.date_id = c.date_id
-LIMIT 1
-"""
-
-date_fact_table = qu(date_fact_query)
-
-date_fact = date_fact_table.ndmax[0]
-month_fact_table = date_fact.strftime('%B').capitalize()
-year_fact_table = date_fact.strftime('%Y')
+month_fact_table: str = date_fact.strftime('%B').capitalize()
+year_fact_table: str = date_fact.strftime('%Y')
 ```
 
 ```{python}
@@ -85,18 +87,23 @@ date_df
 ```
 
 ```{python}
-previous_month_fact_table: str = tables_db[-2]
+idx_fact_previous: int = idx_fact_table + 1
+previous_month_fact_table: str = kc_tables_db[-idx_fact_previous] if kc_cup_bool else tables_db[-idx_fact_previous]
+
 alias_previous_month_fact_table: str = previous_month_fact_table[-3:]
 
-kog_previous_query = f"""
-SELECT d.deck
+fact_table_previous_query = f"""
+SELECT p.nick, d.deck, s.skill, c.ndmax
 FROM {previous_month_fact_table} {alias_previous_month_fact_table}
 INNER JOIN decks d ON {alias_previous_month_fact_table}.deck_id = d.deck_id
+INNER JOIN players p ON {alias_previous_month_fact_table}.player_id = p.player_id
+INNER JOIN skills s ON {alias_previous_month_fact_table}.skill_id = s.skill_id
+INNER JOIN calendar_2025 c ON {alias_previous_month_fact_table}.date_id = c.date_id
 WHERE {alias_previous_month_fact_table}.{comunity};
 """
 
-kog_previous_df = qu(kog_previous_query)
-kog_previous_df
+fact_table_previous_df = qu(fact_table_previous_query)
+fact_table_previous_df
 ```
 
 ```{python}
@@ -105,25 +112,24 @@ visualization.date_lineplot(
 )
 ```
 
-
 ```{python}
-visualization.squarify_decks(
-    decks_sum, tournament_text, month_fact_table, year_fact_table
-)
+limit_top: int = 5
+percentage_deck_popularity(decks_sum=decks_sum, limit=limit_top)
 ```
 
 ```{python}
 visualization.top_five_decks(
-    False, decks_sum, tournament_text, month_fact_table, year_fact_table
+    False, decks_sum, limit_top,
+    tournament_text, month_fact_table, year_fact_table
 )
 ```
 
 ```{python}
-visualization.wordcloud(kog_df, decks_sum)
+visualization.wordcloud(fact_df, decks_sum, limit_top)
 ```
 
 ```{python}
-indicator(kog_df, decks_sum, kog_previous_df)
+indicator(fact_df, decks_sum, fact_table_previous_df)
 ```
 
 ```{python}

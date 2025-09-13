@@ -1,5 +1,7 @@
 ```{python}
-from queries_db.constants import comunity_dict, tables_db, comunidades
+from queries_db.constants import (
+    comunity_dict, tables_db, kc_tables_db, comunidades
+)
 from queries_db import dataframe_queries as dfq
 from queries_db.transform_df_queries import pivot_comunity
 import visualization
@@ -11,11 +13,18 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import locale
+```
 
+```{python}
+#| tags: [parameters]
 
-fact_table: str = tables_db[-1]
-alias_fact_table: str = fact_table[-3:]
 kc_cup_bool: bool = False
+idx_fact_table: int = 1
+```
+
+```{python}
+fact_table: str = kc_tables_db[-idx_fact_table] if kc_cup_bool else tables_db[-idx_fact_table]
+alias_fact_table: str = fact_table[-3:]
 tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
 ```
 
@@ -25,7 +34,7 @@ decks_sum
 ```
 
 ```{python}
-kog_df = dfq.df_query(fact_table, alias_fact_table)
+fact_df = dfq.df_query(fact_table, alias_fact_table)
 ```
 
 ```{python}
@@ -37,22 +46,25 @@ Para las fechas y poner el mes y año correspondiente
 locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
 #'es_ES.utf8'  En Linux/Mac
 
-date_fact_table = kog_df.ndmax[0]
+date_fact_table = fact_df.ndmax[0]
 
-month_fact_table = date_fact_table.strftime('%B').capitalize()
-year_fact_table = date_fact_table.strftime('%Y')
+month_fact_table: str = date_fact_table.strftime('%B').capitalize()
+year_fact_table: str = date_fact_table.strftime('%Y')
 ```
 
 ```{python}
-kog_previous_df = dfq.df_query(
-    fact_table=tables_db[-2],
-    alias_fact_table=tables_db[-2][-3:]
+idx_fact_previous: int = idx_fact_table + 1
+fact_table_previous: str = kc_tables_db[-idx_fact_previous] if kc_cup_bool else tables_db[-idx_fact_previous]
+
+fact_previous_df = dfq.df_query(
+    fact_table=fact_table_previous,
+    alias_fact_table=fact_table_previous[-3:]
 )
-kog_previous_df
+fact_previous_df
 ```
 
 ```{python}
-pivot_comunidad = pivot_comunity(kog_df)
+pivot_comunidad = pivot_comunity(fact_df)
 pivot_comunidad
 ```
 
@@ -61,7 +73,7 @@ visualization.comunity_bars(pivot_comunidad)
 ```
 
 ```{python}
-venn_graphs(kog_df, pivot_comunidad)
+venn_graphs(fact_df, pivot_comunidad)
 ```
 
 ```{python}
@@ -94,11 +106,11 @@ visualization.top_five_decks(
 ```
 
 ```{python}
-visualization.wordcloud(kog_df, decks_sum, limit_top)
+visualization.wordcloud(fact_df, decks_sum, limit_top)
 ```
 
 ```{python}
-indicator(kog_df, decks_sum, kog_previous_df)
+indicator(fact_df, decks_sum, fact_previous_df)
 ```
 
 ```{python}
