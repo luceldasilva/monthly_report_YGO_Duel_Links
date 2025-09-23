@@ -1,0 +1,13 @@
+*.py
+*.R
+*.ktr
+*.kjb
+.quarto/
+_outputs/
+_quarto.yml
+etl/
+*.egg-info/
+notebooks/
+queries_db/
+reports/
+visualization/
