@@ -4,13 +4,15 @@ from queries_db.constants import data_path, today
 
 
 def indicator(
+    save_photo: bool,
     fact_table_df: pd.DataFrame,
     decks_sum: pd.DataFrame,
-    fact_table_previous_df: pd.DataFrame
+    fact_table_previous_df: pd.DataFrame,
+    comunity: str | None = None
 ):
-    kog_count = len(fact_table_df)
+    fact_count = len(fact_table_df)
     
-    count_kog_previous_df = len(fact_table_previous_df)
+    count_fact_previous_df = len(fact_table_previous_df)
 
     fig = make_subplots(
         rows=1, cols=2,
@@ -27,17 +29,17 @@ def indicator(
     
     fig.add_indicator(
         mode="number+delta",
-        value=kog_count,
+        value=fact_count,
         title="Registros",
         delta={
-            'reference': count_kog_previous_df,
+            'reference': count_fact_previous_df,
             'relative': True,
             'valueformat': ".1%"
         },
         row=1, col=2
     )
     
-    color_relative: str = 'red' if kog_count < count_kog_previous_df else 'green'
+    color_relative: str = 'red' if fact_count < count_fact_previous_df else 'green'
     
     fig.add_annotation(
         text=f"<span style='font-size:12px; color:{color_relative}'>vs. mes anterior</span>",
@@ -47,6 +49,8 @@ def indicator(
         align="center"
     )
 
-    fig.write_image(f"{data_path}/{today}_fig_indicator.png")
+    if save_photo:
+        comunity_name: str = f'_{comunity}' if comunity else ''
+        fig.write_image(f"{data_path}/{today}{comunity_name}_fig_indicator.png")
     
     fig.show()

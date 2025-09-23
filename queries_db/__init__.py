@@ -22,7 +22,7 @@ def show_tables():
     metadata = md()
     metadata.reflect(bind=conn)
     table_names = metadata.sorted_tables
-    logging.info("Estan son las tablas")
+    logging.info("Estas son las tablas")
     for sheet in table_names:
         print(sheet.name)
     conn.close()
@@ -30,7 +30,7 @@ def show_tables():
     logging.info("La conexión ha finalizado.")
 
 
-def query(query) -> pd.DataFrame:
+def query(query: str) -> pd.DataFrame:
     '''
         hacer variable = query(y la consulta sql)
     '''

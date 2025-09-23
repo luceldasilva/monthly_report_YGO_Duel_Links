@@ -25,7 +25,7 @@ def save_plot():
     plt.savefig(name_plt, bbox_inches='tight')
 
 
-def comunity_bars(pivot_comunidad: pd.DataFrame):
+def comunity_bars(save_photo: bool, pivot_comunidad: pd.DataFrame):
     
     pivot_comunidad_rename = pivot_comunidad.rename(
         index=comunity_dict
@@ -88,13 +88,15 @@ def comunity_bars(pivot_comunidad: pd.DataFrame):
         fontsize=14, fontweight='bold', x=0.35
     )
 
-    save_plot()
+    if save_photo:
+        save_plot()
     
     plt.show()
 
 
 
 def date_lineplot(
+    save_photo: bool,
     date_df: pd.DataFrame,
     month_fact_table: str,
     year_fact_table: str,
@@ -115,19 +117,23 @@ def date_lineplot(
     fig.update_layout(width=500, height=900)
     fig.update_yaxes(autorange="reversed")
     fig.update_traces(textposition="top center")
-    fig.write_image(
-        f"{data_path}/{datetime.now().strftime('%d_%m_%Y_%H_%M_%S_%f')[:-3]}_llegadas_a_{tournament_text}_{month_fact_table}_{year_fact_table}.png"
-    )
+    
+    if save_photo:
+        fig.write_image(
+            f"{data_path}/{datetime.now().strftime('%d_%m_%Y_%H_%M_%S_%f')[:-3]}_llegadas_a_{tournament_text}_{month_fact_table}_{year_fact_table}.png"
+        )
+    
     fig.show()
 
 
 def top_five_decks(
+    save_photo: bool,
     avatar_bool: bool,
     decks_sum: pd.DataFrame,
     limit: int,
-    tournament_text: str,
-    month_fact_table: str,
-    year_fact_table: str
+    tournament_text: str | None = None,
+    month_fact_table: str | None = None,
+    year_fact_table: str | None = None
 ):
     
     decks_sum = dft.decks_with_avatar(decks_sum, limit)
@@ -147,6 +153,7 @@ def top_five_decks(
     )
 
     new_patches = []
+    x_avatar = None
     for patch, color, total, avatar in zip(
         ax.patches, colors_top_five, decks_sum['total'], avatar_deck
     ):
@@ -164,6 +171,8 @@ def top_five_decks(
             response = req.get(avatar)
             image = plt.imread(BytesIO(response.content))
             imagebox = OffsetImage(image, zoom=0.8)
+            if x_avatar is None:
+                x_avatar = patch.get_x() + patch.get_width() + 0.2
             ab = AnnotationBbox(
                 imagebox, xy=(2.65, patch.get_y() + patch.get_height()/2),
                 xybox=(0,0), xycoords='data', boxcoords="offset points",
@@ -196,17 +205,24 @@ def top_five_decks(
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
 
-    plt.title(
-        f'Mazos más usados en {tournament_text} {month_fact_table} {year_fact_table}',
-        fontsize=14, fontweight='bold', x=0.35
-    )
+    if tournament_text and month_fact_table and year_fact_table:
+        plt.title(
+            f'Mazos más usados en {tournament_text} {month_fact_table} {year_fact_table}',
+            fontsize=14, fontweight='bold', x=0.35
+        )
 
-    save_plot()
+    if save_photo:
+        save_plot()
     
     plt.show()
 
 
-def wordcloud(fact_table_df: pd.DataFrame, decks_sum: pd.DataFrame, limit: int):
+def wordcloud(
+    save_photo: bool,
+    fact_table_df: pd.DataFrame,
+    decks_sum: pd.DataFrame,
+    limit: int
+):
 
     top_five_decks = decks_sum.name.iloc[:limit].tolist()
 
@@ -233,12 +249,14 @@ def wordcloud(fact_table_df: pd.DataFrame, decks_sum: pd.DataFrame, limit: int):
     plt.axis("off")
     plt.imshow(wc, interpolation = "bilinear")
     
-    save_plot()
+    if save_photo:
+        save_plot()
     
     plt.show()
 
 
 def squarify_decks(
+    save_photo: bool,
     decks_sum: pd.DataFrame,
     tournament_text: str,
     month_fact_table: str,
@@ -266,6 +284,7 @@ def squarify_decks(
     ax.axis('off')
     plt.tight_layout()
     
-    save_plot()
+    if save_photo:
+        save_plot()
     
     plt.show()

@@ -6,12 +6,13 @@ import seaborn as sns
 
 
 def comparation_pie_diagram(
+    save_photo: bool,
     count_groupby: List[int],
     labels: Sequence[str],
     pastel_colors: List[str],
-    title_pie: str,
+    title_pie: str | None,
     fontsize: int,
-    text_center: str
+    text_center: str,
 ):
     fig, ax = plt.subplots(figsize=(10, 8))
 
@@ -36,30 +37,36 @@ def comparation_pie_diagram(
         ha='center', va='center', fontsize=24
     )
 
-    ax.set_title(
-        title_pie,
-        fontsize=28,
-        fontweight="bold"
-    )
+    if title_pie:
+        ax.set_title(
+            title_pie,
+            fontsize=28,
+            fontweight="bold"
+        )
     
-    save_plot()
+    if save_photo:
+        save_plot()
     
     plt.show()
 
 
 
 def percentage_deck_popularity(
-    decks_sum: pd.DataFrame, limit: int
+    save_photo: bool, title_bool: bool, decks_sum: pd.DataFrame, limit: int
 ):
     user_topfive = decks_sum[0:limit].total.sum()
     other_user_decks = decks_sum[limit::].total.sum()
     count_groupby_decks = [int(user_topfive), int(other_user_decks)]
     labels = f"Top {limit} mazos \n más usados", "Resto\n de mazos"
     pastel_colors = ["#ffc59e", "#8CF8D8"]
-    title_pie = "Comparativa Top 5\nvs Resto de mazos"
+    if title_bool:
+        title_pie = "Comparativa Top 5\nvs Resto de mazos"
+    else:
+        title_pie = None
     fontsize, text_center = 24, 'registros'
     
     comparation_pie_diagram(
+        save_photo=save_photo,
         count_groupby=count_groupby_decks,
         labels=labels,
         pastel_colors=pastel_colors,

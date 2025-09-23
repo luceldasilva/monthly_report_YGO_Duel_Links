@@ -11,6 +11,7 @@ jupyter
 ipykernel
 python-decouple
 psycopg2
+psycopg2-binary
 SQLAlchemy
 colorama
 openpyxl
@@ -32,3 +33,4 @@ quickjs
 segment-analytics-python
 ipywidgets
 papermill
+rpy2

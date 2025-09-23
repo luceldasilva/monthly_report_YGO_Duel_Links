@@ -3,7 +3,7 @@ from queries_db.constants import (
     comunity_dict, tables_db, kc_tables_db, comunidades
 )
 from queries_db import dataframe_queries as dfq
-from queries_db.transform_df_queries import pivot_comunity
+from queries_db.transform_df_queries import pivot_comunity, converter_to_r
 import visualization
 from visualization.venn_comunities import venn_graphs
 from visualization.comparison_two_months import indicator
@@ -18,11 +18,12 @@ import locale
 ```{python}
 #| tags: [parameters]
 
-kc_cup_bool: bool = False
+kc_cup_bool: bool = True
 idx_fact_table: int = 1
 ```
 
 ```{python}
+save_bool: bool = True
 fact_table: str = kc_tables_db[-idx_fact_table] if kc_cup_bool else tables_db[-idx_fact_table]
 alias_fact_table: str = fact_table[-3:]
 tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
@@ -69,11 +70,11 @@ pivot_comunidad
 ```
 
 ```{python}
-visualization.comunity_bars(pivot_comunidad)
+visualization.comunity_bars(save_bool, pivot_comunidad)
 ```
 
 ```{python}
-venn_graphs(fact_df, pivot_comunidad)
+venn_graphs(save_bool, fact_df, pivot_comunidad)
 ```
 
 ```{python}
@@ -81,36 +82,57 @@ date_df = dfq.date_df(fact_table, alias_fact_table, date_fact_table)
 date_df
 ```
 
+
+```{python}
+summary_df = pd.DataFrame({
+    'kc_cup': True if kc_cup_bool else False,
+    'tour': tournament_text,
+    'year': date_fact_table.year,
+    'monthy': date_fact_table.month,
+    'first_day': fact_df.ndmax.min().day,
+    'last_day': fact_df.ndmax.max().day,
+    'n_days': max(date_df.day_of_monthy)
+}, index=[0])
+
+
+converter_to_r(date_df, 'date_df')
+converter_to_r(summary_df, 'summary_df')
+```
+
+```{python}
+!Rscript ../visualization/monthly_calendar.R
+```
+
 ```{python}
 visualization.date_lineplot(
-    date_df, month_fact_table, year_fact_table, tournament_text
+    save_bool, date_df, month_fact_table, year_fact_table, tournament_text
 )
 ```
 
 ```{python}
 limit_top: int = 5
-percentage_deck_popularity(decks_sum=decks_sum, limit=limit_top)
+percentage_deck_popularity(save_bool, True, decks_sum, limit_top)
 ```
 
 ```{python}
 visualization.squarify_decks(
-    decks_sum, tournament_text, month_fact_table, year_fact_table
+    save_bool, decks_sum, tournament_text, month_fact_table, year_fact_table
 )
 ```
 
 ```{python}
 visualization.top_five_decks(
-    False, decks_sum, limit_top,
+    save_bool, False, decks_sum, limit_top,
     tournament_text, month_fact_table, year_fact_table
 )
 ```
 
 ```{python}
-visualization.wordcloud(fact_df, decks_sum, limit_top)
+visualization.wordcloud(save_bool, fact_df, decks_sum, limit_top)
 ```
 
 ```{python}
-indicator(fact_df, decks_sum, fact_previous_df)
+indicator(save_bool, fact_df, decks_sum, fact_previous_df)
 ```
 
 ```{python}

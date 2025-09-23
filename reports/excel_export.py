@@ -1,36 +1,40 @@
 import os
 import click
+import pandas as pd
 import win32com.client as win32
 from queries_db.constants import data_path
 from queries_db import dataframe_queries as dfq
 from reports.utils import fact_table_text, build_fact_df, ExcelConstants
 
 
-@click.command()
-@click.option("--kc-cup", is_flag=True, help="Para usar en Copas KC")
-def excel_export(kc_cup):
-    fact_table, tournament_text, alias_fact_table = build_fact_df(kc_cup)
-    
-    fact_df = dfq.df_query(fact_table, alias_fact_table)
-    
-    month_fact_table, year_fact_table = fact_table_text(fact_df)
+def export_report(
+    fact_df: pd.DataFrame,
+    tournament_text: str,
+    month_fact_table: str,
+    alias_fact_table: str,
+    year_fact_table: str,
+    comunity: str | None = None
+):
+    comunity_name: str = f"{comunity}_" if comunity else ''
     
     df_name: str = f"{tournament_text} {month_fact_table} {year_fact_table}"
     
-    file_path = data_path.joinpath(
-        f"{tournament_text}_{month_fact_table}_{year_fact_table}.xlsx"
-    )
+    excel_name: str = f"{comunity_name}{tournament_text} {alias_fact_table} {year_fact_table}"
+    
+    excel_file: str = excel_name.replace(" ", "_").replace(".", "").lower()
+
+    file_path = data_path.joinpath(f"{excel_file}.xlsx")
 
     if os.path.exists(file_path):
         os.remove(file_path)
 
-    fact_df.to_excel(file_path, sheet_name='Resumen', index=False)
+    fact_df.to_excel(file_path, sheet_name=excel_file, index=False)
 
     excel = win32.Dispatch('Excel.Application')
     excel.Visible = False
     
     wb = excel.Workbooks.Open(file_path)
-    ws_datos = wb.Sheets("Resumen")
+    ws_datos = wb.Sheets(excel_file)
     ws_datos.Cells.EntireColumn.AutoFit()
 
     last_row = ws_datos.Cells(
@@ -41,9 +45,9 @@ def excel_export(kc_cup):
         ExcelConstants.xlToLeft
     ).Column
     
-    df_excel = f"'Resumen'!R1C1:R{last_row}C{last_col}"
+    df_excel = f"'{excel_file}'!R1C1:R{last_row}C{last_col}"
 
-    pivot_sheet_name = "Top_Decks"
+    pivot_sheet_name = "Mazos"
     ws_pivot = wb.Sheets.Add()
     ws_pivot.Name = pivot_sheet_name
 
@@ -54,7 +58,7 @@ def excel_export(kc_cup):
 
     decks_pivot = decks_cache.CreatePivotTable(
         TableDestination=ws_pivot.Range("A3"),
-        TableName="Top_Decks_Mazos"
+        TableName="Top_Decks"
     )
 
     decks_pivot.PivotFields("deck").Orientation = ExcelConstants.xlRowField
@@ -145,5 +149,23 @@ def excel_export(kc_cup):
     excel.Quit()
 
 
+@click.command()
+@click.option("--kc-cup", is_flag=True, help="Para usar en Copas KC")
+def overall_report(kc_cup):
+    fact_table, tournament_text, alias_fact_table = build_fact_df(kc_cup)
+    
+    fact_df = dfq.df_query(fact_table, alias_fact_table)
+    
+    month_fact_table, year_fact_table = fact_table_text(fact_df)
+    
+    export_report(
+        fact_df=fact_df,
+        tournament_text=tournament_text,
+        month_fact_table=month_fact_table,
+        alias_fact_table=alias_fact_table,
+        year_fact_table=year_fact_table
+    )
+
+
 if __name__ == "__main__":
-    excel_export()
+    overall_report()
