@@ -128,12 +128,12 @@ cython_debug/
 .pypirc
 
 # Quarto files
+!dashboard_files/
 *_cache/
 /_*.local
 *.pdf
 *.docx
 *.pptx
-*.png
 *.yml
 
 # Miscellaneous
