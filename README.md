@@ -1,6 +1,7 @@
 # Reporte Mensual de Mazos
 
 [![Quarto](https://img.shields.io/badge/Quarto-1.6+-00BFAE?style=for-the-badge&logo=quarto&logoColor=white&labelColor=101010)](https://quarto.org)
+[![R](https://img.shields.io/badge/R-4.4+-276DC3?style=for-the-badge&logo=r&logoColor=white&labelColor=101010)](https://www.r-project.org/)
 [![Python](https://img.shields.io/badge/Python-3.11+-yellow?style=for-the-badge&logo=python&logoColor=white&labelColor=101010)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115.6+-00a393?style=for-the-badge&logo=fastapi&logoColor=white&labelColor=101010)](https://fastapi.tiangolo.com)
 [![MongoDB](https://img.shields.io/badge/MongoDB-8.0+-00684A?style=for-the-badge&logo=mongodb&logoColor=white&labelColor=101010)](https://www.mongodb.com)
