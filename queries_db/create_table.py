@@ -9,7 +9,7 @@ import os
 def fact_table_init(kc_cup_tournament: bool, rol_user: str):
     
     locale.setlocale(locale.LC_TIME, 'English_United States.1252')
-    # locale.setlocale(locale.LC_TIME, 'en_US.utf8') en Linux/macOS
+    #* locale.setlocale(locale.LC_TIME, 'en_US.utf8') en Linux/macOS
     
     kc_cup: str = 'kc_cup' if kc_cup_tournament else 'kog'
     
@@ -38,6 +38,7 @@ def fact_table_init(kc_cup_tournament: bool, rol_user: str):
         latino_vania BOOLEAN NOT NULL,
         updater_label VARCHAR(32) NOT NULL,
         created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW(),
         CONSTRAINT fk_{table_name}_player_id 
             FOREIGN KEY (player_id) 
             REFERENCES players (player_id),
@@ -51,6 +52,10 @@ def fact_table_init(kc_cup_tournament: bool, rol_user: str):
             FOREIGN KEY (date_id)
             REFERENCES calendar_2025 (date_id)
     );\n
+    CREATE TRIGGER trigger_set_updated_at
+    BEFORE UPDATE ON {table_name}
+    FOR EACH ROW
+    EXECUTE FUNCTION set_updated_at();\n
     GRANT SELECT, INSERT, UPDATE, TRUNCATE, REFERENCES, TRIGGER ON {table_name} TO {rol_user};\n
     ALTER TABLE {table_name} OWNER TO {rol_user};
     """)
