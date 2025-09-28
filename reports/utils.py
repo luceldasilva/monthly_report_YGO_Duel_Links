@@ -1,4 +1,5 @@
 from queries_db.constants import tables_db, kc_tables_db
+from datetime import date
 from enum import IntEnum
 import pandas as pd
 
@@ -24,20 +25,47 @@ class ExcelConstants(IntEnum):
 
 def build_fact_df(kc_cup: bool):
     """
-    Texto para usar en la función de df_query, y suar con click
+    Texto para usar en la función de `df_query`, y usar con click
+    
+    Parameters
+    ----------
+    kc_cup: bool
+        Para usar la lista de meses de kog o
+        la de los meses que se jugaron la copa KC
+    
+    Returns
+    -------
+    fact_table: str
+        Nombre de la tabla a usar
+    tournament_text: str
+        Catagolado si es de la Copa KC o KOG
+    alias_fact_table: str
+        Abreviatura de `fact_table` para usar en las consultas sql
     """
-    fact_table = kc_tables_db[-1] if kc_cup else tables_db[-1]
-    tournament_text = 'DLv. MAX' if kc_cup else 'KOG'
-    alias_fact_table = fact_table[-3:]
+    fact_table: str = kc_tables_db[-1] if kc_cup else tables_db[-1]
+    tournament_text: str = 'DLv. MAX' if kc_cup else 'KOG'
+    alias_fact_table: str = fact_table[-3:]
 
     return fact_table, tournament_text, alias_fact_table
 
 
 def fact_table_text(fact_df: pd.DataFrame):
     """
-    Textos para usar sobre el dataframe creado por df_query
+    Textos para usar sobre el dataframe creado por `df_query`
+    
+    Parameters
+    ----------
+    fact_df: DataFrame
+        Tabla de hechos a usar
+    
+    Returns
+    -------
+    month_fact_table: str
+        Mes correspondiente al `fact_df`
+    year_fact_table: str
+        Año correspondiente al `fact_df`
     """
-    date_fact_table = fact_df.ndmax[0]
+    date_fact_table: date = fact_df.ndmax[0]
     month_fact_table: str = date_fact_table.strftime('%B').capitalize()
     year_fact_table: str = date_fact_table.strftime('%Y')
     

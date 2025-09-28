@@ -18,6 +18,9 @@ pg_engine = ce(config('ENGINE_PSQL'))
 
 
 def show_tables():
+    """
+    Mostrar todas las tablas de la base de datos
+    """
     conn = pg_engine.connect()
     metadata = md()
     metadata.reflect(bind=conn)
@@ -31,9 +34,18 @@ def show_tables():
 
 
 def query(query: str) -> pd.DataFrame:
-    '''
-        hacer variable = query(y la consulta sql)
-    '''
+    """
+    Crear dataframe leyendo desde sql
+
+    Parameters
+    ----------
+    query : str
+        La consulta de sql
+
+    Returns
+    -------
+    pandas.DataFrame
+    """
     try:
         logging.info(f'Aquí está la consulta \n{query}')
         return pd.read_sql_query(sql=query, con=pg_engine)

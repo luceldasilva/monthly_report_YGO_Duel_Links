@@ -26,6 +26,16 @@ def save_plot():
 
 
 def comunity_bars(save_photo: bool, pivot_comunidad: pd.DataFrame):
+    """
+    Gráfico de barras sobre las distintas comunidades y sus registros
+
+    Parameters
+    ----------
+    save_photo : bool
+        Guardar la imagen
+    pivot_comunidad : pandas.DataFrame
+        Tabla de las comunidades con su cantidad de registros
+    """
     
     pivot_comunidad_rename = pivot_comunidad.rename(
         index=comunity_dict
@@ -102,6 +112,22 @@ def date_lineplot(
     year_fact_table: str,
     tournament_text: str
 ):
+    """
+    Gráfico de líneas mostrando la canitdad de registros por día
+
+    Parameters
+    ----------
+    save_photo : bool
+        Guardar la imagen
+    date_df : pandas.DataFrame
+        Tabla de los días del mes estudiado ya sea KOG o copa KC
+    month_fact_table : str
+        Mes de la tabla estudiada
+    year_fact_table : str
+        Año de la tabla estudiada
+    tournament_text : str
+        Catalogado si es del mes KOG o copa KC
+    """
     fig = px.line(
         date_df,
         y="day_of_monthy", x="jugadores",
@@ -135,7 +161,30 @@ def top_five_decks(
     month_fact_table: str | None = None,
     year_fact_table: str | None = None
 ):
-    
+    """
+    Gráfico de barras de los mazos más populares del mes/copa KC estudiado
+
+    Parameters
+    ----------
+    save_photo : bool
+        Guardar la foto
+    avatar_bool : bool
+        Usar los avatares de los mazos
+    decks_sum : pandas.DataFrame
+        Lista total de los mazos más usados con sus registros
+        para luego separarlos con `limit` y la función `decks_with_avatar`
+    limit : int
+        Corte del grupo para separar a los más utilizados
+    tournament_text : str | None, optional
+        Para usar con el título, texto para contar si es del mes KOG
+        o de la copa KC, por defecto es None
+    month_fact_table : str | None, optional
+        Para usar con el título, mes de la tabla de hechos estudiada,
+        por defecto es None
+    year_fact_table : str | None, optional
+        Para usar con el título, año de la tabla de hechos estudiada,
+        por defecto es None
+    """
     decks_sum = dft.decks_with_avatar(decks_sum, limit)
     
     avatar_deck = decks_sum['url_image']
@@ -143,7 +192,7 @@ def top_five_decks(
     
     plt.figure(figsize=(6, 4))
 
-    # Por si hay empate en el puesto 5 se ponen los igualados
+    #* Por si hay empate en el puesto 5 se ponen los igualados
     colors_top_five = ['#4c2882'] + ['#808080'] * (len(avatar_deck) - 1)
 
     ax = sns.barplot(
@@ -223,6 +272,20 @@ def wordcloud(
     decks_sum: pd.DataFrame,
     limit: int
 ):
+    """
+    Lista del resto de mazos usados
+
+    Parameters
+    ----------
+    save_photo : bool
+        Guardar la imagen
+    fact_table_df : pandas.DataFrame
+        Tabla de hechos a estudiar
+    decks_sum : pandas.DataFrame
+        Mazos usados en `fact_table_df` con sus registros
+    limit : int
+        Corte del grupo para separar de los más populares
+    """
 
     top_five_decks = decks_sum.name.iloc[:limit].tolist()
 
@@ -262,6 +325,23 @@ def squarify_decks(
     month_fact_table: str,
     year_fact_table: str
 ):
+    """
+    Gráfico tipo Treemaps del mes/copa KC estudiada
+    mostrando los mazos utilizados
+
+    Parameters
+    ----------
+    save_photo : bool
+        Guardar la imagen
+    decks_sum : pandas.DataFrame
+        Lista de mazos con sus registros
+    tournament_text : str
+        Catalogado si es del mes KOG o de la copa KC
+    month_fact_table : str
+        Mes de la tabla de hechos estudiada
+    year_fact_table : str
+        Año de la tabla de hechos estudiada
+    """
     top_ten_decks = decks_sum.iloc[:10]
 
     otros = decks_sum.iloc[10:].sum()

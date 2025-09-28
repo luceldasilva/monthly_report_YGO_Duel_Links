@@ -7,7 +7,16 @@ import os
 
 
 def fact_table_init(kc_cup_tournament: bool, rol_user: str):
+    """
+    Crear una tabla de hechos del mes correspondiente
     
+    Parameters
+    ----------
+    kc_cup_tournament: bool
+        Para diferenciar entre kog y copa KC
+    rol_user: str
+        usuario en darle los permisos y hacerle dueño de la tabla
+    """
     locale.setlocale(locale.LC_TIME, 'English_United States.1252')
     #* locale.setlocale(locale.LC_TIME, 'en_US.utf8') en Linux/macOS
     

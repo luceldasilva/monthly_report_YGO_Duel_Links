@@ -14,8 +14,29 @@ def venn_graphs(
     comparation_bool: bool = False,
     venn_bool: bool = True,
     population_bool: bool = False
-    
 ):
+    """
+    Gráficos de Venn y de pastel para relaciones
+    entre comunidades más grandes
+
+    Parameters
+    ----------
+    save_photo : bool
+        Guardar la imagen
+    fact_table_df : pandas.DataFrame
+        Tabla de hechos a estudiar
+    pivot_comunidad : pd.DataFrame
+        _description_
+    comparation_bool : bool, optional
+        Comparación de usuarios que están en las comunidades,
+        por defecto es False
+    venn_bool : bool, optional
+        Gráfico de Venn entre las 3 comunidades con más registros,
+        por defecto es True
+    population_bool : bool, optional
+        Comparativa en ver si entre las 3 comunidades más si están en las 3,
+        por defecto es False
+    """
     def comunidad(server: str, df: pd.DataFrame=fact_table_df):
         '''
             Para filtrar sus usuarios únicos de cada comunidad
@@ -23,11 +44,6 @@ def venn_graphs(
         df = df[['nick', 'zerotg', 'zephra', 'bryan', 'xenoblur', 'yamiglen', 'latino_vania']]
         return df.query(f'{server} == True')['nick'].drop_duplicates()
 
-
-    '''
-        Gráficos de Venn y de pastel para relaciones
-        entre comunidades más grandes
-    '''
 
     comunidad_list_top_three = pivot_comunidad.index[:3]
 
@@ -62,10 +78,6 @@ def venn_graphs(
     percent_111 = (size_111 / nicks_sum) * 100
 
     if comparation_bool:
-        """
-        Comparación de usuarios que están en las comunidades
-        """
-        
         count_com = [total, int(nicks_sum - total)]
         labels_com = "Están en\nlas más \nconcurridas", "No están\nen las más\nconcurridas"
         pastel_colors = ['#D291BC', '#BDFCFE']

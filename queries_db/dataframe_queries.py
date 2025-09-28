@@ -5,7 +5,21 @@ from queries_db import query as qu
 
 def df_query(
     fact_table: str, alias_fact_table: str) -> pd.DataFrame:
-    kog_query = f"""
+    """
+    Tabla de hechos del mes/copa KC a estudiar
+    
+    Parameters
+    ----------
+    fact_table : str
+        Nombre de la tabla de hechos
+    alias_fact_table : str
+        Abreviatura de `fact_table` para las consultas sql
+    
+    Returns
+    -------
+    pandas.DataFrame
+    """
+    fact_query = f"""
     SELECT 
         p.nick, d.deck, s.skill, c.ndmax,
         {alias_fact_table}.zerotg, {alias_fact_table}.zephra,
@@ -18,8 +32,8 @@ def df_query(
     INNER JOIN calendar_2025 c ON {alias_fact_table}.date_id = c.date_id;
     """
 
-    kog_df = qu(kog_query)
-    return kog_df
+    fact_df = qu(fact_query)
+    return fact_df
 
 
 def date_df(
@@ -27,6 +41,19 @@ def date_df(
     alias_fact_table: str,
     date_fact_table: date
 ) -> pd.DataFrame:
+    """
+    Tabla de los días del mes y sus registros correspondientes
+    
+    Parameters
+    ----------
+    fact_table : str
+    alias_fact_table : str
+    date_fact_table : datetime.date
+    
+    Returns
+    -------
+    pandas.DataFrame
+    """
     date_query = f"""
     SELECT 
         c.day_of_monthy, 
@@ -44,6 +71,20 @@ def date_df(
 
 
 def decks_df(fact_table: str, alias_fact_table: str) -> pd.DataFrame:
+    """
+    Lista de mazos con sus registros correspondientes
+    
+    Parameters
+    ----------
+    fact_table : str
+        Tabla de hechos a estudiar
+    alias_fact_table : str
+        Abreviatura de `fact_table` para las consultas sql
+    
+    Returns
+    -------
+    pandas.DataFrame
+    """
     decks_count_query = f"""
     SELECT
         d.deck AS name, COUNT(*) AS total

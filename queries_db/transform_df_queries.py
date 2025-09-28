@@ -8,6 +8,19 @@ import os
 
 
 def pivot_comunity(fact_df: pd.DataFrame):
+    """
+    Tabla de las comunidades estudiadas
+    con sus registros correspondientes
+
+    Parameters
+    ----------
+    fact_df : pd.DataFrame
+        Tabla de hechos a estudiar
+
+    Returns
+    -------
+    pandas.DataFrame
+    """
     melted_comunidad = fact_df.melt(
         id_vars='nick',
         value_vars=comunidades, 
@@ -25,7 +38,21 @@ def pivot_comunity(fact_df: pd.DataFrame):
 
 
 def decks_with_avatar(decks_sum: pd.DataFrame, limit: int):
-    
+    """
+    Tabla con sus registros de usuarios
+    y su enlace de avatar correspondiente
+
+    Parameters
+    ----------
+    decks_sum : pd.DataFrame
+        Mazos usados con sus registros
+    limit : int
+        Corte del grupo para elegir a los más usados
+
+    Returns
+    -------
+    pandas.DataFrame
+    """
     decks_images = pd.read_json(
         'https://monthly-report-yugioh-dl.vercel.app/decks/',
         orient='records'
@@ -43,6 +70,16 @@ def decks_with_avatar(decks_sum: pd.DataFrame, limit: int):
 
 
 def converter_to_r(df: pd.DataFrame, name_file: str):
+    """
+    Convertir dataframes de pandas a dataframes de R
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Dataframe a usar
+    name_file : str
+        Nombre para guardar al `df`
+    """
     with localconverter(ro.default_converter + pandas2ri.converter):
         r_df: RObject = ro.conversion.py2rpy(df)
         

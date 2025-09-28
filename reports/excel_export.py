@@ -15,6 +15,25 @@ def export_report(
     year_fact_table: str,
     comunity: str | None = None
 ):
+    """
+    Generar un excel con los registros de la tabla de hechos
+    y hacer una tabla dinámica de los mazos
+
+    Parameters
+    ----------
+    fact_df : pandas.DataFrame
+        Tabla de hechos a estudiar
+    tournament_text : str
+        Categoría si es KOG o copa KC
+    month_fact_table : str
+        Mes del `fact_df`
+    alias_fact_table : str
+        Alias del nombre de `fact_df`
+    year_fact_table : str
+        Año del `fact_df`
+    comunity : str | None, optional
+        Para separar por comunidad y ser un archivo aparte, por defecto es None
+    """
     comunity_name: str = f"{comunity}_" if comunity else ''
     
     df_name: str = f"{tournament_text} {month_fact_table} {year_fact_table}"
@@ -152,6 +171,16 @@ def export_report(
 @click.command()
 @click.option("--kc-cup", is_flag=True, help="Para usar en Copas KC")
 def overall_report(kc_cup):
+    """
+    Generar el archivo excel para la tabla de hechos estudiada
+    con todas sus comunidades
+
+    Parameters
+    ----------
+    kc_cup
+        Comando para saber si se quiere de la lista de la copa KC,
+        si no se usa le refiere a `False` y se usa la lista de mes para KOG
+    """
     fact_table, tournament_text, alias_fact_table = build_fact_df(kc_cup)
     
     fact_df = dfq.df_query(fact_table, alias_fact_table)

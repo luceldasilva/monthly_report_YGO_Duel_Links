@@ -10,6 +10,24 @@ def indicator(
     fact_table_previous_df: pd.DataFrame,
     comunity: str | None = None
 ):
+    """
+    Indicadores para contar el total de mazos distintos
+    y comparar con el mes/copa kc anterior la cantidad de registros
+
+    Parameters
+    ----------
+    save_photo : bool
+        Guardar la imagen en outputs
+    fact_table_df : pandas.DataFrame
+        Mes/copa kc a estudiar
+    decks_sum : pandas.DataFrame
+        Cantidad de mazos usados en `fact_table_df`
+    fact_table_previous_df : pandas.DataFrame
+        El mes/copa kc anterior al `fact_table_df`
+    comunity : str | None, optional
+        Para separar por comunidad al usar con save_photo,
+        por defecto es `None` para usar en el general
+    """
     fact_count = len(fact_table_df)
     
     count_fact_previous_df = len(fact_table_previous_df)
