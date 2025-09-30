@@ -18,7 +18,7 @@ import locale
 ```{python}
 #| tags: [parameters]
 
-kc_cup_bool: bool = True
+kc_cup_bool: bool = False
 idx_fact_table: int = 1
 ```
 

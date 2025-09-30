@@ -14,7 +14,7 @@ from queries_db.constants import (
 from queries_db import dataframe_queries as dfq
 from queries_db.transform_df_queries import pivot_comunity
 import visualization
-from visualization.venn_comunities import venn_graphs
+from visualization.venn_comunities import venn_graphs, compare_with_kc_cup
 from visualization.comparison_two_months import indicator
 from visualization.pie_diagram import percentage_deck_popularity
 import pyprojroot
@@ -173,6 +173,28 @@ url_por_dia: str = f"{url_base}_por_dia.png"
 venn_graphs(save_photo, fact_df, pivot_comunidad)
 ```
 
-# Llegadas por día
+# Llegadas por día {orientation="columns"}
 
-![](`{python} url_por_dia`){width=50%}
+![](`{python} url_por_dia`)
+
+```{python}
+#| output: false
+fact_table: str = tables_db[-idx_fact_table]
+alias_fact_table: str = fact_table[-3:]
+
+kog_df = dfq.df_query(fact_table, alias_fact_table)
+
+kc_fact_table: str = kc_tables_db[-idx_fact_table]
+kc_alias_fact_table: str = kc_fact_table[-3:]
+kc_df = dfq.df_query(kc_fact_table, kc_alias_fact_table)
+```
+
+```{python}
+compare_with_kc_cup(
+    save_photo=save_photo,
+    kog_df=kog_df,
+    kc_df=kc_df,
+    month_fact_table=month_fact_table,
+    year_fact_table=year_fact_table
+)
+```

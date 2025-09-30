@@ -14,9 +14,6 @@ import locale
 
 fact_table: str = tables_db[-1]
 alias_fact_table: str = fact_table[-3:]
-kc_cup_bool: bool = False
-tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
-
 kog_df = dfq.df_query(fact_table, alias_fact_table)
 
 locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
@@ -28,7 +25,6 @@ year_fact_table = date_fact_table.strftime('%Y')
 
 kc_fact_table: str = kc_tables_db[-1]
 kc_alias_fact_table: str = kc_fact_table[-3:]
-kc_cup_bool: bool = True
 kc_df = dfq.df_query(kc_fact_table, kc_alias_fact_table)
 
 kc_users = kc_df.nick.drop_duplicates()
