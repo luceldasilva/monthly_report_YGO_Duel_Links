@@ -177,6 +177,23 @@ def compare_with_kc_cup(
     month_fact_table: str,
     year_fact_table: str
 ):
+    """
+    Diagrama de Venn para mostrar cuantos usuarios en el mismo mes
+    llegaron a KOG y al DLv. MAX
+
+    Parameters
+    ----------
+    save_photo : bool
+        Guardar la imagen
+    kog_df : pd.DataFrame
+        Tabla de hechos referende a KOG
+    kc_df : pd.DataFrame
+        Tabla de hechos referende a la Copa KC
+    month_fact_table : str
+        Mes correspondiente a `kog_df` y `kc_df`
+    year_fact_table : str
+        Año correspondiente a `kog_df` y `kc_df`
+    """
     kc_users = set(kc_df.nick.drop_duplicates())
     kog_users = set(kog_df.nick.drop_duplicates())
 
