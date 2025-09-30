@@ -3,6 +3,7 @@ from visualization import save_plot
 from queries_db.constants import comunity_dict
 import matplotlib.pyplot as plt
 from matplotlib_venn import venn3
+from matplotlib_venn import venn2
 import seaborn as sns
 from visualization.pie_diagram import comparation_pie_diagram
 
@@ -167,3 +168,45 @@ def venn_graphs(
             fontsize=fontsize,
             text_center=text_center
         )
+
+
+def compare_with_kc_cup(
+    save_photo: bool,
+    kog_df: pd.DataFrame,
+    kc_df: pd.DataFrame,
+    month_fact_table: str,
+    year_fact_table: str
+):
+    kc_users = set(kc_df.nick.drop_duplicates())
+    kog_users = set(kog_df.nick.drop_duplicates())
+
+    solo_kc = len(kc_users - kog_users)
+    solo_kog = len(kog_users - kc_users)
+    interseccion = len(kc_users & kog_users)
+
+    plt.figure(figsize=(5,5))
+
+    venn2(
+        subsets=(
+            solo_kc, solo_kog, interseccion
+        ),
+        set_colors=(
+            "cyan",
+            "gold"
+        ),
+        set_labels=(
+            'LLegaron a DLv. MAX',
+            'Llegaron a KOG'
+        )
+    )
+
+    plt.title(
+        f"Diagrama de Venn de Usuarios\nen {month_fact_table} {year_fact_table}",
+        fontsize=14,
+        fontweight='bold'
+    )
+    
+    if save_photo:
+        save_plot()
+    
+    plt.show()
