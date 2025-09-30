@@ -185,9 +185,9 @@ def compare_with_kc_cup(
     ----------
     save_photo : bool
         Guardar la imagen
-    kog_df : pd.DataFrame
+    kog_df : pandas.DataFrame
         Tabla de hechos referende a KOG
-    kc_df : pd.DataFrame
+    kc_df : pandas.DataFrame
         Tabla de hechos referende a la Copa KC
     month_fact_table : str
         Mes correspondiente a `kog_df` y `kc_df`
