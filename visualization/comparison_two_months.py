@@ -5,6 +5,7 @@ from queries_db.constants import data_path, today
 
 def indicator(
     save_photo: bool,
+    kc_cup_bool: bool,
     fact_table_df: pd.DataFrame,
     decks_sum: pd.DataFrame,
     fact_table_previous_df: pd.DataFrame,
@@ -18,6 +19,8 @@ def indicator(
     ----------
     save_photo : bool
         Guardar la imagen en outputs
+    kc_cup_bool : bool
+        Diferenciar entre mes de kog o torneo copa KC
     fact_table_df : pandas.DataFrame
         Mes/copa kc a estudiar
     decks_sum : pandas.DataFrame
@@ -59,9 +62,11 @@ def indicator(
     
     color_relative: str = 'red' if fact_count < count_fact_previous_df else 'green'
     
+    mes: str = 'copa KC' if kc_cup_bool else 'mes'
+        
     fig.add_annotation(
-        text=f"<span style='font-size:12px; color:{color_relative}'>vs. mes anterior</span>",
-        x=0.9, y=0.24,
+        text=f"<span style='font-size:12px; color:{color_relative}'>vs. {mes} anterior</span>",
+        x=0.90, y=0.26,
         xref="paper", yref="paper",
         showarrow=False,
         align="center"
