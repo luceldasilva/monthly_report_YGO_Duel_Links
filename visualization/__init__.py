@@ -221,9 +221,9 @@ def top_five_decks(
             image = plt.imread(BytesIO(response.content))
             imagebox = OffsetImage(image, zoom=0.8)
             if x_avatar is None:
-                x_avatar = patch.get_x() + patch.get_width() + 0.2
+                x_avatar = patch.get_x() + (patch.get_width() * 0.05)
             ab = AnnotationBbox(
-                imagebox, xy=(2.65, patch.get_y() + patch.get_height()/2),
+                imagebox, xy=(x_avatar, patch.get_y() + patch.get_height()/2),
                 xybox=(0,0), xycoords='data', boxcoords="offset points",
                 pad=0, arrowprops=dict(arrowstyle='-', color='none'),
                 bboxprops=dict(facecolor='none', edgecolor='none')
