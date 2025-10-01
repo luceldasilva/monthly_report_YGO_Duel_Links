@@ -132,7 +132,7 @@ visualization.wordcloud(save_bool, fact_df, decks_sum, limit_top)
 ```
 
 ```{python}
-indicator(save_bool, fact_df, decks_sum, fact_previous_df)
+indicator(save_bool, kc_cup_bool, fact_df, decks_sum, fact_previous_df)
 ```
 
 ```{python}
