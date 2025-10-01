@@ -12,6 +12,7 @@
 .Ruserdata
 
 # R-specific files
+*.rds
 *-Ex.R
 /*.tar.gz
 /*.Rcheck/
