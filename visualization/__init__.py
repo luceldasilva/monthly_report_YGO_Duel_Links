@@ -203,6 +203,7 @@ def top_five_decks(
 
     new_patches = []
     x_avatar = None
+    num_zoom: float = 0.7 if limit >5 else 0.8
     for patch, color, total, avatar in zip(
         ax.patches, colors_top_five, decks_sum['total'], avatar_deck
     ):
@@ -219,7 +220,7 @@ def top_five_decks(
         if avatar_bool: 
             response = req.get(avatar)
             image = plt.imread(BytesIO(response.content))
-            imagebox = OffsetImage(image, zoom=0.8)
+            imagebox = OffsetImage(image, zoom=num_zoom)
             if x_avatar is None:
                 x_avatar = patch.get_x() + (patch.get_width() * 0.05)
             ab = AnnotationBbox(
