@@ -12,6 +12,7 @@ notebooks/
 queries_db/
 reports/
 visualization/
+*.bat
 
 # General system files
 .DS_Store
