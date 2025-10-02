@@ -87,6 +87,8 @@ cover/
 *.mo
 *.pot
 *.json
+!listing.json
+!search.json
 *.csv
 *.xls
 *.xlsx
