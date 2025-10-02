@@ -1,6 +1,7 @@
 # General system files
 .DS_Store
 *.log
+*.bat
 
 # History files
 .Rhistory
