@@ -32,6 +32,14 @@ function Limpiar() {
 
 
 function Guardar() {
+  // Por si es el mismo usuario con el mismo deck y
+  // no dice que es cuenta secundaria
+  // Para agregar otro deck del mismo usuario borrar la casilla del id
+  if (valor !== "") {
+    SpreadsheetApp.getUi().alert('Este usuario ya existe');
+    return;
+  }
+
   // Buscar la primera fila vacía en la columna A
   var columna = registro.getRange("A:A").getValues();
   var primeraFilaVacia = columna.findIndex(function(row) {
@@ -45,13 +53,12 @@ function Guardar() {
     primeraFilaVacia += 1;
   }
 
-  Logger.log("Primera fila vacía encontrada en la columna A: " + primeraFilaVacia);
-
   // Verificar si alguno de los valores está vacío
   if (celdas[0].some(value => value !== "")) {
     registro.getRange(primeraFilaVacia, 1, 1, celdas[0].length).setValues(celdas);
   } else {
-    Logger.log("Algunos valores están vacíos.");
+    SpreadsheetApp.getUi().alert('Algunos valores están vacíos.');
+    return;
   }
 
   var celdaNumeroAleatorio = registro.getRange(primeraFilaVacia, NUM_COLUMNA_BUSQUEDA + 3);
@@ -65,6 +72,11 @@ function Guardar() {
 
 
 function Buscar() { 
+  if (valor === "") {
+    SpreadsheetApp.getUi().alert('No puedo encontrar la id');
+    return;
+  }
+  
   for (var i = 0; i < valores.length; i++) {
     var fila = valores[i];
     if (fila[NUM_COLUMNA_BUSQUEDA] == valor) {
