@@ -42,7 +42,10 @@ def export_report(
     
     excel_file: str = excel_name.replace(" ", "_").replace(".", "").lower()
 
-    file_path = data_path.joinpath(f"{excel_file}.xlsx")
+    if tournament_text == 'KOG' and comunity is None:
+        file_path = data_path / 'meses' / f'{excel_file}.xlsx'
+    else:
+        file_path = data_path.joinpath(f"{excel_file}.xlsx")
 
     if os.path.exists(file_path):
         os.remove(file_path)
