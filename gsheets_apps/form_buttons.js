@@ -54,7 +54,7 @@ function Guardar() {
   }
 
   // Verificar si alguno de los valores está vacío
-  if (celdas[0].some(value => value !== "")) {
+  if (celdas[0].every(value => value !== "")) {
     registro.getRange(primeraFilaVacia, 1, 1, celdas[0].length).setValues(celdas);
   } else {
     SpreadsheetApp.getUi().alert('Algunos valores están vacíos.');
