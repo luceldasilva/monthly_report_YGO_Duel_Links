@@ -297,6 +297,7 @@ def wordcloud(
 
     decks = decks.replace("-", ' ', regex=True)
     decks = decks.replace("/", ' ', regex=True)
+    decks = decks.replace("’", ' ', regex=True)
     decks = decks.replace(" ", '', regex=True)
 
 
