@@ -11,7 +11,7 @@ def dashboard(kc_cup):
     
     fact_df = dfq.df_query(fact_table, alias_fact_table)
     
-    month_fact_table, year_fact_table = fact_table_text(fact_df)
+    _, month_fact_table, year_fact_table = fact_table_text(fact_df)
     
     df_name: str = f"{tournament_text} {month_fact_table} {year_fact_table}"
     

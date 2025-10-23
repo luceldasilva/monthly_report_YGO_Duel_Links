@@ -1,5 +1,6 @@
 ```{python}
-from queries_db.constants import tables_db, kc_tables_db, comunidades
+from queries_db.constants import comunidades
+from reports.utils import build_fact_df, fact_table_text
 from queries_db import query as qu
 from queries_db.transform_df_queries import converter_to_r
 from reports.excel_export import export_report
@@ -23,9 +24,10 @@ idx_fact_table: int = 1
 
 ```{python}
 save_bool: bool = False
-fact_table: str = kc_tables_db[-idx_fact_table] if kc_cup_bool else tables_db[-idx_fact_table]
-alias_fact_table: str = fact_table[-3:]
-tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
+
+fact_table, tournament_text, alias_fact_table= build_fact_df(
+    kc_cup=kc_cup_bool, idx_fact_table=idx_fact_table
+)
 ```
 
 ```{python}
@@ -47,12 +49,10 @@ fact_df
 """
 Para las fechas y poner el mes y año correspondiente
 """
-date_fact = fact_df.ndmax[0]
 
-locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
-#'es_ES.utf8'  En Linux/Mac
-month_fact_table: str = date_fact.strftime('%B').capitalize()
-year_fact_table: str = date_fact.strftime('%Y')
+date_fact_table, month_fact_table, year_fact_table = fact_table_text(
+    fact_df=fact_df, spanish=True
+)
 ```
 
 ```{python}
@@ -91,9 +91,10 @@ date_df
 
 ```{python}
 idx_fact_previous: int = idx_fact_table + 1
-previous_month_fact_table: str = kc_tables_db[-idx_fact_previous] if kc_cup_bool else tables_db[-idx_fact_previous]
 
-alias_previous_month_fact_table: str = previous_month_fact_table[-3:]
+previous_month_fact_table, _, alias_previous_month_fact_table = build_fact_df(
+    kc_cup=kc_cup_bool, idx_fact_table=idx_fact_previous
+)
 
 fact_table_previous_query = f"""
 SELECT p.nick, d.deck, s.skill, c.ndmax

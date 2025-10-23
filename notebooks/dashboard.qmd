@@ -8,9 +8,8 @@ logo: logo-yugi.png
 
 ```{python}
 #| output: false
-from queries_db.constants import (
-    comunity_dict, tables_db, kc_tables_db, comunidades
-)
+from queries_db.constants import comunity_dict, comunidades
+from reports.utils import build_fact_df, fact_table_text
 from queries_db import dataframe_queries as dfq
 from queries_db.transform_df_queries import pivot_comunity
 import visualization
@@ -33,9 +32,10 @@ idx_fact_table: int = 1
 
 ```{python}
 save_photo: bool = False
-fact_table: str = kc_tables_db[-idx_fact_table] if kc_cup_bool else tables_db[-idx_fact_table]
-alias_fact_table: str = fact_table[-3:]
-tournament_text: str = 'DLv. MAX' if kc_cup_bool else 'KOG'
+
+fact_table, tournament_text, alias_fact_table,= build_fact_df(
+    kc_cup=kc_cup_bool, idx_fact_table=idx_fact_table
+)
 ```
 
 ```{python}
@@ -49,23 +49,19 @@ fact_df = dfq.df_query(fact_table, alias_fact_table)
 Para las fechas y poner el mes y año correspondiente
 """
 
-
-locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
-#*'es_ES.utf8'  En Linux/Mac
-
-date_fact_table = fact_df.ndmax[0]
-
-month_fact_table: str = date_fact_table.strftime('%B').capitalize()
-year_fact_table: str = date_fact_table.strftime('%Y')
+date_fact_table, month_fact_table, year_fact_table = fact_table_text(
+    fact_df=fact_df, spanish=True
+)
 
 title_report: str = f'{tournament_text} {month_fact_table} {year_fact_table}'
 
-idx_fact_previous: int = idx_fact_table + 1
-fact_table_previous: str = kc_tables_db[-idx_fact_previous] if kc_cup_bool else tables_db[-idx_fact_previous]
+fact_table_previous, _, alias_fact_table_previous = build_fact_df(
+    kc_cup=kc_cup_bool, idx_fact_table=idx_fact_previous
+)
 
 fact_previous_df = dfq.df_query(
     fact_table=fact_table_previous,
-    alias_fact_table=fact_table_previous[-3:]
+    alias_fact_table=alias_fact_table_previous
 )
 ```
 

@@ -2,6 +2,7 @@ from queries_db.constants import tables_db, kc_tables_db
 from datetime import date
 from enum import IntEnum
 import pandas as pd
+import locale
 
 
 class ExcelConstants(IntEnum):
@@ -23,7 +24,7 @@ class ExcelConstants(IntEnum):
 
 
 
-def build_fact_df(kc_cup: bool):
+def build_fact_df(kc_cup: bool, idx_fact_table: int = 1):
     """
     Texto para usar en la función de `df_query`, y usar con click
     
@@ -32,6 +33,10 @@ def build_fact_df(kc_cup: bool):
     kc_cup: bool
         Para usar la lista de meses de kog o
         la de los meses que se jugaron la copa KC
+    
+    idx_fact_table: int
+        Para indicar el índice de la lista de tablas a usar
+        Es el 1 como defecto para usar la última tabla
     
     Returns
     -------
@@ -42,14 +47,14 @@ def build_fact_df(kc_cup: bool):
     alias_fact_table: str
         Abreviatura de `fact_table` para usar en las consultas sql
     """
-    fact_table: str = kc_tables_db[-1] if kc_cup else tables_db[-1]
+    fact_table: str = kc_tables_db[-idx_fact_table] if kc_cup else tables_db[-idx_fact_table]
     tournament_text: str = 'DLv. MAX' if kc_cup else 'KOG'
     alias_fact_table: str = fact_table[-3:]
 
     return fact_table, tournament_text, alias_fact_table
 
 
-def fact_table_text(fact_df: pd.DataFrame):
+def fact_table_text(fact_df: pd.DataFrame, spanish: bool = False):
     """
     Textos para usar sobre el dataframe creado por `df_query`
     
@@ -58,15 +63,25 @@ def fact_table_text(fact_df: pd.DataFrame):
     fact_df: DataFrame
         Tabla de hechos a usar
     
+    spanish: bool
+        Para nombrar los meses en español
+    
     Returns
     -------
+    date_fact_table: date
+        La primera fecha del mes para el dataframe
     month_fact_table: str
         Mes correspondiente al `fact_df`
     year_fact_table: str
         Año correspondiente al `fact_df`
     """
     date_fact_table: date = fact_df.ndmax[0]
+    
+    if spanish:
+        locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
+        #'es_ES.utf8'  En Linux/Mac
+    
     month_fact_table: str = date_fact_table.strftime('%B').capitalize()
     year_fact_table: str = date_fact_table.strftime('%Y')
     
-    return month_fact_table, year_fact_table
+    return date_fact_table, month_fact_table, year_fact_table
