@@ -7,11 +7,7 @@ from reports.excel_export import export_report
 import visualization
 from visualization.comparison_two_months import indicator
 from visualization.pie_diagram import percentage_deck_popularity
-import pyprojroot
-import numpy as np
 import pandas as pd
-import seaborn as sns
-import locale
 ```
 
 ```{python}

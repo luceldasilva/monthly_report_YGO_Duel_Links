@@ -1,5 +1,5 @@
 ---
-title: "Reporte Copa KC"
+title: "Reporte Mensual"
 format: dashboard
 echo: false
 lang: "es"
@@ -16,17 +16,12 @@ import visualization
 from visualization.venn_comunities import venn_graphs, compare_with_kc_cup
 from visualization.comparison_two_months import indicator
 from visualization.pie_diagram import percentage_deck_popularity
-import pyprojroot
-import numpy as np
-import pandas as pd
-import seaborn as sns
-import locale
 ```
 
 ```{python}
 #| tags: [parameters]
 
-kc_cup_bool: bool = True
+kc_cup_bool: bool = False
 idx_fact_table: int = 1
 ```
 
@@ -54,6 +49,8 @@ date_fact_table, month_fact_table, year_fact_table = fact_table_text(
 )
 
 title_report: str = f'{tournament_text} {month_fact_table} {year_fact_table}'
+
+idx_fact_previous: int = idx_fact_table + 1
 
 fact_table_previous, _, alias_fact_table_previous = build_fact_df(
     kc_cup=kc_cup_bool, idx_fact_table=idx_fact_previous
@@ -109,7 +106,7 @@ dict(
 )
 ```
 
-## Column {width=70%}
+## Column {.tabset width=70%}
 
 ```{python}
 #| output: false
@@ -122,10 +119,6 @@ visualization.top_five_decks(
     save_photo, True, decks_sum, limit_top
 )
 ```
-
-# Datos de mazos
-
-## Column
 
 ```{python}
 #| title: Comparativa Top 5 vs Resto de mazos
@@ -143,7 +136,6 @@ visualization.wordcloud(save_photo, fact_df, decks_sum, limit_top)
 ```{python}
 #| output: false
 pivot_comunidad = pivot_comunity(fact_df)
-pivot_comunidad
 ```
 
 ```{python}
@@ -174,23 +166,23 @@ venn_graphs(save_photo, fact_df, pivot_comunidad)
 ![](`{python} url_por_dia`)
 
 ```{python}
-#| output: false
-fact_table: str = tables_db[-idx_fact_table]
-alias_fact_table: str = fact_table[-3:]
+# #| output: false
+# fact_table: str = tables_db[-idx_fact_table]
+# alias_fact_table: str = fact_table[-3:]
 
-kog_df = dfq.df_query(fact_table, alias_fact_table)
+# kog_df = dfq.df_query(fact_table, alias_fact_table)
 
-kc_fact_table: str = kc_tables_db[-idx_fact_table]
-kc_alias_fact_table: str = kc_fact_table[-3:]
-kc_df = dfq.df_query(kc_fact_table, kc_alias_fact_table)
+# kc_fact_table: str = kc_tables_db[-idx_fact_table]
+# kc_alias_fact_table: str = kc_fact_table[-3:]
+# kc_df = dfq.df_query(kc_fact_table, kc_alias_fact_table)
 ```
 
 ```{python}
-compare_with_kc_cup(
-    save_photo=save_photo,
-    kog_df=kog_df,
-    kc_df=kc_df,
-    month_fact_table=month_fact_table,
-    year_fact_table=year_fact_table
-)
+# compare_with_kc_cup(
+#     save_photo=save_photo,
+#     kog_df=kog_df,
+#     kc_df=kc_df,
+#     month_fact_table=month_fact_table,
+#     year_fact_table=year_fact_table
+# )
 ```

@@ -7,10 +7,7 @@ import visualization
 from visualization.venn_comunities import venn_graphs
 from visualization.comparison_two_months import indicator
 from visualization.pie_diagram import percentage_deck_popularity
-import pyprojroot
-import numpy as np
 import pandas as pd
-import seaborn as sns
 ```
 
 ```{python}
