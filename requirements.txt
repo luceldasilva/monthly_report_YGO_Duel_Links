@@ -15,6 +15,7 @@ psycopg2-binary
 SQLAlchemy
 colorama
 openpyxl
+xlsxwriter
 xlrd
 numpy
 pandas
