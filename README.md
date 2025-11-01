@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/badge/Python-3.11+-yellow?style=for-the-badge&logo=python&logoColor=white&labelColor=101010)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115.6+-00a393?style=for-the-badge&logo=fastapi&logoColor=white&labelColor=101010)](https://fastapi.tiangolo.com)
 [![MongoDB](https://img.shields.io/badge/MongoDB-8.0+-00684A?style=for-the-badge&logo=mongodb&logoColor=white&labelColor=101010)](https://www.mongodb.com)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-00BFFF?style=for-the-badge&logo=postgresql&logoColor=white&labelColor=101010)](https://www.mongodb.com)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-00BFFF?style=for-the-badge&logo=postgresql&logoColor=white&labelColor=101010)](https://www.postgresql.org)
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-monthly_report_YGO_Duel_Links-00BFAE?style=for-the-badge&logo=github&logoColor=white)](https://luceldasilva.github.io/monthly_report_YGO_Duel_Links/)
 
