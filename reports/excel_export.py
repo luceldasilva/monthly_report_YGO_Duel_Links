@@ -1,8 +1,9 @@
 import os
 import click
 import pandas as pd
+import xlsxwriter
 import win32com.client as win32
-from queries_db.constants import data_path
+from queries_db.constants import data_path, comunity_dict
 from queries_db import dataframe_queries as dfq
 from reports.utils import fact_table_text, build_fact_df, ExcelConstants
 
@@ -41,8 +42,10 @@ def export_report(
     excel_name: str = f"{comunity_name}{tournament_text} {alias_fact_table} {year_fact_table}"
     
     excel_file: str = excel_name.replace(" ", "_").replace(".", "").lower()
+    
+    general: bool = tournament_text == 'KOG' and comunity is None
 
-    if tournament_text == 'KOG' and comunity is None:
+    if general:
         file_path = data_path / 'meses' / f'{excel_file}.xlsx'
     else:
         file_path = data_path.joinpath(f"{excel_file}.xlsx")
@@ -50,7 +53,65 @@ def export_report(
     if os.path.exists(file_path):
         os.remove(file_path)
 
-    fact_df.to_excel(file_path, sheet_name=excel_file, index=False)
+    with pd.ExcelWriter(file_path, engine="xlsxwriter") as writer:
+        fact_df.to_excel(writer, sheet_name=excel_file, index=False)
+
+        workbook: xlsxwriter.Workbook = writer.book
+        worksheet = writer.sheets[excel_file]
+
+        max_row, max_col = fact_df.shape
+        columns = [{"header": col} for col in fact_df.columns]
+        
+        worksheet.add_table(
+            first_row=0, first_col=0, last_row=max_row, last_col=max_col - 1,
+            options={
+                "name": excel_file,
+                "columns": columns,
+                "style": "Table Style Medium 9"
+            }
+        )
+        
+        if general:
+            percent_format = workbook.add_format({'num_format': '0%'})
+            
+            ws_comunidad = workbook.add_worksheet("comunidad")
+            
+            ws_comunidad.write_string('A1', 'comunidad')
+            ws_comunidad.write_string('B1', 'Registros')
+            ws_comunidad.write_string('C1', '%')
+            
+            for i, comunity_name in enumerate(
+                list(comunity_dict.values()), start=2
+            ):
+                col_idx = 5 + (i - 2)
+                col_letter = xlsxwriter.utility.xl_col_to_name(col_idx - 1)
+                ws_comunidad.write_string(f'A{i}', comunity_name)
+                ws_comunidad.write_formula(
+                    f'B{i}',
+                    f'=COUNTIF({excel_file}!{col_letter}:{col_letter}, TRUE)'
+                )
+                ws_comunidad.write_formula(
+                    f'C{i}',
+                    f'=B{i}/{len(fact_df)}',
+                    percent_format
+                )
+
+            ws_comunidad.add_table(
+                first_row=0,
+                first_col=0,
+                last_row=len(comunity_dict),
+                last_col=2,
+                options={
+                    "name": "comunidad",
+                    "columns": [
+                        {"header": "comunidad"},
+                        {"header": "Registros"},
+                        {"header": "%"}
+                    ],
+                    "style": "Table Style Medium 9"
+                }
+            )
+
 
     excel = win32.Dispatch('Excel.Application')
     excel.Visible = False
@@ -58,16 +119,9 @@ def export_report(
     wb = excel.Workbooks.Open(file_path)
     ws_datos = wb.Sheets(excel_file)
     ws_datos.Cells.EntireColumn.AutoFit()
-
-    last_row = ws_datos.Cells(
-        ws_datos.Rows.Count, 1
-    ).End(ExcelConstants.xlUp).Row
     
-    last_col = ws_datos.Cells(1, ws_datos.Columns.Count).End(
-        ExcelConstants.xlToLeft
-    ).Column
-    
-    df_excel = f"'{excel_file}'!R1C1:R{last_row}C{last_col}"
+    ws_comunidad = wb.Sheets("comunidad")
+    ws_comunidad.Cells.EntireColumn.AutoFit()
 
     pivot_sheet_name = "Mazos"
     ws_pivot = wb.Sheets.Add()
@@ -75,7 +129,7 @@ def export_report(
 
     decks_cache = wb.PivotCaches().Create(
         SourceType=ExcelConstants.xlDatabase,
-        SourceData=df_excel
+        SourceData=excel_file
     )
 
     decks_pivot = decks_cache.CreatePivotTable(
