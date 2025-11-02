@@ -46,7 +46,7 @@ fact_df
 Para las fechas y poner el mes y año correspondiente
 """
 
-date_fact_table, month_fact_table, year_fact_table = fact_table_text(
+date_fact, month_fact_table, year_fact_table = fact_table_text(
     fact_df=fact_df, spanish=True
 )
 ```
@@ -143,7 +143,10 @@ visualization.wordcloud(save_bool, fact_df, decks_sum, limit_top)
 ```
 
 ```{python}
-indicator(save_bool, fact_df, decks_sum, fact_table_previous_df, comunity)
+indicator(
+    save_bool, kc_cup_bool, fact_df, decks_sum,
+    fact_table_previous_df, comunity
+)
 ```
 
 ```{python}
