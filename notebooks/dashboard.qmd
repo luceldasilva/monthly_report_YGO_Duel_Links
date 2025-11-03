@@ -21,7 +21,7 @@ from visualization.pie_diagram import percentage_deck_popularity
 ```{python}
 #| tags: [parameters]
 
-kc_cup_bool: bool = False
+kc_cup_bool: bool = True
 idx_fact_table: int = 1
 ```
 
@@ -69,12 +69,13 @@ count_fact_previous: int = len(fact_previous_df)
 percentage_count = ((df_count - count_fact_previous) / count_fact_previous) * 100
 
 color_relative: str = 'danger' if df_count < count_fact_previous else 'success'
-icon_relative: str = 'arrow-down' if df_count < count_fact_previous else 'arrow-up'
+icon_relative: str = '▼' if df_count < count_fact_previous else '▲'
+tour_text: str = 'Copa KC' if kc_cup_bool else 'mes'
 ```
 
 # `{python} title_report` {orientation="columns"}
 
-## Column {width=30%}
+## Column {width=24%}
 
 ```{python}
 #| content: valuebox
@@ -86,27 +87,17 @@ dict(
 )
 ```
 
-```{python}
-#| content: valuebox
-#| title: "Registros"
-dict(
-  icon = "person",
-  color = color_relative,
-  value = df_count
-)
-```
+::: {.valuebox icon="person" color=`{python} color_relative`}
+Registros
 
-```{python}
-#| content: valuebox
-#| title: "Comparado al anterior mes"
-dict(
-  icon = icon_relative,
-  color = color_relative,
-  value = f"{abs(percentage_count):.1f}%"
-)
-```
+`{python} df_count`
 
-## Column {.tabset width=70%}
+`{python} f"{icon_relative} {abs(percentage_count):.1f}%"`
+
+`{python} f"vs {tour_text} anterior"`
+:::
+
+## Column {.tabset width=76%}
 
 ```{python}
 #| output: false
