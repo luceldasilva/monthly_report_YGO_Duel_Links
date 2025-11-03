@@ -38,5 +38,6 @@ tables_db: list = [
 kc_tables_db: list = [
     'kc_cup_2025_feb',
     'kc_cup_2025_april',
-    'kc_cup_2025_sep'
+    'kc_cup_2025_sep',
+    'kc_cup_2025_nov'
 ]
