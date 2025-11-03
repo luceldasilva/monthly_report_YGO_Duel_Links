@@ -21,7 +21,7 @@ from visualization.pie_diagram import percentage_deck_popularity
 ```{python}
 #| tags: [parameters]
 
-kc_cup_bool: bool = True
+kc_cup_bool: bool = False
 idx_fact_table: int = 1
 ```
 
@@ -157,7 +157,10 @@ venn_graphs(save_photo, fact_df, pivot_comunidad)
 ![](`{python} url_por_dia`)
 
 ```{python}
-# #| output: false
+#| output: false
+# from queries_db.constants import tables_db, kc_tables_db
+
+
 # fact_table: str = tables_db[-idx_fact_table]
 # alias_fact_table: str = fact_table[-3:]
 
