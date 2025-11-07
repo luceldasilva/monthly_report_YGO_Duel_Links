@@ -71,7 +71,7 @@ def export_report(
             }
         )
         
-        if general:
+        if comunity is None:
             percent_format = workbook.add_format({'num_format': '0%'})
             
             ws_comunidad = workbook.add_worksheet("comunidad")
@@ -120,8 +120,9 @@ def export_report(
     ws_datos = wb.Sheets(excel_file)
     ws_datos.Cells.EntireColumn.AutoFit()
     
-    ws_comunidad = wb.Sheets("comunidad")
-    ws_comunidad.Cells.EntireColumn.AutoFit()
+    if comunity is None:
+        ws_comunidad = wb.Sheets("comunidad")
+        ws_comunidad.Cells.EntireColumn.AutoFit()
 
     pivot_sheet_name = "Mazos"
     ws_pivot = wb.Sheets.Add()
