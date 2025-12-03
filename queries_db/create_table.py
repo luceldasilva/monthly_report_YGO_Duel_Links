@@ -22,9 +22,11 @@ def fact_table_init(kc_cup_tournament: bool, rol_user: str):
     
     kc_cup: str = 'kc_cup' if kc_cup_tournament else 'kog'
     
-    monthy_table: str = datetime.now().strftime('%Y_%b').lower()
+    year_table: str = datetime.now().strftime('%Y')
     
-    table_name: str = f"{kc_cup}_{monthy_table}"
+    monthy_table: str = datetime.now().strftime('%b').lower()
+    
+    table_name: str = f"{kc_cup}_{year_table}_{monthy_table}"
     
     sql_file = sql_path.joinpath(f'create_{table_name}_fact_table.sql')
     
@@ -59,7 +61,7 @@ def fact_table_init(kc_cup_tournament: bool, rol_user: str):
             REFERENCES skills (skill_id),
         CONSTRAINT fk_{table_name}_date_id
             FOREIGN KEY (date_id)
-            REFERENCES calendar_2025 (date_id)
+            REFERENCES calendar_{year_table} (date_id)
     );\n
     CREATE TRIGGER trigger_set_updated_at
     BEFORE UPDATE ON {table_name}
