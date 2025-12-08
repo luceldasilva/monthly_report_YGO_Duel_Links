@@ -35,3 +35,4 @@ segment-analytics-python
 ipywidgets
 papermill
 rpy2
+circlify
