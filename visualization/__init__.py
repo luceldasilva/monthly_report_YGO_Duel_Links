@@ -11,6 +11,7 @@ from wordcloud import WordCloud
 import seaborn as sns
 import squarify
 import plotly.express as px
+import circlify
 
 
 def save_plot():
@@ -370,3 +371,79 @@ def squarify_decks(
         save_plot()
     
     plt.show()
+
+
+def circle_packing_chart(
+    save_photo: bool,
+    decks_sum: pd.DataFrame,
+    legend: bool=False,
+    tournament_text: str | None = None,
+    month_fact_table: str | None = None,
+    year_fact_table: str | None = None
+):
+    """
+    Gráfico tipo Circle Packing del mes/copa KC estudiada
+    mostrando los mazos utilizados
+
+    Parameters
+    ----------
+    save_photo : bool
+        Guardar la imagen
+    decks_sum : pd.DataFrame
+        Mazos usados en `fact_table_df` con sus registros
+    legend : bool, optional
+        Para que me escriba los mazos y sus registros, por defecto es False
+    tournament_text : str | None, optional
+        Para usar con el título, texto para contar si es del mes KOG
+        o de la copa KC, por defecto es None
+    month_fact_table : str | None, optional
+        Para usar con el título, mes de la tabla de hechos estudiada,
+        por defecto es None
+    year_fact_table : str | None, optional
+        Para usar con el título, año de la tabla de hechos estudiada,
+        por defecto es None
+    """
+    circles = circlify.circlify(
+        decks_sum['total'].tolist(),
+        show_enclosure=False,
+        target_enclosure=circlify.Circle(x=0, y=0, r=1)
+    )
+
+    circles = circles[::-1]
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+    ax.axis('off')
+
+    lim = max(
+        max(
+            abs(circle.x) + circle.r,
+            abs(circle.y) + circle.r,
+        )
+        for circle in circles
+    )
+    plt.xlim(-lim, lim)
+    plt.ylim(-lim, lim)
+
+
+    for circle in circles:
+        x, y, r = circle
+        ax.add_patch(plt.Circle((x, y), r, alpha=0.2, linewidth=2, fill=False))
+
+    if legend:
+        for circle, label, value in zip(
+            circles, decks_sum['name'], decks_sum['total']
+        ):
+            x, y, r = circle
+            ax.annotate(
+                f"{label}\n{value}",
+                (x, y),
+                va='center',
+                ha='center'
+            )
+    
+    if tournament_text and month_fact_table and year_fact_table:
+        ax.set_title(f'Mazos usados en {tournament_text} {month_fact_table} {year_fact_table}')
+
+    if save_photo:
+        save_plot()
