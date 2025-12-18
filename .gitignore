@@ -119,7 +119,7 @@ cython_debug/
 /.quarto/
 /_outputs/
 /_site/
-/notebooks/render_tests/
+*_tests/
 *_cache/
 /_*.local
 *.html

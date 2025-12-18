@@ -36,3 +36,5 @@ ipywidgets
 papermill
 rpy2
 circlify
+streamlit
+Pillow
