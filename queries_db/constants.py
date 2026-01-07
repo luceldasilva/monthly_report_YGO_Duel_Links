@@ -3,7 +3,7 @@ import pyprojroot
 
 
 root_path = pyprojroot.here()
-data_path = root_path / 'etl' / 'pentaho' / 'output'
+data_path = root_path / 'etl' / 'output'
 sql_path = root_path / 'sql_scripts'
 today = datetime.now().strftime('%d_%m_%Y')
 notepad = r'C:\Program Files\Notepad++\notepad++.exe'
@@ -21,7 +21,7 @@ comunidades: list = [
     'zerotg', 'zephra', 'bryan', 'xenoblur', 'yamiglen', 'latino_vania' 
 ]
 
-tables_db: list = [
+db_2025_tables: list = [
     'kog_2025_jan',
     'kog_2025_feb',
     'kog_2025_mar',
@@ -36,9 +36,36 @@ tables_db: list = [
     'kog_2025_dec'
 ]
 
+tables_db: list = [
+    'kog_2025_dec',
+    'kog_2026_jan'
+]
+
 kc_tables_db: list = [
     'kc_cup_2025_feb',
     'kc_cup_2025_april',
     'kc_cup_2025_sep',
     'kc_cup_2025_nov'
 ]
+
+
+def get_tables_by_year(year: int) -> list[str]:
+    """
+    Traer la lista de las tablas del año correspondiente
+
+    Parameters
+    ----------
+    year : int
+        Año en Cuestión
+
+    Returns
+    -------
+    list[str]
+        La lista de las tablas de ese año
+    """
+    TABLES_BY_YEAR: dict[int, list[str]] = {
+        2025: db_2025_tables,
+        2026: tables_db[1:],
+    }
+
+    return list(TABLES_BY_YEAR.get(year, []))
