@@ -4,7 +4,8 @@ from queries_db import query as qu
 
 
 def df_query(
-    fact_table: str, alias_fact_table: str) -> pd.DataFrame:
+    fact_table: str, alias_fact_table: str, year: str
+) -> pd.DataFrame:
     """
     Tabla de hechos del mes/copa KC a estudiar
     
@@ -29,7 +30,7 @@ def df_query(
     INNER JOIN decks d ON {alias_fact_table}.deck_id = d.deck_id
     INNER JOIN players p ON {alias_fact_table}.player_id = p.player_id
     INNER JOIN skills s ON {alias_fact_table}.skill_id = s.skill_id
-    INNER JOIN calendar_2025 c ON {alias_fact_table}.date_id = c.date_id;
+    INNER JOIN calendar_{year} c ON {alias_fact_table}.date_id = c.date_id;
     """
 
     fact_df = qu(fact_query)
@@ -58,7 +59,7 @@ def date_df(
     SELECT 
         c.day_of_monthy, 
         COALESCE(COUNT({alias_fact_table}.date_id), 0) AS jugadores
-    FROM calendar_2025 c
+    FROM calendar_{date_fact_table.year} c
     LEFT JOIN {fact_table} {alias_fact_table} 
         ON {alias_fact_table}.date_id = c.date_id
     WHERE c.monthy = {date_fact_table.month}

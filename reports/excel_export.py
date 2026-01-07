@@ -2,6 +2,7 @@ import os
 import click
 import pandas as pd
 import xlsxwriter
+from pathlib import Path
 import win32com.client as win32
 from queries_db.constants import data_path, comunity_dict
 from queries_db import dataframe_queries as dfq
@@ -46,7 +47,11 @@ def export_report(
     general: bool = tournament_text == 'KOG' and comunity is None
 
     if general:
-        file_path = data_path / 'meses' / f'{excel_file}.xlsx'
+        folder_path = data_path / f"{year_fact_table}"
+        
+        folder_path.mkdir(parents=True, exist_ok=True)
+        
+        file_path = folder_path.joinpath(f"{excel_file}.xlsx")
     else:
         file_path = data_path.joinpath(f"{excel_file}.xlsx")
 
