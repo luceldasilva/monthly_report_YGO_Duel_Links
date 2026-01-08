@@ -4,7 +4,7 @@ from queries_db import query as qu
 
 
 def df_query(
-    fact_table: str, alias_fact_table: str, year: str
+    fact_table: str, alias_fact_table: str, year: str = "2026"
 ) -> pd.DataFrame:
     """
     Tabla de hechos del mes/copa KC a estudiar
