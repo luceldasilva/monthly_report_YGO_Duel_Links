@@ -16,6 +16,7 @@ import pandas as pd
 kc_cup_bool: bool = False
 comunity: str = 'zephra'
 idx_fact_table: int = 1
+year: str = '2026'
 ```
 
 ```{python}
@@ -33,7 +34,7 @@ FROM {fact_table} {alias_fact_table}
 INNER JOIN decks d ON {alias_fact_table}.deck_id = d.deck_id
 INNER JOIN players p ON {alias_fact_table}.player_id = p.player_id
 INNER JOIN skills s ON {alias_fact_table}.skill_id = s.skill_id
-INNER JOIN calendar_2025 c ON {alias_fact_table}.date_id = c.date_id
+INNER JOIN calendar_{year} c ON {alias_fact_table}.date_id = c.date_id
 WHERE {alias_fact_table}.{comunity};
 """
 

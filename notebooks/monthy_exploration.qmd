@@ -40,7 +40,7 @@ visualization.circle_packing_chart(save_bool, decks_sum, True)
 ```
 
 ```{python}
-year: int = int(re.search(r'\d{4}', fact_table).group())
+year: str = re.search(r'\d{4}', fact_table).group()
 fact_df = dfq.df_query(fact_table, alias_fact_table, year)
 del year
 ```
