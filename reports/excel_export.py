@@ -3,10 +3,9 @@ import click
 import pandas as pd
 import xlsxwriter
 from pathlib import Path
-import win32com.client as win32
 from queries_db.constants import data_path, comunity_dict
 from queries_db import dataframe_queries as dfq
-from reports.utils import fact_table_text, build_fact_df, ExcelConstants
+from reports.utils import fact_table_text, build_fact_df
 
 
 def export_report(
@@ -117,118 +116,6 @@ def export_report(
                 }
             )
 
-
-    excel = win32.Dispatch('Excel.Application')
-    excel.Visible = False
-    
-    wb = excel.Workbooks.Open(file_path)
-    ws_datos = wb.Sheets(excel_file)
-    ws_datos.Cells.EntireColumn.AutoFit()
-    
-    if comunity is None:
-        ws_comunidad = wb.Sheets("comunidad")
-        ws_comunidad.Cells.EntireColumn.AutoFit()
-
-    pivot_sheet_name = "Mazos"
-    ws_pivot = wb.Sheets.Add()
-    ws_pivot.Name = pivot_sheet_name
-
-    decks_cache = wb.PivotCaches().Create(
-        SourceType=ExcelConstants.xlDatabase,
-        SourceData=excel_file
-    )
-
-    decks_pivot = decks_cache.CreatePivotTable(
-        TableDestination=ws_pivot.Range("A3"),
-        TableName="Top_Decks"
-    )
-
-    decks_pivot.PivotFields("deck").Orientation = ExcelConstants.xlRowField
-
-    decks_pivot.AddDataField(
-        decks_pivot.PivotFields("nick"),
-        "Total",
-        ExcelConstants.xlCount
-    )
-
-    pct_decks = decks_pivot.AddDataField(
-        decks_pivot.PivotFields("nick"),
-        "% del Total",
-        ExcelConstants.xlCount
-    )
-    pct_decks.Calculation = ExcelConstants.xlPercentOfTotal
-    pct_decks.NumberFormat = "0%"
-    
-    decks_pivot.PivotFields("deck").AutoSort(
-        ExcelConstants.xlDescending,
-        "Total"
-    )
-
-    graph_top_decks = f"{pivot_sheet_name}!R4C1:R9C2"
-    
-    top_decks_cache = wb.PivotCaches().Create(
-        SourceType=ExcelConstants.xlDatabase,
-        SourceData=graph_top_decks,
-        Version=7
-    )
-
-    top_decks_pivot = top_decks_cache.CreatePivotTable(
-        TableDestination=ws_pivot.Range("F5"),
-        TableName="Grafico_top_decks",
-        DefaultVersion=7
-    )
-
-    top_decks_pivot.ColumnGrand = True
-    top_decks_pivot.RowGrand = True
-    top_decks_pivot.HasAutoFormat = True
-    top_decks_pivot.DisplayErrorString = False
-    top_decks_pivot.DisplayNullString = True
-    top_decks_pivot.EnableDrilldown = True
-    top_decks_pivot.MergeLabels = False
-    top_decks_pivot.PreserveFormatting = True
-    top_decks_pivot.RepeatAllLabels(1)
-    top_decks_pivot.RowAxisLayout(2)
-    top_decks_cache.RefreshOnFileOpen = False
-
-
-    shape_obj = ws_pivot.Shapes.AddChart2(201, ExcelConstants.xlColumnClustered)
-    chart = shape_obj.Chart
-    chart.SetSourceData(top_decks_pivot.TableRange1)
-
-
-    pf = chart.PivotLayout.PivotTable.PivotFields("Etiquetas de Fila")
-    pf.Orientation = ExcelConstants.xlRowField
-    pf.Position = 1
-
-    chart.PivotLayout.PivotTable.AddDataField(
-        chart.PivotLayout.PivotTable.PivotFields("Total"),
-        "Suma de Total",
-        ExcelConstants.xlSum
-    )
-
-
-    chart.ChartType = ExcelConstants.xlBarClustered
-
-    chart.PivotLayout.PivotTable.PivotFields(
-        "Etiquetas de fila"
-    ).Caption = "Mazos"
-    
-    chart.PivotLayout.PivotTable.PivotFields(
-        "Suma de Total"
-    ).Caption = "Registros"
-
-    chart.HasLegend = False
-    chart.HasTitle = True
-    chart.ChartTitle.Text = f"Top Decks {df_name}"
-    shape_obj.Left = shape_obj.Left - 7.5
-    shape_obj.Top = shape_obj.Top - 5.25
-
-    pf.AutoSort(1, "Registros")
-
-
-    wb.Save()
-    wb.Close()
-    excel.Quit()
 
 
 @click.command()
