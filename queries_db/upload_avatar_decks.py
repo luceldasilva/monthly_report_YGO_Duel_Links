@@ -1,10 +1,10 @@
-from queries_db.constants import data_path, today, notepad
+from queries_db.constants import root_path, data_path, today, notepad
 import pandas as pd
 import subprocess
 import json
 
 
-def json_decks(kc_cup_tournament: bool = False):
+def json_decks(kc_cup_tournament: bool = False, pentaho: bool = False):
     """
     Cargar el avatar de los mazos a la base de datos de MongoDB
 
@@ -17,13 +17,15 @@ def json_decks(kc_cup_tournament: bool = False):
 
     kc_cup = 'kc_cup_' if kc_cup_tournament else ''
 
+    path_excel = root_path / 'etl' /  'pentaho' / 'output' if pentaho else data_path
+
 
     df_decks = pd.read_excel(
-        data_path.joinpath(f'{kc_cup}upload_avatar_decks.xls'),
+        path_excel.joinpath(f'{kc_cup}upload_avatar_decks.xls'),
         sheet_name='decks'
     )
     df_decks.dropna(inplace=True)
-    json_file = data_path.joinpath(f'{today}_{kc_cup}upload_avatar_decks.json')
+    json_file = path_excel.joinpath(f'{today}_{kc_cup}upload_avatar_decks.json')
     
     with open(json_file, 'w') as file:
         for _, row in df_decks.iterrows():

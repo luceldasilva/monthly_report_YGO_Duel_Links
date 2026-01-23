@@ -87,5 +87,5 @@ dim_skill_types
 
 
 ```{python}
-json_decks()
+json_decks(pentaho=True)
 ```
