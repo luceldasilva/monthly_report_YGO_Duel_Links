@@ -154,7 +154,6 @@ indicator(
 export_report(
     fact_df=fact_df,
     tournament_text=tournament_text,
-    month_fact_table=month_fact_table,
     alias_fact_table=alias_fact_table,
     year_fact_table=year_fact_table,
     comunity=comunity
