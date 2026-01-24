@@ -1,4 +1,5 @@
 from datetime import datetime
+from decouple import config
 import pyprojroot
 
 
@@ -8,7 +9,7 @@ sql_path = root_path / 'sql_scripts'
 today = datetime.now().strftime('%d_%m_%Y')
 notepad = r'C:\Program Files\Notepad++\notepad++.exe'
 
-comunity_dict: dict = {
+comunity_dict: dict[str, str] = {
     "zerotg": "ZeroTG",
     "zephra": "ZephraCarl",
     "bryan": "Bryan Norén",
@@ -17,11 +18,20 @@ comunity_dict: dict = {
     "latino_vania": "Yam_VT"
 }
 
-comunidades: list = [
+comunidades: list[str] = [
     'zerotg', 'zephra', 'bryan', 'xenoblur', 'yamiglen', 'latino_vania' 
 ]
 
-db_2025_tables: list = [
+avatars: list[str] = [
+    config('ZEROTG'),
+    config('ZEPHRA'),
+    config('BRYAN'),
+    config('XENOBLUR'),
+    config('YAMIGLEN'),
+    config('YAM_VT'),
+]
+
+db_2025_tables: list[str] = [
     'kog_2025_jan',
     'kog_2025_feb',
     'kog_2025_mar',
@@ -36,12 +46,12 @@ db_2025_tables: list = [
     'kog_2025_dec'
 ]
 
-tables_db: list = [
+tables_db: list[str] = [
     'kog_2025_dec',
     'kog_2026_jan'
 ]
 
-kc_tables_db: list = [
+kc_tables_db: list[str] = [
     'kc_cup_2025_feb',
     'kc_cup_2025_april',
     'kc_cup_2025_sep',
