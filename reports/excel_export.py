@@ -188,7 +188,7 @@ def export_report(
         decks.write_formula('B4', top_decks, style_deck)
         decks.write_formula(
             'C4',
-            f'=CONCATENATE(REPT("█", {decks_count}), " " , {decks_count})',
+            f'=CONCATENATE(REPT("█", {decks_count}), " " , {decks_count}, " (", TEXT({decks_count}/COUNTA(kog_jan_2026[deck]),"0%"), ")")',
             style_deck
         )
         decks.hide_gridlines(2)
