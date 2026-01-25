@@ -135,3 +135,17 @@ function Eliminar() {
     }
   }
 }
+
+
+function onOpen() {
+  // Para graficar con avatares y se moldeen las celdas
+  
+  var ssr = hojaActiva.getSheetByName("resumen");
+  var square = 55;
+  
+  ssr.setColumnWidth(1, square);
+  
+  for (var i = 1; i <= 10; i++) {
+    ssr.setRowHeight(i, square);
+  }
+}
