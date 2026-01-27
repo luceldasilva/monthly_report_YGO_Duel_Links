@@ -2,8 +2,6 @@ import os
 import click
 import pandas as pd
 import xlsxwriter
-from openpyxl import load_workbook
-from openpyxl.styles import Font
 from pathlib import Path
 from queries_db.constants import data_path, comunity_dict, avatars
 from queries_db import dataframe_queries as dfq
