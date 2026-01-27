@@ -51,7 +51,7 @@ async def searching_by_archetype(deck: str):
 
     Parameters
     ----------
-    name_deck : str
+    deck : str
         Nombre del arquetipo
 
     Returns
