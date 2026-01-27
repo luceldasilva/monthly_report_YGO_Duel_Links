@@ -34,7 +34,7 @@ async def all_characters():
 
 
 @characters.get("/{character}", response_model=ImageCharacter)
-async def searching_by_playable_character(name_character: str):
+async def searching_by_playable_character(character: str):
     """
     Búsqueda del personaje en concreto
 
@@ -54,11 +54,11 @@ async def searching_by_playable_character(name_character: str):
         Por si ese personaje con ese nombre no está en la base de datos
     """
     
-    if not type(search_character("character_name", name_character)) == ImageCharacter:
+    if not type(search_character("character_name", character)) == ImageCharacter:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Ese personaje no existe"
         )
-    return search_character("character_name", name_character)
+    return search_character("character_name", character)
 
 
 @characters.post("/", response_model=ImageCharacter, status_code=status.HTTP_201_CREATED) 

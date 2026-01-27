@@ -45,7 +45,7 @@ async def all_decks():
 
 
 @decks.get("/{deck}", response_model=ImageCard)
-async def searching_by_archetype(name_deck: str):
+async def searching_by_archetype(deck: str):
     """
     Búsqueda del Arquetipo
 
@@ -63,11 +63,11 @@ async def searching_by_archetype(name_deck: str):
     HTTPException
         Ese nombre de arquetipo no existe
     """
-    if not type(search_deck("name", name_deck)) == ImageCard:
+    if not type(search_deck("name", deck)) == ImageCard:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Ese deck no existe"
         )
-    return search_deck("name", name_deck)
+    return search_deck("name", deck)
 
 
 @decks.post("/", response_model=ImageCard, status_code=status.HTTP_201_CREATED) 
