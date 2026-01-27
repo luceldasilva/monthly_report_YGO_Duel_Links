@@ -40,7 +40,7 @@ async def searching_by_playable_character(character: str):
 
     Parameters
     ----------
-    name_character : str
+    character : str
         nombre del personaje
 
     Returns
