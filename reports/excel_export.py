@@ -109,45 +109,32 @@ def export_report(
             ):
                 col_idx = 5 + (i - 2)
                 col_letter = xlsxwriter.utility.xl_col_to_name(col_idx - 1)
-                ws_comunidad.write_string(f'A{i}', comunity_name)
+                ws_comunidad.write_string(
+                    f'A{i}', f'IMAGEN("{url_avatar}";;2)'
+                )
+                ws_comunidad.write_string(f'B{i}', comunity_name)
                 ws_comunidad.write_formula(
-                    f'B{i}',
+                    f'C{i}',
                     f'=COUNTIF({excel_file}!{col_letter}:{col_letter}, TRUE)'
                 )
                 ws_comunidad.write_formula(
-                    f'C{i}',
-                    f'=B{i}/{len(fact_df)}',
+                    f'D{i}',
+                    f'=C{i}/{len(fact_df)}',
                     percent_format
                 )
-                ws_comunidad.write_string(f'F{i}', comunity_name)
-                ws_comunidad.write_string(f'G{i}', url_avatar)
 
             ws_comunidad.add_table(
                 first_row=0,
                 first_col=0,
                 last_row=len(comunity_dict),
-                last_col=2,
+                last_col=3,
                 options={
                     "name": "comunidad",
                     "columns": [
+                        {"header": "avatar"},
                         {"header": "Comunidad"},
                         {"header": "Registros"},
                         {"header": "%"}
-                    ],
-                    "style": "Table Style Medium 9"
-                }
-            )
-
-            ws_comunidad.add_table(
-                first_row=0,
-                first_col=5,
-                last_row=len(comunity_dict),
-                last_col=6,
-                options={
-                    "name": "avatares",
-                    "columns": [
-                        {"header": "comunidad"},
-                        {"header": "avatar"},
                     ],
                     "style": "Table Style Medium 9"
                 }
@@ -162,33 +149,37 @@ def export_report(
             'bold': True
         })
 
-        top_decks: str = """
+        top_decks: str = f"""
         =FILTER(
             SORTBY(
-                UNIQUE(kog_jan_2026[deck]),
-                COUNTIF(kog_jan_2026[deck], UNIQUE(kog_jan_2026[deck])),
+                UNIQUE({excel_file}[deck]),
+                COUNTIF({excel_file}[deck], UNIQUE({excel_file}[deck])),
                 -1
             ),
             SORTBY(
-                COUNTIF(kog_jan_2026[deck], UNIQUE(kog_jan_2026[deck])),
-                COUNTIF(kog_jan_2026[deck], UNIQUE(kog_jan_2026[deck])),
+                COUNTIF({excel_file}[deck], UNIQUE({excel_file}[deck])),
+                COUNTIF({excel_file}[deck], UNIQUE({excel_file}[deck])),
                 -1
             ) >= INDEX(
                 SORTBY(
-                    COUNTIF(kog_jan_2026[deck], UNIQUE(kog_jan_2026[deck])),
-                    COUNTIF(kog_jan_2026[deck], UNIQUE(kog_jan_2026[deck])),
+                    COUNTIF({excel_file}[deck], UNIQUE({excel_file}[deck])),
+                    COUNTIF({excel_file}[deck], UNIQUE({excel_file}[deck])),
                     -1
                 ),
                 5
             )
         )""".replace('\n', '').replace(' ', '')
         
-        decks_count: str = 'COUNTIF(kog_jan_2026[deck], ANCHORARRAY(B4))'
+        decks_count: str = f'COUNTIF({excel_file}[deck], ANCHORARRAY(B4))'
+        bars_decks: str = f'REPT("█", {decks_count})'
+        percent_decks: str = f'{decks_count}/COUNTA({excel_file}[deck])'
+        format_decks: str = f'" (", TEXT({percent_decks},"0%"), ")"'
 
+        decks.write_string('A4', 'IMAGEN(BUSCARV(B4#;decks;2;0);;2)')
         decks.write_formula('B4', top_decks, style_deck)
         decks.write_formula(
             'C4',
-            f'=CONCATENATE(REPT("█", {decks_count}), " " , {decks_count}, " (", TEXT({decks_count}/COUNTA(kog_jan_2026[deck]),"0%"), ")")',
+            f'=CONCATENATE({bars_decks}, " " , {decks_count}, {format_decks})',
             style_deck
         )
         decks.hide_gridlines(2)
