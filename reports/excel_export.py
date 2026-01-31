@@ -3,7 +3,7 @@ import click
 import pandas as pd
 import xlsxwriter
 from pathlib import Path
-from queries_db.constants import data_path, comunity_dict, avatars
+from queries_db.constants import data_path, comunity_dict, avatars, comunidades
 from queries_db import dataframe_queries as dfq
 from reports.utils import fact_table_text, build_fact_df
 
@@ -67,6 +67,13 @@ def export_report(
         
         workbook: xlsxwriter.Workbook = writer.book
         
+        style_deck = workbook.add_format({
+            'font_name': 'Aptos Narrow',
+            'font_size': 16,
+            'font_color': '0070C0',
+            'bold': True
+        })
+        
         excel_list: list = [
             (excel_file, fact_df), ('decks', decks_images)
         ]
@@ -102,8 +109,14 @@ def export_report(
             
             ws_comunidad = workbook.add_worksheet("comunidad")
             
-            for i, (url_avatar, comunity_name) in enumerate(
-                zip(avatars, comunity_dict.values()), start=2
+            name_ranking_with_comunities = "mazos_por_comunidad"
+            
+            decks_with_comunities = workbook.add_worksheet(
+                name_ranking_with_comunities
+            )
+            
+            for i, (url_avatar, comunity_name, column) in enumerate(
+                zip(avatars, comunity_dict.values(), comunidades), start=2
             ):
                 col_idx = 5 + (i - 2)
                 col_letter = xlsxwriter.utility.xl_col_to_name(col_idx - 1)
@@ -120,6 +133,120 @@ def export_report(
                     f'=C{i}/{len(fact_df)}',
                     percent_format
                 )
+                
+                decks_with_comunities.write_string(f'V{i}', comunity_name)
+                decks_with_comunities.write_string(f'W{i}', column)
+                decks_with_comunities.write_string(
+                    f'X{i}', f'IMAGEN("{url_avatar}";;2)'
+                )
+            
+            name_table_comunities: str = "columnas_comunidad"
+            
+            decks_with_comunities.add_table(
+                first_row=0,
+                first_col=21,
+                last_row=len(comunity_dict),
+                last_col=23,
+                options={
+                    "name": f"{name_table_comunities}",
+                    "columns": [
+                        {"header": "Comunidad"},
+                        {"header": "columna"},
+                        {"header": "avatar"}
+                    ],
+                    "style": "Table Style Medium 9"
+                }
+            )
+            
+            decks_with_comunities.hide_gridlines(2)
+            
+            column_lookup: str = "L2"
+            
+            name_comunities_lookup: str = "O2"
+            
+            avatar_comunities_lookup: str = "N2"
+            
+            decks_with_comunities.data_validation(
+                name_comunities_lookup,
+                {'validate': 'list', 'source': '=$V$2:$V$7'}
+            )
+            
+            decks_with_comunities.write_formula(
+                avatar_comunities_lookup, 
+                f'=VLOOKUP({name_comunities_lookup},{name_table_comunities},3,0)'
+            )
+            
+            decks_with_comunities.write_formula(
+                column_lookup, 
+                f'=VLOOKUP({name_comunities_lookup},{name_table_comunities},2,0)'
+            )
+            
+            decks_count_comunities: str = f"""
+            =CHOOSECOLS(
+                FILTER(
+                    {excel_file},
+                    INDEX(
+                        {excel_file}, ,
+                        MATCH(
+                            {column_lookup},
+                            {excel_file}[#Headers], 0)) = TRUE
+                    ), MATCH("deck", {excel_file}[#Headers], 0)
+            )""".replace('\n', '').replace(' ', '')
+            
+            top_decks_comunities: str = f"""
+            =FILTER(
+                SORTBY(
+                    UNIQUE({name_ranking_with_comunities}!A:A),
+                    COUNTIF(
+                        {name_ranking_with_comunities}!A:A,
+                        UNIQUE({name_ranking_with_comunities}!A:A)),
+                    -1
+                ),
+                SORTBY(
+                    COUNTIF(
+                        {name_ranking_with_comunities}!A:A,
+                        UNIQUE({name_ranking_with_comunities}!A:A)),
+                    COUNTIF(
+                        {name_ranking_with_comunities}!A:A,
+                        UNIQUE({name_ranking_with_comunities}!A:A)),
+                    -1
+                ) >= INDEX(
+                    SORTBY(
+                        COUNTIF(
+                            {name_ranking_with_comunities}!A:A,
+                            UNIQUE({name_ranking_with_comunities}!A:A)),
+                        COUNTIF(
+                            {name_ranking_with_comunities}!A:A,
+                            UNIQUE({name_ranking_with_comunities}!A:A)),
+                        -1
+                    ),
+                    5
+                )
+            )""".replace('\n', '').replace(' ', '')
+            
+            decks_count_cm: str = f'COUNTIF({name_ranking_with_comunities}!A:A, ANCHORARRAY(C2))'
+            bars_decks_cm: str = f'REPT("█", {decks_count_cm})'
+            percent_decks_cm: str = f'{decks_count_cm}/COUNTA({name_ranking_with_comunities}!A:A)'
+            format_decks_cm: str = f'" (", TEXT({percent_decks_cm},"0%"), ")"'
+
+            decks_with_comunities.write_formula(
+                'A1', decks_count_comunities
+            )
+            decks_with_comunities.write_string(
+                'B2', 'IMAGEN(BUSCARV(C2#;decks;2;0);;2)'
+            )
+            decks_with_comunities.write_formula(
+                'C2', top_decks_comunities, style_deck
+            )
+            decks_with_comunities.write_formula(
+                'D2',
+                f'CONCATENATE({bars_decks_cm}, " " , {decks_count_cm}, {format_decks_cm})',
+                style_deck
+            )
+
+            decks_with_comunities.write_formula(
+                'M5', f'=COUNTA({name_ranking_with_comunities}!A:A)'
+            )
 
             ws_comunidad.add_table(
                 first_row=0,
@@ -139,13 +266,6 @@ def export_report(
             )
 
         decks = workbook.add_worksheet("mazos")
-        
-        style_deck = workbook.add_format({
-            'font_name': 'Aptos Narrow',
-            'font_size': 16,
-            'font_color': '0070C0',
-            'bold': True
-        })
 
         top_decks: str = f"""
         =FILTER(
