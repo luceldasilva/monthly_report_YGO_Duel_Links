@@ -160,11 +160,11 @@ def export_report(
             
             decks_with_comunities.hide_gridlines(2)
             
-            column_lookup: str = "L2"
+            column_lookup: str = "R2"
             
-            name_comunities_lookup: str = "O2"
+            name_comunities_lookup: str = "I2"
             
-            avatar_comunities_lookup: str = "N2"
+            avatar_comunities_lookup: str = "J2"
             
             decks_with_comunities.data_validation(
                 name_comunities_lookup,
@@ -196,56 +196,60 @@ def export_report(
             top_decks_comunities: str = f"""
             =FILTER(
                 SORTBY(
-                    UNIQUE({name_ranking_with_comunities}!A:A),
+                    UNIQUE({name_ranking_with_comunities}!T:T),
                     COUNTIF(
-                        {name_ranking_with_comunities}!A:A,
-                        UNIQUE({name_ranking_with_comunities}!A:A)),
+                        {name_ranking_with_comunities}!T:T,
+                        UNIQUE({name_ranking_with_comunities}!T:T)),
                     -1
                 ),
                 SORTBY(
                     COUNTIF(
-                        {name_ranking_with_comunities}!A:A,
-                        UNIQUE({name_ranking_with_comunities}!A:A)),
+                        {name_ranking_with_comunities}!T:T,
+                        UNIQUE({name_ranking_with_comunities}!T:T)),
                     COUNTIF(
-                        {name_ranking_with_comunities}!A:A,
-                        UNIQUE({name_ranking_with_comunities}!A:A)),
+                        {name_ranking_with_comunities}!T:T,
+                        UNIQUE({name_ranking_with_comunities}!T:T)),
                     -1
                 ) >= INDEX(
                     SORTBY(
                         COUNTIF(
-                            {name_ranking_with_comunities}!A:A,
-                            UNIQUE({name_ranking_with_comunities}!A:A)),
+                            {name_ranking_with_comunities}!T:T,
+                            UNIQUE({name_ranking_with_comunities}!T:T)),
                         COUNTIF(
-                            {name_ranking_with_comunities}!A:A,
-                            UNIQUE({name_ranking_with_comunities}!A:A)),
+                            {name_ranking_with_comunities}!T:T,
+                            UNIQUE({name_ranking_with_comunities}!T:T)),
                         -1
                     ),
                     5
                 )
             )""".replace('\n', '').replace(' ', '')
             
-            decks_count_cm: str = f'COUNTIF({name_ranking_with_comunities}!A:A, ANCHORARRAY(C2))'
+            decks_count_cm: str = f'COUNTIF({name_ranking_with_comunities}!T:T, ANCHORARRAY(B2))'
             bars_decks_cm: str = f'REPT("█", {decks_count_cm})'
-            percent_decks_cm: str = f'{decks_count_cm}/COUNTA({name_ranking_with_comunities}!A:A)'
+            percent_decks_cm: str = f'{decks_count_cm}/COUNTA({name_ranking_with_comunities}!T:T)'
             format_decks_cm: str = f'" (", TEXT({percent_decks_cm},"0%"), ")"'
 
             decks_with_comunities.write_formula(
-                'A1', decks_count_comunities
+                'T1', decks_count_comunities
             )
             decks_with_comunities.write_string(
-                'B2', 'IMAGEN(BUSCARV(C2#;decks;2;0);;2)'
+                'A2', 'IMAGEN(BUSCARV(B2#;decks;2;0);;2)'
             )
             decks_with_comunities.write_formula(
-                'C2', top_decks_comunities, style_deck
+                'B2', top_decks_comunities, style_deck
             )
             decks_with_comunities.write_formula(
-                'D2',
+                'C2',
                 f'CONCATENATE({bars_decks_cm}, " " , {decks_count_cm}, {format_decks_cm})',
                 style_deck
             )
 
             decks_with_comunities.write_formula(
-                'M5', f'=COUNTA({name_ranking_with_comunities}!A:A)'
+                'I3', f'=COUNTA({name_ranking_with_comunities}!T:T)'
+            )
+            
+            decks_with_comunities.write_string(
+                'I4', 'Registros'
             )
 
             ws_comunidad.add_table(
