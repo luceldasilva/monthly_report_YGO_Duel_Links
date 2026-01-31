@@ -137,7 +137,7 @@ function Eliminar() {
 }
 
 
- function onOpen() {
+function onOpen() {
   // Para graficar con avatares y se moldeen las celdas
 
   const hojas = ["resumen", "tops_por_comunidad"];
