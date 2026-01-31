@@ -137,15 +137,19 @@ function Eliminar() {
 }
 
 
-function onOpen() {
+ function onOpen() {
   // Para graficar con avatares y se moldeen las celdas
-  
-  var ssr = hojaActiva.getSheetByName("resumen");
-  var square = 55;
-  
-  ssr.setColumnWidth(1, square);
-  
-  for (var i = 1; i <= 10; i++) {
-    ssr.setRowHeight(i, square);
-  }
+
+  const hojas = ["resumen", "tops_por_comunidad"];
+  const square = 55;
+
+  hojas.forEach(nombre => {
+    const hoja = hojaActiva.getSheetByName(nombre);
+
+    hoja.setColumnWidth(1, square);
+
+    for (let i = 1; i <= 10; i++) {
+      hoja.setRowHeight(i, square);
+    }
+  });
 }
