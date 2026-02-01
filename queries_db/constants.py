@@ -48,14 +48,16 @@ db_2025_tables: list[str] = [
 
 tables_db: list[str] = [
     'kog_2025_dec',
-    'kog_2026_jan'
+    'kog_2026_jan',
+    'kog_2026_feb'
 ]
 
 kc_tables_db: list[str] = [
     'kc_cup_2025_feb',
     'kc_cup_2025_april',
     'kc_cup_2025_sep',
-    'kc_cup_2025_nov'
+    'kc_cup_2025_nov',
+    'kc_cup_2026_feb'
 ]
 
 
