@@ -67,11 +67,21 @@ def export_report(
         
         workbook: xlsxwriter.Workbook = writer.book
         
+        decks = workbook.add_worksheet("mazos")
+        
         style_deck = workbook.add_format({
             'font_name': 'Aptos Narrow',
             'font_size': 16,
             'font_color': '0070C0',
             'bold': True
+        })
+        
+        style_records = workbook.add_format({
+            'font_name': 'Aptos Narrow',
+            'font_size': 16,
+            'bold': True,
+            'vcenter': True,
+            'center': True
         })
         
         excel_list: list = [
@@ -108,7 +118,7 @@ def export_report(
             percent_format = workbook.add_format({'num_format': '0%'})
             
             ws_comunidad = workbook.add_worksheet("comunidad")
-            
+
             name_ranking_with_comunities = "mazos_por_comunidad"
             
             decks_with_comunities = workbook.add_worksheet(
@@ -243,11 +253,9 @@ def export_report(
                 f'CONCATENATE({bars_decks_cm}, " " , {decks_count_cm}, {format_decks_cm})',
                 style_deck
             )
-
             decks_with_comunities.write_formula(
                 'I3', f'=COUNTA({name_ranking_with_comunities}!T:T)'
             )
-            
             decks_with_comunities.write_string(
                 'I4', 'Registros'
             )
@@ -268,8 +276,10 @@ def export_report(
                     "style": "Table Style Medium 9"
                 }
             )
-
-        decks = workbook.add_worksheet("mazos")
+            
+            decks.write_formula('Z4', '=SORT(comunidad,3,-1)')
+            decks.write_string('AB3', 'Registros')
+            decks.write_string('AC3', '% del Total')
 
         top_decks: str = f"""
         =FILTER(
@@ -304,6 +314,8 @@ def export_report(
             f'=CONCATENATE({bars_decks}, " " , {decks_count}, {format_decks})',
             style_deck
         )
+        decks.write_formula('M6', f'=COUNTA({excel_file}[deck])', style_records)
+        decks.write_string('M7', 'Registros', style_records)
         decks.hide_gridlines(2)
 
 
