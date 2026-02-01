@@ -1,10 +1,11 @@
+import re
 import pandas as pd
 from datetime import date
 from queries_db import query as qu
 
 
 def df_query(
-    fact_table: str, alias_fact_table: str, year: str = "2026"
+    fact_table: str, alias_fact_table: str
 ) -> pd.DataFrame:
     """
     Tabla de hechos del mes/copa KC a estudiar
@@ -20,6 +21,7 @@ def df_query(
     -------
     pandas.DataFrame
     """
+    year: str = re.search(r'\d{4}', fact_table).group()
     fact_query = f"""
     SELECT 
         p.nick, d.deck, s.skill, c.ndmax,
