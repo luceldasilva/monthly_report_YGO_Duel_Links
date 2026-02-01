@@ -8,7 +8,7 @@ library(here)
 library(calendR)
 
 
-base_path <- here("etl", "pentaho", "output")
+base_path <- here("etl", "output")
 date_file <- here(base_path, "date_df.rds")
 summary_file <- here(base_path, "summary_df.rds")
 
