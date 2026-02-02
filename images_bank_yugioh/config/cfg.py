@@ -13,3 +13,5 @@ CLOUD_NAME = config('CLOUD_NAME')
 API_KEY = config('API_KEY')
 
 API_SECRET = config('API_SECRET')
+
+URL_DEFAULT = config('URL_DEFAULT')

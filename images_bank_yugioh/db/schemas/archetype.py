@@ -4,6 +4,7 @@ def archetype_schema(archetype) -> dict:
         "deck_id": archetype["deck_id"],
         "name": archetype["name"],
         "url_image": archetype["url_image"],
+        "big_avatar": archetype["big_avatar"],
         "update_image_at": archetype["update_image_at"]
     }
 

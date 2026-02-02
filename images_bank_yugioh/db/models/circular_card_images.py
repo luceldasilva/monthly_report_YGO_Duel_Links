@@ -1,3 +1,4 @@
+from config.cfg import URL_DEFAULT
 from pydantic import BaseModel
 from datetime import datetime
 from pytz import timezone
@@ -13,6 +14,7 @@ class ImageCard(BaseModel):
     deck_id: int
     name: str
     url_image: str
+    big_avatar: str = URL_DEFAULT
     update_image_at: str = 'no prior registration'
 
 
@@ -21,6 +23,7 @@ class CardUpdate(BaseModel):
     deck_id: Optional[int] = None
     name: str
     url_image: str
+    big_avatar: Optional[str] = None
     update_image_at: str = registry
 
 

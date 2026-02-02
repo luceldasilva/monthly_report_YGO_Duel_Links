@@ -7,7 +7,7 @@ app = FastAPI(
     title="Banco de Imágenes para arquetipos de Yu-Gi-Oh!",
     description="Avatares para hacer referencia a los mazos y personajes",
     openapi_tags=tags_metadata,
-    version="1.3.1"
+    version="1.4"
 )
 
 
