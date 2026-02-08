@@ -22,7 +22,7 @@ class CardUpdate(BaseModel):
     id: Optional[str] = None
     deck_id: Optional[int] = None
     name: str
-    url_image: str
+    url_image: Optional[str] = None
     big_avatar: Optional[str] = None
     update_image_at: str = registry
 
