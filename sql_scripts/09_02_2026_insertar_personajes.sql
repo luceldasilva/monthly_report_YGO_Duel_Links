@@ -1,0 +1,16 @@
+INSERT INTO characters (name_character, serie_id) VALUES ('Rebecca Hawkins', 1);
+INSERT INTO characters (name_character, serie_id) VALUES ('Yuma y Astral', 5);
+INSERT INTO characters (name_character, serie_id) VALUES ('Joey Wheeler', 1);
+INSERT INTO characters (name_character, serie_id) VALUES ('Vector', 5);
+INSERT INTO characters (name_character, serie_id) VALUES ('Marik Ishtar', 1);
+INSERT INTO characters (name_character, serie_id) VALUES ('Yami Yugi', 1);
+INSERT INTO characters (name_character, serie_id) VALUES ('Sera', 4);
+INSERT INTO characters (name_character, serie_id) VALUES ('Aigami', 4);
+INSERT INTO characters (name_character, serie_id) VALUES ('Quinton', 5);
+INSERT INTO characters (name_character, serie_id) VALUES ('Portador Oscuro Rex Goodwin', 3);
+INSERT INTO characters (name_character, serie_id) VALUES ('Antinomy', 3);
+INSERT INTO characters (name_character, serie_id) VALUES ('Odion', 1);
+INSERT INTO characters (name_character, serie_id) VALUES ('Seto Kaiba', 1);
+INSERT INTO characters (name_character, serie_id) VALUES ('Noah Kaiba', 1);
+INSERT INTO characters (name_character, serie_id) VALUES ('Tea Gardner', 1);
+INSERT INTO characters (name_character, serie_id) VALUES ('Z-ona', 3);
