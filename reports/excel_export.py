@@ -80,8 +80,8 @@ def export_report(
             'font_name': 'Aptos Narrow',
             'font_size': 16,
             'bold': True,
-            'vcenter': True,
-            'center': True
+            'align': 'center',
+            'valign': 'vcenter'
         })
         
         excel_list: list = [
