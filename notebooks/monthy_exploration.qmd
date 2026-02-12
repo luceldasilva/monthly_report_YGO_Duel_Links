@@ -31,14 +31,6 @@ decks_sum
 ```
 
 ```{python}
-visualization.circle_packing_chart(save_bool, decks_sum)
-```
-
-```{python}
-visualization.circle_packing_chart(save_bool, decks_sum, True)
-```
-
-```{python}
 fact_df = dfq.df_query(fact_table, alias_fact_table)
 ```
 
@@ -64,6 +56,16 @@ fact_previous_df = dfq.df_query(
     alias_fact_table=alias_fact_table_previous
 )
 fact_previous_df
+```
+
+```{python}
+visualization.circle_packing_chart(
+    decks_sum,
+    fact_df,
+    fact_previous_df,
+    month_fact_table,
+    year_fact_table
+)
 ```
 
 ```{python}
