@@ -1,8 +1,11 @@
 from datetime import datetime
 from queries_db.constants import comunity_dict, data_path
 import queries_db.transform_df_queries as dft
+from reports.utils import fact_table_text, DEFAULT_URL
+from queries_db import dataframe_queries as dfq
 import requests as req
 from io import BytesIO
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
@@ -11,6 +14,7 @@ from wordcloud import WordCloud
 import seaborn as sns
 import squarify
 import plotly.express as px
+import plotly.graph_objects as go
 import circlify
 
 
@@ -374,12 +378,12 @@ def squarify_decks(
 
 
 def circle_packing_chart(
-    save_photo: bool,
     decks_sum: pd.DataFrame,
-    legend: bool=False,
-    tournament_text: str | None = None,
-    month_fact_table: str | None = None,
-    year_fact_table: str | None = None
+    fact_df: pd.DataFrame,
+    fact_previous_df: pd.DataFrame,
+    month_fact_table: str,
+    year_fact_table: str,
+    kc_cup_bool: bool = False,
 ):
     """
     Gráfico tipo Circle Packing del mes/copa KC estudiada
@@ -387,22 +391,54 @@ def circle_packing_chart(
 
     Parameters
     ----------
-    save_photo : bool
-        Guardar la imagen
     decks_sum : pd.DataFrame
         Mazos usados en `fact_table_df` con sus registros
-    legend : bool, optional
-        Para que me escriba los mazos y sus registros, por defecto es False
-    tournament_text : str | None, optional
+    fact_df: pd.DataFrame
+        Registro mensual del mes/copa KC
+    fact_previous_df: pd.DataFrame
+        Registro mensual del anterior mes/copa KC
+    tournament_text : str
         Para usar con el título, texto para contar si es del mes KOG
-        o de la copa KC, por defecto es None
-    month_fact_table : str | None, optional
-        Para usar con el título, mes de la tabla de hechos estudiada,
-        por defecto es None
-    year_fact_table : str | None, optional
-        Para usar con el título, año de la tabla de hechos estudiada,
-        por defecto es None
+        o de la copa KC
+    month_fact_table : str
+        Para usar con el título, mes de la tabla de hechos estudiada
+    year_fact_table : str 
+        Para usar con el título, año de la tabla de hechos estudiada
+    kc_cup_bool : bool, optional
+        Para usar en en los títulos si es mes KOG o copa KC,
+        por defecto es False
     """
+
+    spanish_tour: str = "DLv. MAX Copa KC" if kc_cup_bool else "King of Games"
+    
+    title_report: str = f'{spanish_tour} {month_fact_table} {year_fact_table}'
+    
+    df_count, count_fact_previous = len(fact_df), len(fact_previous_df)
+
+    decks_images = pd.read_json(
+        'https://monthly-report-yugioh-dl.vercel.app/decks/',
+        orient='records'
+    )[['name', 'url_image', 'big_avatar']]
+
+    group_by_decks = decks_sum.merge(
+        decks_images, on='name', how='left', validate='1:1'
+    )
+
+    group_by_decks['avatar'] = np.where(
+        group_by_decks['total'] < 4,
+        group_by_decks['url_image'],
+        group_by_decks['big_avatar']
+    )
+
+    group_by_decks['avatar'] = group_by_decks['avatar'].fillna(DEFAULT_URL)
+
+    color: str = 'red' if df_count < count_fact_previous else 'green'
+    tour_text: str = 'Copa KC' if kc_cup_bool else 'mes'
+    percentage_count = (
+        (df_count - count_fact_previous) / count_fact_previous
+    ) * 100
+    icon_relative: str = '▼' if df_count < count_fact_previous else '▲'
+
     circles = circlify.circlify(
         decks_sum['total'].tolist(),
         show_enclosure=False,
@@ -411,39 +447,115 @@ def circle_packing_chart(
 
     circles = circles[::-1]
 
-    fig, ax = plt.subplots(figsize=(10, 10))
+    fig = go.Figure()
 
-    ax.axis('off')
-
-    lim = max(
-        max(
-            abs(circle.x) + circle.r,
-            abs(circle.y) + circle.r,
-        )
-        for circle in circles
-    )
-    plt.xlim(-lim, lim)
-    plt.ylim(-lim, lim)
-
-
-    for circle in circles:
-        x, y, r = circle
-        ax.add_patch(plt.Circle((x, y), r, alpha=0.2, linewidth=2, fill=False))
-
-    if legend:
-        for circle, label, value in zip(
-            circles, decks_sum['name'], decks_sum['total']
-        ):
-            x, y, r = circle
-            ax.annotate(
-                f"{label}\n{value}",
-                (x, y),
-                va='center',
-                ha='center'
+    for circle, name, total, big_avatar  in zip(
+        circles, group_by_decks['name'],
+        group_by_decks['total'], group_by_decks['avatar']
+    ):
+        fig.add_trace(go.Scatter(
+            x=[circle.x],
+            y=[circle.y],
+            mode='markers+text',
+            marker=dict(
+                size=circle.r*500,
+                color='rgba(100, 150, 200, 0.3)'
+            ),
+            textposition='middle center',
+            hovertemplate=f'<b>{name}</b><br>Registros: {total}<extra></extra>'
+        ))
+        
+        fig.add_layout_image(
+            dict(
+                source=big_avatar,
+                xref="x",
+                yref="y",
+                x=circle.x,
+                y=circle.y,
+                sizex=circle.r * 2,
+                sizey=circle.r * 2,
+                xanchor="center",
+                yanchor="middle",
+                opacity=0.8,
+                layer="above"
             )
-    
-    if tournament_text and month_fact_table and year_fact_table:
-        ax.set_title(f'Mazos usados en {tournament_text} {month_fact_table} {year_fact_table}')
+        )
 
-    if save_photo:
-        save_plot()
+    count_deck: str = f"<b style='font-size:32px'>{len(decks_sum)}</b><br>"
+    description_deck: str = "<span style='font-size:14px'>Mazos<br>distintos</span>"
+    annotation_decks: str = count_deck + description_deck
+
+    fig.add_annotation(
+        text=annotation_decks,
+        x=0.1, y=0.95,
+        xref="paper", yref="paper",
+        showarrow=False,
+        align="center",
+        xanchor="center",
+        yanchor="top",
+        bgcolor="rgba(255, 255, 255, 0.8)",
+        borderwidth=1,
+        borderpad=10
+    )
+
+    string_df_count: str = f"<b style='font-size:32px'>{df_count}</b><br>"
+    description: str = "<span style='font-size:14px'>Registros</span><br>"
+    icon: str = f"<span style='font-size:12px; "
+    color_description: str = f"color:{color}'>{icon_relative} "
+    percentage: str = f"{abs(percentage_count):.1f}%"
+    relative: str = f"<br>vs. {tour_text} anterior</span>"
+
+    annotation_df: str = f"{string_df_count}{description}{icon}"
+    annotation_percentage: str = f"{color_description}{percentage}{relative}"
+
+    annotation_counts: str = annotation_df + annotation_percentage
+
+    fig.add_annotation(
+        text=annotation_counts,
+        x=0.85, y=0.95,
+        xref="paper", yref="paper",
+        showarrow=False,
+        align="center",
+        xanchor="center",
+        yanchor="top",
+        bgcolor="rgba(255, 255, 255, 0.8)",
+        borderwidth=1,
+        borderpad=10
+    )
+
+
+    fig.update_layout(
+        showlegend=False,
+        xaxis=dict(visible=False, scaleanchor="y", scaleratio=1),
+        yaxis=dict(visible=False),
+        width=800,
+        height=800,
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        title=dict(
+            text="Distribución de Mazos",
+            x=0.5,
+            xanchor="center",
+            y=0.95,
+            yanchor="top",
+            font=dict(
+                size=24,
+                color="black",
+                weight=600
+            ),
+            pad=dict(
+                t=20,
+                b=10
+            )
+        ),
+        title_subtitle=dict(
+            text=f"{title_report}",
+            font=dict(
+                size=14,
+                color="gray",
+                style="italic"
+            )
+        )
+    )
+
+    fig.show()

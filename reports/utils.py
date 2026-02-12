@@ -1,4 +1,7 @@
 from queries_db.constants import tables_db, kc_tables_db
+from decouple import Config, RepositoryEnv
+from typing import Final
+from pathlib import Path
 from datetime import date
 from enum import IntEnum
 import pandas as pd
@@ -22,6 +25,22 @@ class ExcelConstants(IntEnum):
     xlCount = -4112
     xlBarClustered = 57
 
+
+def default_avatar() -> str:
+    """
+    Enlace para usar en arquetipos que aun no tienen avatar
+
+    Returns
+    -------
+    str
+        la url de un avatar en blanco o uno predeterminado
+    """
+    BASE_DIR = Path(__file__).resolve().parent
+    config = Config(RepositoryEnv(str(BASE_DIR / '.env')))
+    DEFAULT_URL: Final = config('URL')
+    return DEFAULT_URL
+
+DEFAULT_URL = default_avatar()
 
 
 def build_fact_df(kc_cup: bool, idx_fact_table: int = 1):
