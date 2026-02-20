@@ -599,6 +599,10 @@ def circle_packing_chart(
             f"{data_path}/{comunity_name}{title_report}_circle_packing_chart.html"
         )
         
+        fig.write_image(
+            f"{data_path}/{comunity_name}{title_report}_circle_packing_chart.png"
+        )
+        
         fig.write_html(
             f"{data_path}/{comunity_name}{title_report}_circle_packing_chart_div.html",
             full_html=False
