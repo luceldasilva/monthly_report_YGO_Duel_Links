@@ -378,12 +378,14 @@ def squarify_decks(
 
 
 def circle_packing_chart(
+    save_photo: bool,
     decks_sum: pd.DataFrame,
     fact_df: pd.DataFrame,
     fact_previous_df: pd.DataFrame,
     month_fact_table: str,
     year_fact_table: str,
     kc_cup_bool: bool = False,
+    comunity: str | None = None
 ):
     """
     Gráfico tipo Circle Packing del mes/copa KC estudiada
@@ -391,6 +393,8 @@ def circle_packing_chart(
 
     Parameters
     ----------
+    save_photo : bool
+        Guardar la imagen
     decks_sum : pd.DataFrame
         Mazos usados en `fact_table_df` con sus registros
     fact_df: pd.DataFrame
@@ -407,6 +411,8 @@ def circle_packing_chart(
     kc_cup_bool : bool, optional
         Para usar en en los títulos si es mes KOG o copa KC,
         por defecto es False
+    comunity : str | None, optional
+        Para separar por comunidad, por defecto es None
     """
 
     spanish_tour: str = "DLv. MAX Copa KC" if kc_cup_bool else "King of Games"
@@ -423,12 +429,21 @@ def circle_packing_chart(
     group_by_decks = decks_sum.merge(
         decks_images, on='name', how='left', validate='1:1'
     )
-
-    group_by_decks['avatar'] = np.where(
-        group_by_decks['total'] < 4,
-        group_by_decks['url_image'],
-        group_by_decks['big_avatar']
+    
+    group_by_decks['%'] = (
+        (group_by_decks['total'] * 100 / df_count)
+        .round(2)
+        .astype(str) + '%'
     )
+
+    if comunity:
+        group_by_decks['avatar'] = group_by_decks['big_avatar']
+    else:
+        group_by_decks['avatar'] = np.where(
+            group_by_decks['total'] < 4,
+            group_by_decks['url_image'],
+            group_by_decks['big_avatar']
+        )
 
     group_by_decks['avatar'] = group_by_decks['avatar'].fillna(DEFAULT_URL)
 
@@ -449,9 +464,11 @@ def circle_packing_chart(
 
     fig = go.Figure()
 
-    for circle, name, total, big_avatar  in zip(
+    for circle, name, total, pct, big_avatar  in zip(
         circles, group_by_decks['name'],
-        group_by_decks['total'], group_by_decks['avatar']
+        group_by_decks['total'],
+        group_by_decks['%'],
+        group_by_decks['avatar']
     ):
         fig.add_trace(go.Scatter(
             x=[circle.x],
@@ -462,7 +479,7 @@ def circle_packing_chart(
                 color='rgba(100, 150, 200, 0.3)'
             ),
             textposition='middle center',
-            hovertemplate=f'<b>{name}</b><br>Registros: {total}<extra></extra>'
+            hovertemplate=f'<b>{name}</b><br>Registros: <b>{total}</b><br><b>{pct}</b> del total<extra></extra>'
         ))
         
         fig.add_layout_image(
@@ -488,6 +505,23 @@ def circle_packing_chart(
     fig.add_annotation(
         text=annotation_decks,
         x=0.1, y=0.95,
+        xref="paper", yref="paper",
+        showarrow=False,
+        align="center",
+        xanchor="center",
+        yanchor="top",
+        bgcolor="rgba(255, 255, 255, 0.8)",
+        borderwidth=1,
+        borderpad=10
+    )
+    
+    discord: str = f" de la comunidad\nde <b>{comunity_dict[comunity]}</b>" if comunity else " de 6 comunidades"
+    
+    source: str = f"<b>Fuente:</b> Discord{discord}"
+    
+    fig.add_annotation(
+        text=source,
+        x=0.45, y=0.95,
         xref="paper", yref="paper",
         showarrow=False,
         align="center",
@@ -557,5 +591,17 @@ def circle_packing_chart(
             )
         )
     )
+
+    if save_photo:
+        comunity_name: str = f"{comunity}_" if comunity else ""
+        
+        fig.write_html(
+            f"{data_path}/{comunity_name}{title_report}_circle_packing_chart.html"
+        )
+        
+        fig.write_html(
+            f"{data_path}/{comunity_name}{title_report}_circle_packing_chart_div.html",
+            full_html=False
+        )
 
     fig.show()
