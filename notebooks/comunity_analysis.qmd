@@ -1,22 +1,23 @@
 ```{python}
-from queries_db.constants import comunidades
+from queries_db.constants import comunidades, comunity_dict
 from reports.utils import build_fact_df, fact_table_text
 from queries_db import query as qu
+from queries_db import dataframe_queries as dfq
 from queries_db.transform_df_queries import converter_to_r
 from reports.excel_export import export_report
 import visualization
 from visualization.comparison_two_months import indicator
 from visualization.pie_diagram import percentage_deck_popularity
 import pandas as pd
+import re
 ```
 
 ```{python}
 #| tags: [parameters]
 
-kc_cup_bool: bool = False
-comunity: str = 'zephra'
+kc_cup_bool: bool = True
+comunity: str = 'latino_vania'
 idx_fact_table: int = 1
-year: str = '2026'
 ```
 
 ```{python}
@@ -25,6 +26,8 @@ save_bool: bool = False
 fact_table, tournament_text, alias_fact_table= build_fact_df(
     kc_cup=kc_cup_bool, idx_fact_table=idx_fact_table
 )
+
+year: str = re.search(r'\d{4}', fact_table).group()
 ```
 
 ```{python}
@@ -93,13 +96,15 @@ previous_month_fact_table, _, alias_previous_month_fact_table = build_fact_df(
     kc_cup=kc_cup_bool, idx_fact_table=idx_fact_previous
 )
 
+year_previous: str = re.search(r'\d{4}', fact_table).group()
+
 fact_table_previous_query = f"""
 SELECT p.nick, d.deck, s.skill, c.ndmax
 FROM {previous_month_fact_table} {alias_previous_month_fact_table}
 INNER JOIN decks d ON {alias_previous_month_fact_table}.deck_id = d.deck_id
 INNER JOIN players p ON {alias_previous_month_fact_table}.player_id = p.player_id
 INNER JOIN skills s ON {alias_previous_month_fact_table}.skill_id = s.skill_id
-INNER JOIN calendar_2025 c ON {alias_previous_month_fact_table}.date_id = c.date_id
+INNER JOIN calendar_{year_previous} c ON {alias_previous_month_fact_table}.date_id = c.date_id
 WHERE {alias_previous_month_fact_table}.{comunity};
 """
 
@@ -157,6 +162,19 @@ export_report(
     alias_fact_table=alias_fact_table,
     year_fact_table=year_fact_table,
     comunity=comunity
+)
+```
+
+```{python}
+visualization.circle_packing_chart(
+    True,
+    decks_sum,
+    fact_df,
+    fact_table_previous_df,
+    month_fact_table,
+    year_fact_table,
+    kc_cup_bool,
+    comunity
 )
 ```
 

@@ -60,11 +60,13 @@ fact_previous_df
 
 ```{python}
 visualization.circle_packing_chart(
+    save_photo,
     decks_sum,
     fact_df,
     fact_previous_df,
     month_fact_table,
-    year_fact_table
+    year_fact_table,
+    kc_cup_bool
 )
 ```
 
