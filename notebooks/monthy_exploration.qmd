@@ -60,7 +60,7 @@ fact_previous_df
 
 ```{python}
 visualization.circle_packing_chart(
-    save_photo,
+    save_bool,
     decks_sum,
     fact_df,
     fact_previous_df,

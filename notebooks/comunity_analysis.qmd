@@ -15,7 +15,7 @@ import re
 ```{python}
 #| tags: [parameters]
 
-kc_cup_bool: bool = True
+kc_cup_bool: bool = False
 comunity: str = 'latino_vania'
 idx_fact_table: int = 1
 ```
@@ -96,7 +96,7 @@ previous_month_fact_table, _, alias_previous_month_fact_table = build_fact_df(
     kc_cup=kc_cup_bool, idx_fact_table=idx_fact_previous
 )
 
-year_previous: str = re.search(r'\d{4}', fact_table).group()
+year_previous: str = re.search(r'\d{4}', previous_month_fact_table).group()
 
 fact_table_previous_query = f"""
 SELECT p.nick, d.deck, s.skill, c.ndmax
@@ -167,7 +167,7 @@ export_report(
 
 ```{python}
 visualization.circle_packing_chart(
-    True,
+    save_bool,
     decks_sum,
     fact_df,
     fact_table_previous_df,
