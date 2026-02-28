@@ -299,20 +299,18 @@ def wordcloud(
         fact_table_df[fact_table_df['deck'].isin(top_five_decks)].index
     )
 
-
-    decks = decks.replace("-", ' ', regex=True)
-    decks = decks.replace("/", ' ', regex=True)
-    decks = decks.replace("’", ' ', regex=True)
-    decks = decks.replace(" ", '', regex=True)
-
-
+    decks['deck'] = decks['deck'].str.replace(r'\.', '', regex=True)
+    decks['deck'] = decks['deck'].str.replace(r"[-/' ]", '', regex=True)
+    decks['deck'] = decks['deck'].str.strip()
+    
     text_decks = ' '.join(decks.fillna('')['deck'].tolist())
 
     wc = WordCloud(
         width = 2560,
         height = 1440,
         background_color = "mintcream",
-        colormap = "Dark2"
+        colormap = "Dark2",
+        regexp=r'\S+'
     ).generate(text_decks)
 
 
@@ -385,7 +383,8 @@ def circle_packing_chart(
     month_fact_table: str,
     year_fact_table: str,
     kc_cup_bool: bool = False,
-    comunity: str | None = None
+    comunity: str | None = None,
+    legends: bool = True
 ):
     """
     Gráfico tipo Circle Packing del mes/copa KC estudiada
@@ -413,6 +412,9 @@ def circle_packing_chart(
         por defecto es False
     comunity : str | None, optional
         Para separar por comunidad, por defecto es None
+    legends: bool, optional
+        Para poner los detalles y estadísticas al gráfico, por defecto es True.
+        Es False cuando se quiere hacer solo el gráfico para exportar en png
     """
 
     spanish_tour: str = "DLv. MAX Copa KC" if kc_cup_bool else "King of Games"
@@ -436,16 +438,9 @@ def circle_packing_chart(
         .astype(str) + '%'
     )
 
-    if comunity:
-        group_by_decks['avatar'] = group_by_decks['big_avatar']
-    else:
-        group_by_decks['avatar'] = np.where(
-            group_by_decks['total'] < 4,
-            group_by_decks['url_image'],
-            group_by_decks['big_avatar']
-        )
-
-    group_by_decks['avatar'] = group_by_decks['avatar'].fillna(DEFAULT_URL)
+    group_by_decks['big_avatar'] = group_by_decks['big_avatar'].fillna(
+        DEFAULT_URL
+    )
 
     color: str = 'red' if df_count < count_fact_previous else 'green'
     tour_text: str = 'Copa KC' if kc_cup_bool else 'mes'
@@ -453,6 +448,7 @@ def circle_packing_chart(
         (df_count - count_fact_previous) / count_fact_previous
     ) * 100
     icon_relative: str = '▼' if df_count < count_fact_previous else '▲'
+    paint: str = 'rgba(0,0,0,0)' if save_photo else 'white'
 
     circles = circlify.circlify(
         decks_sum['total'].tolist(),
@@ -468,7 +464,7 @@ def circle_packing_chart(
         circles, group_by_decks['name'],
         group_by_decks['total'],
         group_by_decks['%'],
-        group_by_decks['avatar']
+        group_by_decks['big_avatar']
     ):
         fig.add_trace(go.Scatter(
             x=[circle.x],
@@ -497,114 +493,123 @@ def circle_packing_chart(
                 layer="above"
             )
         )
-
-    count_deck: str = f"<b style='font-size:32px'>{len(decks_sum)}</b><br>"
-    description_deck: str = "<span style='font-size:14px'>Mazos<br>distintos</span>"
-    annotation_decks: str = count_deck + description_deck
-
-    fig.add_annotation(
-        text=annotation_decks,
-        x=0.1, y=0.95,
-        xref="paper", yref="paper",
-        showarrow=False,
-        align="center",
-        xanchor="center",
-        yanchor="top",
-        bgcolor="rgba(255, 255, 255, 0.8)",
-        borderwidth=1,
-        borderpad=10
-    )
     
-    discord: str = f" de la comunidad\nde <b>{comunity_dict[comunity]}</b>" if comunity else " de 6 comunidades"
-    
-    source: str = f"<b>Fuente:</b> Discord{discord}"
-    
-    fig.add_annotation(
-        text=source,
-        x=0.45, y=0.95,
-        xref="paper", yref="paper",
-        showarrow=False,
-        align="center",
+    if legends:    
+        count_deck: str = f"<b style='font-size:32px'>{len(decks_sum)}</b><br>"
+        description_deck: str = "<span style='font-size:14px'>Mazos<br>distintos</span>"
+        annotation_decks: str = count_deck + description_deck
+
+        fig.add_annotation(
+            text=annotation_decks,
+            x=0.1, y=0.95,
+            xref="paper", yref="paper",
+            showarrow=False,
+            align="center",
+            xanchor="center",
+            yanchor="top",
+            bgcolor="rgba(0,0,0,0)",
+            borderwidth=1,
+            borderpad=10
+        )
+
+        discord: str = f" de la comunidad\nde <b>{comunity_dict[comunity]}</b>" if comunity else " de 6 comunidades"
+        
+        source: str = f"<b>Fuente:</b> Discord{discord}"
+        
+        fig.add_annotation(
+            text=source,
+            x=0.25, y=0.05,
+            xref="paper", yref="paper",
+            showarrow=False,
+            align="center",
+            xanchor="center",
+            yanchor="top",
+            bgcolor="rgba(0,0,0,0)",
+            borderwidth=1,
+            borderpad=10
+        )
+
+        string_df_count: str = f"<b style='font-size:32px'>{df_count}</b><br>"
+        description: str = "<span style='font-size:14px'>Registros</span><br>"
+        icon: str = f"<span style='font-size:12px; "
+        color_description: str = f"color:{color}'>{icon_relative} "
+        percentage: str = f"{abs(percentage_count):.1f}%"
+        relative: str = f"<br>vs. {tour_text} anterior</span>"
+
+        annotation_df: str = f"{string_df_count}{description}{icon}"
+        annotation_percentage: str = f"{color_description}{percentage}{relative}"
+
+        annotation_counts: str = annotation_df + annotation_percentage
+
+        fig.add_annotation(
+            text=annotation_counts,
+            x=0.85, y=0.95,
+            xref="paper", yref="paper",
+            showarrow=False,
+            align="center",
+            xanchor="center",
+            yanchor="top",
+            bgcolor="rgba(0,0,0,0)",
+            borderwidth=1,
+            borderpad=10
+        )
+
+
+    title = dict(
+        text="Distribución de Mazos",
+        x=0.5,
         xanchor="center",
+        y=0.95,
         yanchor="top",
-        bgcolor="rgba(255, 255, 255, 0.8)",
-        borderwidth=1,
-        borderpad=10
-    )
-
-    string_df_count: str = f"<b style='font-size:32px'>{df_count}</b><br>"
-    description: str = "<span style='font-size:14px'>Registros</span><br>"
-    icon: str = f"<span style='font-size:12px; "
-    color_description: str = f"color:{color}'>{icon_relative} "
-    percentage: str = f"{abs(percentage_count):.1f}%"
-    relative: str = f"<br>vs. {tour_text} anterior</span>"
-
-    annotation_df: str = f"{string_df_count}{description}{icon}"
-    annotation_percentage: str = f"{color_description}{percentage}{relative}"
-
-    annotation_counts: str = annotation_df + annotation_percentage
-
-    fig.add_annotation(
-        text=annotation_counts,
-        x=0.85, y=0.95,
-        xref="paper", yref="paper",
-        showarrow=False,
-        align="center",
-        xanchor="center",
-        yanchor="top",
-        bgcolor="rgba(255, 255, 255, 0.8)",
-        borderwidth=1,
-        borderpad=10
-    )
-
-
+        font=dict(
+            size=24,
+            color="black",
+            weight=600
+        ),
+        pad=dict(
+            t=20,
+            b=10
+        )
+    ) if legends else None
+    
+    title_subtitle = dict(
+        text=f"{title_report}",
+        font=dict(
+            size=14,
+            color="gray",
+            style="italic"
+        )
+    ) if legends else None
+    
     fig.update_layout(
+        margin=dict(l=0, r=0, t=0, b=0),
+        autosize=True,
         showlegend=False,
-        xaxis=dict(visible=False, scaleanchor="y", scaleratio=1),
-        yaxis=dict(visible=False),
         width=800,
         height=800,
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        title=dict(
-            text="Distribución de Mazos",
-            x=0.5,
-            xanchor="center",
-            y=0.95,
-            yanchor="top",
-            font=dict(
-                size=24,
-                color="black",
-                weight=600
-            ),
-            pad=dict(
-                t=20,
-                b=10
-            )
-        ),
-        title_subtitle=dict(
-            text=f"{title_report}",
-            font=dict(
-                size=14,
-                color="gray",
-                style="italic"
-            )
-        )
+        xaxis=dict(visible=False, scaleanchor="y", scaleratio=1),
+        yaxis=dict(visible=False),
+        plot_bgcolor=paint,
+        paper_bgcolor=paint,
+        title=title,
+        title_subtitle=title_subtitle
     )
 
     if save_photo:
         comunity_name: str = f"{comunity}_" if comunity else ""
+        today_now = f"{datetime.now().strftime('%d_%m_%Y_%H_%M_%S_%f')[:-3]}_"
         
         fig.write_html(
-            f"{data_path}/{comunity_name}{title_report}_circle_packing_chart.html"
+            f"{data_path}/{today_now}{comunity_name}{title_report}_circle_packing_chart.html"
         )
         
         fig.write_image(
-            f"{data_path}/{comunity_name}{title_report}_circle_packing_chart.png"
+            f"{data_path}/{today_now}{comunity_name}{title_report}_circle_packing_chart.png",
+            engine="kaleido"
         )
         
         fig.write_html(
-            f"{data_path}/{comunity_name}{title_report}_circle_packing_chart_div.html",
+            f"{data_path}/{today_now}{comunity_name}{title_report}_circle_packing_chart_div.html",
             full_html=False
         )
 
