@@ -16,7 +16,7 @@ import re
 #| tags: [parameters]
 
 kc_cup_bool: bool = False
-comunity: str = 'latino_vania'
+comunity: str = 'zephra'
 idx_fact_table: int = 1
 ```
 
@@ -175,6 +175,20 @@ visualization.circle_packing_chart(
     year_fact_table,
     kc_cup_bool,
     comunity
+)
+```
+
+```{python}
+visualization.circle_packing_chart(
+    True,
+    decks_sum,
+    fact_df,
+    fact_table_previous_df,
+    month_fact_table,
+    year_fact_table,
+    kc_cup_bool,
+    comunity,
+    False
 )
 ```
 
