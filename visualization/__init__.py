@@ -559,7 +559,7 @@ def circle_packing_chart(
         text="Distribución de Mazos",
         x=0.5,
         xanchor="center",
-        y=0.95,
+        y=0.97,
         yanchor="top",
         font=dict(
             size=24,
