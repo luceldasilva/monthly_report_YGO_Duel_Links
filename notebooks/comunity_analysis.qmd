@@ -16,7 +16,7 @@ import re
 #| tags: [parameters]
 
 kc_cup_bool: bool = False
-comunity: str = 'zephra'
+comunity: str = 'latino_vania'
 idx_fact_table: int = 1
 ```
 
@@ -75,7 +75,7 @@ date_query = f"""
 SELECT 
     c.day_of_monthy, 
     COALESCE(COUNT({alias_fact_table}.date_id), 0) AS jugadores
-FROM calendar_2025 c
+FROM calendar_{year_fact_table} c
 LEFT JOIN {fact_table} {alias_fact_table} 
     ON {alias_fact_table}.date_id = c.date_id
     AND {alias_fact_table}.{comunity}
