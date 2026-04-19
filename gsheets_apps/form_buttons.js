@@ -153,3 +153,29 @@ function onOpen() {
     }
   });
 }
+
+
+function onEdit(e) {
+  // Para que en la hoja ya haga la fórmula cuando hay nuevos decks
+  // Así ya tienen sus avatares
+
+  const sheet = e.source.getActiveSheet();
+
+  if (sheet.getName() !== "decks") return;
+
+  const range = e.range;
+
+  if (range.getColumn() !== 1) return;
+
+  const row = range.getRow();
+  const valorA = range.getValue();
+  const celdaB = sheet.getRange(row, 2);
+
+  if (valorA !== "") {
+    celdaB.setFormula(
+      `=VLOOKUP(A${row}, IMPORTRANGE("1WHReMj4ywC-EGNTZxjXw3kqGx0r_JDiEJNKbRI2sKMs", "avatares!A:B"), 2, 0)`
+    );
+  } else {
+    celdaB.clearContent();
+  }
+}
