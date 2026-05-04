@@ -15,11 +15,11 @@ import pandas as pd
 
 kc_cup_bool: bool = False
 idx_fact_table: int = 1
+limit_top: int = 5
+save_bool: bool = False
 ```
 
 ```{python}
-save_bool: bool = True
-
 fact_table, tournament_text, alias_fact_table,= build_fact_df(
     kc_cup=kc_cup_bool, idx_fact_table=idx_fact_table
 )
@@ -77,7 +77,7 @@ pivot_comunidad
 ```
 
 ```{python}
-visualization.comunity_bars(save_bool, pivot_comunidad)
+visualization.comunity_bars(True, pivot_comunidad)
 ```
 
 ```{python}
@@ -117,7 +117,6 @@ visualization.date_lineplot(
 ```
 
 ```{python}
-limit_top: int = 5
 percentage_deck_popularity(save_bool, True, decks_sum, limit_top)
 ```
 

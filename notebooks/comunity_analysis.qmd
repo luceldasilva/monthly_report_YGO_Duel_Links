@@ -18,11 +18,10 @@ import re
 kc_cup_bool: bool = False
 comunity: str = 'latino_vania'
 idx_fact_table: int = 1
+save_bool: bool = False
 ```
 
 ```{python}
-save_bool: bool = False
-
 fact_table, tournament_text, alias_fact_table= build_fact_df(
     kc_cup=kc_cup_bool, idx_fact_table=idx_fact_table
 )
@@ -134,7 +133,7 @@ converter_to_r(summary_df, 'summary_df')
 
 ```{python}
 limit_top: int = 5
-percentage_deck_popularity(save_bool, True, decks_sum, limit_top)
+percentage_deck_popularity(True, True, decks_sum, limit_top)
 ```
 
 ```{python}
