@@ -52,7 +52,7 @@ tables_db: list[str] = [
     'kog_2026_feb',
     'kog_2026_mar',
     'kog_2026_apr',
-    
+    'kog_2026_may'
 ]
 
 kc_tables_db: list[str] = [
