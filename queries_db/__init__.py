@@ -2,7 +2,7 @@ import sys
 import logging
 from decouple import config
 from sqlalchemy.exc import OperationalError
-from sqlalchemy import create_engine as ce, MetaData as md
+from sqlalchemy import create_engine as ce, MetaData as md, text
 import pandas as pd
 
 
@@ -48,7 +48,8 @@ def query(query: str) -> pd.DataFrame:
     """
     try:
         logging.info(f'Aquí está la consulta \n{query}')
-        return pd.read_sql_query(sql=query, con=pg_engine)
+        with pg_engine.connect() as conn:
+            return pd.read_sql_query(sql=text(query), con=conn)
     except OperationalError:
         logging.error('La conexión se cerró vuelva a conectarlo')
     except Exception as ex:
