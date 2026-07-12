@@ -17,8 +17,10 @@ def fact_table_init(kc_cup_tournament: bool, rol_user: str):
     rol_user: str
         usuario en darle los permisos y hacerle dueño de la tabla
     """
-    locale.setlocale(locale.LC_TIME, 'English_United States.1252')
+    locale.setlocale(locale.LC_TIME, 'en_US.utf8')
     #* locale.setlocale(locale.LC_TIME, 'en_US.utf8') en Linux/macOS
+    #* locale.setlocale(locale.LC_TIME, 'English_United States.1252') en Windows
+    
     
     kc_cup: str = 'kc_cup' if kc_cup_tournament else 'kog'
     

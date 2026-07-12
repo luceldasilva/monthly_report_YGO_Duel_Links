@@ -97,8 +97,9 @@ def fact_table_text(fact_df: pd.DataFrame, spanish: bool = False):
     date_fact_table: date = fact_df.ndmax[0]
     
     if spanish:
-        locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
-        #'es_ES.utf8'  En Linux/Mac
+        locale.setlocale(locale.LC_TIME, 'es_MX.utf8')
+        #'es_ES.utf8'  o 'es_MX.utf8' En Linux/Mac
+        #'Spanish_Spain.1252' en Windows
     
     month_fact_table: str = date_fact_table.strftime('%B').capitalize()
     year_fact_table: str = date_fact_table.strftime('%Y')
