@@ -7,7 +7,8 @@ root_path = pyprojroot.here()
 data_path = root_path / 'etl' / 'output'
 sql_path = root_path / 'sql_scripts'
 today = datetime.now().strftime('%d_%m_%Y')
-notepad = r'C:\Program Files\Notepad++\notepad++.exe'
+notepad = "code"
+# notepad = r'C:\Program Files\Notepad++\notepad++.exe' Este es en windows
 
 comunity_dict: dict[str, str] = {
     "zerotg": "ZeroTG",
@@ -53,7 +54,8 @@ tables_db: list[str] = [
     'kog_2026_mar',
     'kog_2026_apr',
     'kog_2026_may',
-    'kog_2026_jun'
+    'kog_2026_jun',
+    'kog_2026_jul'
 ]
 
 kc_tables_db: list[str] = [
