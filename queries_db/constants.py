@@ -56,7 +56,7 @@ tables_db: list[str] = [
     'kog_2026_may',
     'kog_2026_jun',
     'kog_2026_jul',
-    'kog_2026_aug'
+    'kog_2026_aug',
     'kog_2026_sep'
 ]
 
