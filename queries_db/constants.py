@@ -55,7 +55,9 @@ tables_db: list[str] = [
     'kog_2026_apr',
     'kog_2026_may',
     'kog_2026_jun',
-    'kog_2026_jul'
+    'kog_2026_jul',
+    'kog_2026_aug'
+    'kog_2026_sep'
 ]
 
 kc_tables_db: list[str] = [
@@ -66,6 +68,7 @@ kc_tables_db: list[str] = [
     'kc_cup_2026_feb',
     'kc_cup_2026_apr',
     'wcs_2026_jun'
+    'kc_cup_2026_sep'
 ]
 
 
