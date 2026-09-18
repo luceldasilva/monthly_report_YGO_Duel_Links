@@ -109,8 +109,6 @@ function Actualizar() {
       registro.getRange(INT_R, 1, 1, celdas[0].length).setValues(celdas);
       // Cambia este valor si deseas usar otra columna para la fecha
       registro.getRange(INT_R, NUM_COLUMNA_BUSQUEDA + 2).setValue(new Date());
-      
-      SpreadsheetApp.getUi().alert('Datos actualizados');
 
       Limpiar();
     }
@@ -152,4 +150,38 @@ function onOpen() {
       hoja.setRowHeight(i, square);
     }
   });
+}
+
+
+function onEdit(e) {
+  // Usar como botones los checks en el celular
+  // Si sigue marcada por unos segundos significa que hay error 
+
+  var rango = e.range;
+  var hoja = rango.getSheet();
+  
+  if (hoja.getName() === "formulario" && e.value === "TRUE") {
+
+    switch (rango.getA1Notation()) {
+      case "D3":
+        Buscar();
+        rango.setValue(false);
+        break;
+        
+      case "C18":
+        Limpiar();
+        rango.setValue(false);
+        break;
+        
+      case "H11":
+        Guardar();
+        rango.setValue(false);
+        break;
+      
+      case "F16":
+        Actualizar();
+        rango.setValue(false);
+        break;
+    }
+  }
 }
